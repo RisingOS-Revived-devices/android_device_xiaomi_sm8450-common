@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2026 acerhizmq
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_title">Ajustes de Xiaomi</string>
+    <string name="settings_entry_summary">Ajustes de pantalla, rendimiento, batería y audio</string>
+    <string name="device_details">dispositivo: <xliff:g id="codename">%1$s</xliff:g> · Android <xliff:g id="android">%2$s</xliff:g> · kernel <xliff:g id="kernel">%3$s</xliff:g></string>
+    <string name="navigate_up">Atrás</string>
+
+    <string name="state_on">Activado</string>
+    <string name="state_off">Desactivado</string>
+    <string name="state_not_supported">No compatible</string>
+    <string name="value_unknown">Desconocido</string>
+    <string name="action_apply">Aplicar</string>
+    <string name="action_reset">Restablecer</string>
+    <string name="settings_applied">Ajustes aplicados</string>
+    <string name="settings_reset">Ajustes restablecidos</string>
+    <string name="percent_value"><xliff:g id="value">%1$d</xliff:g> %%</string>
+    <string name="lux_value"><xliff:g id="value">%1$s</xliff:g> lux</string>
+    <string name="seconds_value"><xliff:g id="value">%1$d</xliff:g> s</string>
+    <string name="celsius_value"><xliff:g id="value">%1$s</xliff:g> °C</string>
+    <string name="slider_decrease">Disminuir</string>
+    <string name="slider_increase">Aumentar</string>
+    <string name="slider_reset">Restablecer a <xliff:g id="value">%1$s</xliff:g></string>
+    <string name="search_apps">Buscar apps</string>
+    <string name="search_clear">Borrar búsqueda</string>
+    <string name="search_no_results">Ninguna app coincide con tu búsqueda</string>
+
+    <string name="section_display">Pantalla</string>
+    <string name="section_performance">Rendimiento</string>
+    <string name="section_battery_memory">Batería y memoria</string>
+    <string name="section_audio">Audio</string>
+    <string name="section_extras">Extras</string>
+    <string name="section_about">Acerca de</string>
+    <string name="quick_hbm">HBM</string>
+    <string name="quick_fps">FPS</string>
+    <string name="refresh_card_summary">60 / 120 Hz por app</string>
+    <string name="resolution_card_summary">Escala por app</string>
+    <string name="thermal_card_summary">Perfiles por app</string>
+    <string name="core_card_summary"><xliff:g id="online">%1$d</xliff:g> de <xliff:g id="total">%2$d</xliff:g> activos</string>
+    <string name="zram_card_summary"><xliff:g id="algorithm">%1$s</xliff:g>, swappiness <xliff:g id="swappiness">%2$d</xliff:g></string>
+    <string name="hbm_card_auto">HBM automático activado</string>
+    <string name="clear_speaker_card_summary">Expulsión de agua y polvo</string>
+    <string name="appearance_card_summary">Tema e idioma</string>
+    <string name="credits_card_summary">Las personas detrás</string>
+
+    <string name="refresh_title">Frecuencia de actualización</string>
+    <string name="refresh_note">Elige una frecuencia de actualización para cada app. Cambia automáticamente al abrir la app.</string>
+    <string name="refresh_default">Predeterminado</string>
+    <string name="refresh_standard">60 Hz</string>
+    <string name="refresh_extreme">120 Hz</string>
+    <string name="refresh_land">60 Hz en horizontal</string>
+
+    <string name="resolution_title">Resolución</string>
+    <string name="resolution_note">Elige una resolución para cada app. Se aplica cuando la app pasa al primer plano.</string>
+    <string name="resolution_default">Predeterminada</string>
+    <string name="resolution_720p">720p</string>
+    <string name="resolution_900p">900p</string>
+    <string name="resolution_1080p">1080p</string>
+    <string name="system_resolution_title">Resolución del sistema</string>
+    <string name="system_resolution_current">Resolución actual</string>
+    <string name="system_resolution_mode">Resolución</string>
+    <string name="system_resolution_note">Se aplica a todo el sistema. Las apps con su propia resolución la conservan. Las resoluciones más bajas ahorran energía.</string>
+
+    <string name="saturation_title">Saturación</string>
+    <string name="saturation_note">Ajusta la saturación de color de toda la pantalla. Se restaura tras cada reinicio.</string>
+    <string name="image_preview_content_description">Imagen de vista previa de la saturación</string>
+    <string name="preview_previous">Imagen anterior</string>
+    <string name="preview_next">Imagen siguiente</string>
+    <string name="tile_add">Añadir a ajustes rápidos</string>
+    <string name="tile_added">Icono añadido</string>
+    <string name="tile_not_added">Icono no añadido</string>
+    <string name="tile_already_added">El icono ya está añadido</string>
+
+
+    <string name="hbm_title">Brillo alto</string>
+    <string name="hbm_mode_title">Modo de brillo alto</string>
+    <string name="hbm_switch">Modo de brillo alto</string>
+    <string name="hbm_switch_summary">Brillo máximo del panel para luz solar directa</string>
+    <string name="hbm_not_supported">No compatible con el kernel en uso</string>
+    <string name="auto_hbm_switch">HBM automático</string>
+    <string name="auto_hbm_summary">Activa el brillo alto con luz intensa y lo desactiva en interiores</string>
+    <string name="auto_hbm_threshold">Umbral de luz</string>
+    <string name="auto_hbm_disable_time">Desactivar tras</string>
+    <string name="hbm_warning">Usar el modo de brillo alto durante mucho tiempo puede dañar la pantalla.</string>
+
+    <string name="thermal_title">Motor térmico</string>
+    <string name="thermal_note">Elige un perfil térmico para cada app. Cambia automáticamente al abrir la app.</string>
+    <string name="thermal_default">Sin optimización</string>
+    <string name="thermal_benchmark">Rendimiento</string>
+    <string name="thermal_browser">Navegador</string>
+    <string name="thermal_camera">Cámara</string>
+    <string name="thermal_dialer">Teléfono</string>
+    <string name="thermal_gaming">Juegos</string>
+    <string name="thermal_navigation">Navegación</string>
+    <string name="thermal_streaming">Streaming</string>
+    <string name="thermal_video">Vídeo</string>
+
+    <string name="kernel_manager_title">Gestor del kernel</string>
+    <string name="cpu_governor">Gobernador de CPU</string>
+    <string name="efficiency_cluster">Núcleos de eficiencia</string>
+    <string name="performance_cluster">Núcleos de rendimiento</string>
+    <string name="min_frequency">Frecuencia mínima</string>
+    <string name="max_frequency">Frecuencia máxima</string>
+    <string name="frequencies_unavailable">No se pueden leer las frecuencias de CPU en este kernel.</string>
+    <string name="kernel_manager_note">Los cambios se aplican al tocar Aplicar y se restauran tras reiniciar. Restablecer vuelve a walt y al rango completo de frecuencias.</string>
+
+    <string name="gpu_manager_title">Gestor de GPU</string>
+    <string name="gpu_model">GPU</string>
+    <string name="gpu_current_freq">Frecuencia</string>
+    <string name="gpu_busy">Carga</string>
+    <string name="gpu_temperature">Temperatura</string>
+    <string name="gpu_thermal_level">Nivel térmico</string>
+    <string name="gpu_level_value">Nivel <xliff:g id="level">%1$s</xliff:g></string>
+    <string name="gpu_governor">Gobernador de GPU</string>
+    <string name="gpu_power">Energía</string>
+    <string name="gpu_force_clk_on">Forzar reloj</string>
+    <string name="gpu_force_clk_on_summary">Mantener el reloj de la GPU activo en reposo</string>
+    <string name="gpu_force_bus_on">Forzar bus</string>
+    <string name="gpu_force_bus_on_summary">Mantener activo el bus de memoria de la GPU</string>
+    <string name="gpu_force_rail_on">Forzar línea de alimentación</string>
+    <string name="gpu_force_rail_on_summary">Mantener encendida la alimentación de la GPU</string>
+    <string name="gpu_force_no_nap">Sin reposo</string>
+    <string name="gpu_force_no_nap_summary">Evitar que la GPU repose entre fotogramas</string>
+    <string name="gpu_bus_split">División del bus</string>
+    <string name="gpu_bus_split_summary">Escalar el bus de memoria por separado del reloj de la GPU</string>
+    <string name="gpu_manager_note">Los interruptores de energía se aplican al instante. El gobernador y las frecuencias se aplican al tocar Aplicar. El rango de frecuencias se restaura tras reiniciar; el gobernador y los interruptores se restablecen.</string>
+
+    <string name="core_control_title">Control de núcleos</string>
+    <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
+    <string name="core_control_min_online">Al menos dos núcleos de eficiencia deben seguir activos</string>
+    <string name="core_control_note">Toca un núcleo para desactivarlo o volver a activarlo. Al menos dos de los núcleos 0 a 5 siempre siguen activos. Los núcleos vuelven tras reiniciar.</string>
+
+
+    <string name="zram_title">ZRAM</string>
+    <string name="zram_size_title">Tamaño</string>
+    <string name="zram_disabled">Desactivado</string>
+    <string name="zram_size_2gb">2 GB</string>
+    <string name="zram_size_4gb">4 GB</string>
+    <string name="zram_size_8gb">8 GB</string>
+    <string name="zram_size_dynamic">Automático</string>
+    <string name="zram_compression_title">Compresión</string>
+    <string name="swappiness_title">Swappiness</string>
+    <string name="zram_note">El tamaño y la compresión se aplican tras reiniciar. La swappiness se aplica al instante.</string>
+    <string name="zram_change_applied">Ajuste de ZRAM guardado</string>
+    <string name="zram_reboot_recommended">Reinicia el dispositivo para que este cambio surta efecto.</string>
+
+
+    <string name="clear_speaker_title">Limpiar altavoz</string>
+    <string name="clear_speaker_start">Iniciar limpieza</string>
+    <string name="clear_speaker_running">Limpiando, quedan <xliff:g id="seconds">%1$d</xliff:g> s</string>
+    <string name="clear_speaker_description">Reproduce un tono grave durante 30 segundos para expulsar agua y polvo del altavoz. Sube antes el volumen multimedia al máximo y quita los auriculares. Si el altavoz está muy obstruido, ejecútalo de 2 a 5 veces con el altavoz hacia abajo.</string>
+
+    <string name="fps_overlay_title">Contador de FPS</string>
+    <string name="fps_info_tile_label">Contador de FPS</string>
+    <string name="fps_overlay_switch">Mostrar fotogramas por segundo</string>
+    <string name="fps_overlay_note">Muestra la tasa de fotogramas de la pantalla en la esquina superior, actualizada cada segundo. También disponible como icono de ajustes rápidos.</string>
+    <string name="fps_overlay_not_supported">El contador de fotogramas no está disponible en el kernel en uso.</string>
+
+    <string name="useless_mode_title">Modo inútil</string>
+    <string name="useless_mode_switch">Activar modo inútil</string>
+    <string name="useless_mode_enabled_summary">El modo inútil está activado. Espera vibraciones y parpadeos aleatorios.</string>
+    <string name="useless_mode_disabled_summary">El modo inútil está desactivado. Tu dispositivo sigue aburridamente normal.</string>
+    <string name="useless_mode_warning">Vibraciones aleatorias, parpadeo de pantalla y sonidos. No sirve para nada, como prometimos.</string>
+    <string name="useless_mode_warning_title">Aviso del modo inútil</string>
+    <string name="useless_mode_status_title">Estado del modo inútil</string>
+    <string name="useless_mode_accept">Acepto la inutilidad</string>
+    <string name="useless_mode_cancel">Cancelar</string>
+    <string name="useless_mode_amazing">Increíble</string>
+
+    <string name="appearance_title">Apariencia</string>
+    <string name="appearance_colors">Colores</string>
+    <string name="colors_material_you">Material You</string>
+    <string name="colors_signature">Signature</string>
+    <string name="colors_material_you_summary">Los colores siguen tu fondo de pantalla.</string>
+    <string name="colors_signature_summary">Grafito con acento ámbar, igual en cualquier fondo.</string>
+    <string name="appearance_language">Idioma</string>
+    <string name="language_system">Predeterminado del sistema</string>
+
+    <string name="credits_title">Créditos</string>
+    <string name="credits_developed_by">Desarrollado y mantenido por</string>
+    <string name="credits_developer_summary">Creó este panel, rehizo gran parte de XiaomiParts y lo llevó a zeus.</string>
+    <string name="credits_built_by">Creado y rehecho por acerhizmq</string>
+    <string name="credits_work_dashboard">Panel de XiaomiParts, diseño y las 13 traducciones</string>
+    <string name="credits_work_fps">Port del indicador de FPS con rutas de pantalla y reglas de SELinux</string>
+    <string name="credits_work_hbm">HBM automático más robusto y correcciones de HBM</string>
+    <string name="credits_work_fixes">Correcciones del gestor de GPU, ajuste de ZRAM y fugas de memoria corregidas en todo parts</string>
+    <string name="credits_work_integration">Integración de KamisStuff y cada función adaptada a zeus</string>
+    <string name="credits_original_code">Código original de</string>
+    <string name="credits_source_kami">KamisStuff: control de núcleos, ZRAM, gestor de kernel y GPU, resolución y modo inútil</string>
+    <string name="credits_source_guidixx">Fuente del contador de FPS</string>
+    <string name="credits_projects">Proyectos</string>
+    <string name="credits_contributors">Colaboradores</string>
+
+    <string-array name="useless_warnings">
+        <item>¿Seguro que quieres activar esta función completamente inútil?</item>
+        <item>Aviso: esta acción no tendrá absolutamente ningún efecto en tu dispositivo.</item>
+        <item>Precaución: continuar no provocará absolutamente nada.</item>
+        <item>Alerta: este interruptor existe solo para entretener.</item>
+        <item>Nota: ningún electrón resultó herido al crear este interruptor.</item>
+        <item>Descargo: los expertos certifican este ajuste como 100% inútil.</item>
+        <item>Aviso: puede provocar ganas repentinas de activar más ajustes inútiles.</item>
+        <item>Alerta: puede causar vibraciones aleatorias y parpadeo de pantalla.</item>
+        <item>Precaución: los efectos secundarios incluyen zumbidos y parpadeos sin sentido.</item>
+    </string-array>
+
+    <string-array name="useless_messages">
+        <item>¡Enhorabuena! Has conseguido absolutamente nada.</item>
+        <item>Este interruptor es tan útil como una tetera de chocolate.</item>
+        <item>Acabas de perder 0,003 segundos de tu vida. ¿Valió la pena?</item>
+        <item>Dato curioso: usuarios confundidos han pulsado este botón 42 veces.</item>
+        <item>Aviso: el uso excesivo de este interruptor puede causar una leve confusión.</item>
+        <item>Este ajuste te lo trae el Departamento de Departamentos Redundantes.</item>
+        <item>Logro desbloqueado: Maestro de las Acciones Inútiles.</item>
+        <item>Error 404: funcionalidad no encontrada.</item>
+        <item>Este interruptor funciona exactamente como se pretendía, es decir, nada.</item>
+        <item>¡Bip bop! Los sonidos de robot hacen que todo parezca más importante.</item>
+        <item>Logro desbloqueado: Perdedor de Tiempo Profesional.</item>
+        <item>Esta función tiene el mismo efecto que gritarle a las nubes.</item>
+        <item>¡Enhorabuena! Tu nivel de inutilidad ha subido un 0%.</item>
+        <item>¡BZZZT! Tu teléfono ahora vibra sin motivo.</item>
+        <item>Parpadeo de pantalla activado, ¿por qué no?</item>
+        <item>Tu dispositivo está pasando por una leve crisis existencial.</item>
+    </string-array>
+
+    <!-- zeus -->
+    <string name="prime_cluster">Núcleo prime</string>
+    <string name="power_profile_title">Perfil de energía</string>
+    <string name="power_profile_mode">Perfil</string>
+    <string name="power_profile_note">Define el perfil térmico de todo el sistema. Las apps con su propio modo térmico lo mantienen mientras están abiertas. Ahorro de batería también activa el ahorro de batería de Android.</string>
+    <string name="power_profile_balance">Equilibrado</string>
+    <string name="power_profile_gaming">Juegos</string>
+    <string name="power_profile_performance">Rendimiento</string>
+    <string name="power_profile_battery_saver">Ahorro de batería</string>
+    <string name="perf_mode_title">Perfil de rendimiento activado</string>
+    <string name="perf_mode_notification">El teléfono funciona a máxima velocidad y puede calentarse más.</string>
+    <string name="gaming_mode_title">Perfil de juegos activado</string>
+    <string name="gaming_mode_notification">Se cerraron las apps en segundo plano para dar más espacio al juego.</string>
+    <string name="hypercharge_switch">Usar HyperCharge</string>
+    <string name="hypercharge_limit_title">Límite de potencia de carga</string>
+    <string name="hypercharge_note">Solo se aplica con un cargador HyperCharge. Con HyperCharge desactivado, la carga se limita a 33W. La protección térmica siempre está activa.</string>
+    <string name="hypercharge_unsupported">El kernel actual no lo admite.</string>
+    <string name="hypercharge_limit_120w">120W (sin límite)</string>
+    <string name="hypercharge_limit_90w">90W (rápida)</string>
+    <string name="hypercharge_limit_67w">67W (equilibrada)</string>
+    <string name="hypercharge_limit_50w">50W (fresca)</string>
+    <string name="hypercharge_limit_33w">33W (cuida la batería)</string>
+    <string name="hypercharge_limit_30w">30W (lenta)</string>
+    <string name="quick_auto_hbm">HBM auto</string>
+    <string name="made_for_device">Hecho para %1$s por acerhizmq</string>
+    <string name="credits_work_zeus">Port a zeus: HBM con mi_disp, clústeres de CPU SM8450, controles de ZRAM y reglas de SELinux</string>
+    <string name="credits_work_power">Perfiles de energía unidos al térmico por app para que ambos funcionen juntos</string>
+    <string name="credits_source_joshaby">Árbol de dispositivo sm8450, kernel y la lógica de perfiles de energía y térmica</string>
+    <string name="credits_source_hypercharge">Límites de carga de HyperCharge</string>
+
+    <!-- zeus -->
+    <string name="aux_camera_title">Cámaras auxiliares</string>
+    <string name="aux_camera_enable">Restringir cámaras auxiliares</string>
+    <string name="aux_camera_note">Las apps seleccionadas solo ven la cámara principal y la frontal, lo que arregla apps que eligen la lente equivocada. Vuelve a abrir la app tras cambiarlo.</string>
+    <string name="aux_camera_limit_reached">Demasiadas apps seleccionadas. Desactiva otra primero.</string>
+
+    <!-- zeus -->
+    <string name="charge_boost_title">Impulso de carga rápida</string>
+    <string name="charge_boost_summary">Carga por cable más rápida, como en HyperOS. El teléfono puede calentarse más al cargar.</string>
+    <string name="reverse_charge_title">Carga inversa</string>
+    <string name="reverse_charge_switch">Carga inalámbrica inversa</string>
+    <string name="reverse_charge_limit_title">Detener en este nivel de batería</string>
+    <string name="reverse_charge_note">Coloca el otro dispositivo en la parte trasera del teléfono. La carga inversa se detiene cuando la batería baja del nivel elegido o cuando este teléfono empieza a cargarse de forma inalámbrica. Con un cargador por cable conectado, sigue activa.</string>
+    <string name="reverse_charge_card_summary">Desactivada, límite %1$d %%</string>
+    <string name="reverse_charge_blocked_wireless">No disponible mientras este teléfono se carga de forma inalámbrica</string>
+    <string name="reverse_charge_blocked_low">La batería está por debajo del %1$d %%</string>
+    <string name="reverse_charge_stopped_title">Carga inversa detenida</string>
+    <string name="reverse_charge_stopped_limit">La batería bajó del %1$d %%.</string>
+    <string name="reverse_charge_stopped_wireless">Este teléfono empezó a cargarse de forma inalámbrica.</string>
+    <string name="misound_switch">Usar MiSound</string>
+    <string name="misound_card_dolby">Desactivado, Dolby activado</string>
+    <string name="misound_scenario_title">Escenario</string>
+    <string name="misound_scenario_smart">Inteligente</string>
+    <string name="misound_scenario_music">Música</string>
+    <string name="misound_scenario_video">Vídeo</string>
+    <string name="misound_scenario_vocal">Voz</string>
+    <string name="misound_headset_title">Tipo de auriculares</string>
+    <string name="misound_headset_general">Auriculares generales</string>
+    <string name="misound_headset_inear">Auriculares intraurales</string>
+    <string name="misound_3d_title">Sonido envolvente 3D</string>
+    <string name="misound_3d_summary">Solo con auriculares</string>
+    <string name="misound_dolby_on">Dolby está activado. MiSound y Dolby no pueden funcionar a la vez, desactiva Dolby primero.</string>
+    <string name="misound_open_dolby">Abrir Dolby</string>
+    <string name="misound_note">El escenario también se aplica al altavoz. El tipo de auriculares, el sonido envolvente 3D y el ecualizador solo se aplican con auriculares conectados.</string>
+    <string name="misound_unsupported">Este dispositivo no tiene el efecto MiSound.</string>
+    <string name="misound_eq_title">Ecualizador</string>
+    <string name="misound_eq_preset">Ajuste predefinido</string>
+    <string name="misound_eq_band">Banda <xliff:g id="band">%1$d</xliff:g></string>
+    <string name="misound_eq_custom">Personalizado</string>
+    <string name="misound_eq_rock">Rock</string>
+    <string name="misound_eq_jazz">Jazz</string>
+    <string name="misound_eq_pop">Pop</string>
+    <string name="misound_eq_classical">Clásica</string>
+    <string name="misound_eq_hiphop">Hip hop</string>
+    <string name="misound_eq_blues">Blues</string>
+    <string name="misound_eq_electronic">Electrónica</string>
+    <string name="misound_eq_metal">Metal</string>
+</resources>

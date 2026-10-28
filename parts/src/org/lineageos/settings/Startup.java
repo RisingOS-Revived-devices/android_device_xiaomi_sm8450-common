@@ -22,10 +22,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import org.lineageos.settings.Constants;
-import org.lineageos.settings.saturation.SaturationFragment;
-import org.lineageos.settings.utils.ComponentUtils;
-import org.lineageos.settings.utils.FileUtils;
 import org.lineageos.settings.saturation.SaturationUtils;
 
 public class Startup extends BroadcastReceiver {
@@ -39,12 +35,11 @@ public class Startup extends BroadcastReceiver {
 
         if (Intent.ACTION_BOOT_COMPLETED.equals(action) ||
             Intent.ACTION_REBOOT.equals(action)) {
-
-            // Adding a delay before applying the saturation
+            // SurfaceFlinger needs a moment after boot before it accepts the transaction.
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 Log.d(TAG, "Applying saved saturation setting...");
                 SaturationUtils.restore(context);
-            }, 5000); // Delay of 5 seconds
+            }, 5000);
         }
     }
 }

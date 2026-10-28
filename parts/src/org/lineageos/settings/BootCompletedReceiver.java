@@ -18,111 +18,61 @@
 package org.lineageos.settings;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.ContentObserver;
 import android.hardware.display.DisplayManager;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.UserHandle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.Display.HdrCapabilities;
-import android.content.SharedPreferences;
-import androidx.preference.PreferenceManager;
 
 import org.lineageos.settings.auxcamera.AuxCameraUtils;
+import org.lineageos.settings.charge.ChargeUtils;
+import org.lineageos.settings.hypercharge.HyperChargeUtils;
+import org.lineageos.settings.misound.MiSoundUtils;
+import org.lineageos.settings.refreshrate.RefreshUtils;
+import org.lineageos.settings.resolution.ResolutionUtils;
 import org.lineageos.settings.thermal.ThermalUtils;
-import org.lineageos.settings.powertools.PowerProfileTileService;
-import org.lineageos.settings.hypercharge.HyperChargeService;
-import org.lineageos.settings.Constants;
+import org.lineageos.settings.utils.FileUtils;
+
 public class BootCompletedReceiver extends BroadcastReceiver {
     private static final boolean DEBUG = false;
     private static final String TAG = "XiaomiParts";
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (DEBUG) Log.i(TAG, "Received intent: " + intent.getAction());
-        switch (intent.getAction()) {
-            case Intent.ACTION_LOCKED_BOOT_COMPLETED:
-                handleLockedBootCompleted(context);
-                break;
-            case Intent.ACTION_BOOT_COMPLETED:
-                handleBootCompleted(context);
-                break;
-        }
+        if (DEBUG)
+            Log.d(TAG, "Received boot completed intent");
 
-        PreferenceManager.setDefaultValues(context, R.xml.hypercharge_settings, false);
-
-        try {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean isHyperChargeEnabled = prefs.getBoolean(Constants.KEY_HYPERCHARGE_STATUS, true);
-
-            // Note: We use a try-catch here as well just in case boot happens before UI sanitization
-            String currentLimit;
-            try {
-                currentLimit = prefs.getString(Constants.KEY_HYPERCHARGE_LIMIT, Constants.CHARGE_LIMIT_120W);
-            } catch (ClassCastException e) {
-                currentLimit = Constants.CHARGE_LIMIT_120W;
+        // Each step on its own, so a feature this device lacks can't skip the rest.
+        restore("thermal profiles", () -> ThermalUtils.startService(context));
+        restore("refresh rate", () -> RefreshUtils.startService(context));
+        restore("HDR types", () -> overrideHdrTypes(context));
+        restore("per-app resolution", () -> ResolutionUtils.startService(context));
+        restore("auto HBM", () -> FileUtils.enableService(context));
+        restore("aux camera restrictions", () -> AuxCameraUtils.INSTANCE.restore(context));
+        restore("HyperCharge", () -> HyperChargeUtils.update(context));
+        // Wired boost and the reverse charging limit
+        restore("charge service", () -> ChargeUtils.startService(context));
+        // MiSound: the persistent process owns the effect and restores its settings
+        restore("MiSound", () -> {
+            if (MiSoundUtils.isSupported()) {
+                MiSoundUtils.getInstance(context);
             }
-
-            if (!isHyperChargeEnabled || !Constants.CHARGE_LIMIT_120W.equals(currentLimit)) {
-                context.startService(new Intent(context, HyperChargeService.class));
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to start HyperChargeService on boot", e);
-        }
+        });
     }
 
-    private void handleLockedBootCompleted(Context context) {
-        if (DEBUG) Log.i(TAG, "Handling locked boot completed.");
+    private static void restore(String what, Runnable step) {
         try {
-            // Start necessary services
-            startServices(context);
-
-            // Override HDR types
-            overrideHdrTypes(context);
-
+            step.run();
         } catch (Exception e) {
-            Log.e(TAG, "Error during locked boot completed processing", e);
+            Log.e(TAG, "Failed to restore " + what + " on boot", e);
         }
     }
 
-    private void handleBootCompleted(Context context) {
-        if (DEBUG) Log.i(TAG, "Handling boot completed.");
-        // Add additional boot-completed actions if needed
-    }
-
-    private void startServices(Context context) {
-        if (DEBUG) Log.i(TAG, "Starting services...");
-
-        // Start Thermal Management Services
-        ThermalUtils.getInstance(context).startService();
-
-        // Start Power Profile Tile Service
-        context.startServiceAsUser(new Intent(context, PowerProfileTileService.class), UserHandle.CURRENT);
-    
-        // Restore aux camera restrictions
-        AuxCameraUtils.INSTANCE.restore(context);
-    }
-
-    private void overrideHdrTypes(Context context) {
-        try {
-            final DisplayManager dm = context.getSystemService(DisplayManager.class);
-            if (dm != null) {
-                dm.overrideHdrTypes(Display.DEFAULT_DISPLAY, new int[]{
-                        HdrCapabilities.HDR_TYPE_DOLBY_VISION,
-                        HdrCapabilities.HDR_TYPE_HDR10,
-                        HdrCapabilities.HDR_TYPE_HLG,
-                        HdrCapabilities.HDR_TYPE_HDR10_PLUS
-                });
-                if (DEBUG) Log.i(TAG, "HDR types overridden successfully.");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error overriding HDR types", e);
-        }
+    private static void overrideHdrTypes(Context context) {
+        final DisplayManager dm = context.getSystemService(DisplayManager.class);
+        dm.overrideHdrTypes(Display.DEFAULT_DISPLAY, new int[]{
+                HdrCapabilities.HDR_TYPE_DOLBY_VISION, HdrCapabilities.HDR_TYPE_HDR10,
+                HdrCapabilities.HDR_TYPE_HLG, HdrCapabilities.HDR_TYPE_HDR10_PLUS});
     }
 }

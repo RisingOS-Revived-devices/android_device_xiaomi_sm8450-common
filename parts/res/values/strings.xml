@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2020 The LineageOS Project
+     Copyright (C) 2015-2016 The CyanogenMod Project
+                   2017-2023 The LineageOS Project
+                   2026 acerhizmq
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,23 +18,101 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- Xiaomi Settings -->
+    <!-- App -->
+    <string name="app_name" translatable="false">XiaomiParts</string>
     <string name="app_title">Xiaomi Settings</string>
-    <string name="tile_add">Add tile</string>
+    <string name="settings_entry_summary">Display, performance, battery, and audio tweaks</string>
+    <string name="device_prompt" translatable="false">root@<xliff:g id="codename">%1$s</xliff:g>:~#</string>
+    <string name="device_details">device: <xliff:g id="codename">%1$s</xliff:g> · Android <xliff:g id="android">%2$s</xliff:g> · kernel <xliff:g id="kernel">%3$s</xliff:g></string>
+    <string name="navigate_up">Back</string>
+
+    <!-- Common -->
+    <string name="state_on">On</string>
+    <string name="state_off">Off</string>
+    <string name="state_not_supported">Not supported</string>
+    <string name="value_unknown">Unknown</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_reset">Reset</string>
+    <string name="settings_applied">Settings applied</string>
+    <string name="settings_reset">Settings reset to defaults</string>
+    <string name="percent_value"><xliff:g id="value">%1$d</xliff:g> %%</string>
+    <string name="lux_value"><xliff:g id="value">%1$s</xliff:g> lux</string>
+    <string name="seconds_value"><xliff:g id="value">%1$d</xliff:g> s</string>
+    <string name="celsius_value"><xliff:g id="value">%1$s</xliff:g> °C</string>
+    <string name="slider_decrease">Decrease</string>
+    <string name="slider_increase">Increase</string>
+    <string name="slider_reset">Reset to <xliff:g id="value">%1$s</xliff:g></string>
+    <string name="search_apps">Search apps</string>
+    <string name="search_clear">Clear search</string>
+    <string name="search_no_results">No apps match your search</string>
+
+    <!-- Dashboard -->
+    <string name="section_display">Display</string>
+    <string name="section_performance">Performance</string>
+    <string name="section_battery_memory">Battery and memory</string>
+    <string name="section_audio">Audio</string>
+    <string name="section_extras">Extras</string>
+    <string name="section_about">About</string>
+    <string name="quick_hbm">HBM</string>
+    <string name="quick_fps">FPS</string>
+    <string name="refresh_card_summary">Per-app 60 / 120 Hz</string>
+    <string name="resolution_card_summary">Per-app scaling</string>
+    <string name="thermal_card_summary">Per-app profiles</string>
+    <string name="core_card_summary"><xliff:g id="online">%1$d</xliff:g> of <xliff:g id="total">%2$d</xliff:g> online</string>
+    <string name="zram_card_summary"><xliff:g id="algorithm">%1$s</xliff:g>, swappiness <xliff:g id="swappiness">%2$d</xliff:g></string>
+    <string name="hbm_card_auto">Auto HBM on</string>
+    <string name="clear_speaker_card_summary">Water and dust ejection</string>
+    <string name="appearance_card_summary">Theme and language</string>
+    <string name="credits_card_summary">The people behind it</string>
+
+    <!-- Refresh rate -->
+    <string name="refresh_title">Refresh rate</string>
+    <string name="refresh_note">Pick a refresh rate for each app. It switches automatically when the app opens.</string>
+    <string name="refresh_default">Default</string>
+    <string name="refresh_standard">60 Hz</string>
+    <string name="refresh_extreme">120 Hz</string>
+    <string name="refresh_land">60 Hz in landscape</string>
+
+    <!-- Resolution -->
+    <string name="resolution_title">Resolution</string>
+    <string name="resolution_note">Pick a resolution for each app. It applies when the app comes to the foreground.</string>
+    <string name="resolution_default">Default</string>
+    <string name="resolution_720p">720p</string>
+    <string name="resolution_900p">900p</string>
+    <string name="resolution_1080p">1080p</string>
+    <string name="system_resolution_title">System resolution</string>
+    <string name="system_resolution_current">Current resolution</string>
+    <string name="system_resolution_mode">Resolution</string>
+    <string name="system_resolution_note">Applies to the whole system. Apps set to their own resolution keep it. Lower resolutions save power.</string>
+
+    <!-- Saturation -->
+    <string name="saturation_title">Saturation</string>
+    <string name="saturation_note">Adjusts color saturation across the whole display. It\'s restored after every reboot.</string>
+    <string name="image_preview_content_description">Saturation preview image</string>
+    <string name="preview_previous">Previous image</string>
+    <string name="preview_next">Next image</string>
+    <string name="tile_add">Add to quick settings</string>
     <string name="tile_added">Tile added</string>
     <string name="tile_not_added">Tile not added</string>
     <string name="tile_already_added">Tile already added</string>
-    <string name="tile_on">On</string>
-    <string name="tile_off">Off</string>
- 
-    <!-- Thermal Profiles -->
-    <string name="thermal_title">Thermal profiles</string>
-    <string name="thermal_enable">Use thermal profiles</string>
-    <string name="thermal_summary">Per-app thermal profile configuration</string>
-    <string name="thermal_apps_title">Apps</string>
-    <string name="thermal_loading">Loading...</string>
-    <string name="thermal_default">Default</string>
-    <string name="thermal_benchmark">Benchmark</string>
+
+    <!-- High brightness -->
+    <string name="hbm_title">High brightness</string>
+    <string name="hbm_mode_title">High brightness mode</string>
+    <string name="hbm_switch">High brightness mode</string>
+    <string name="hbm_switch_summary">Maximum panel brightness for direct sunlight</string>
+    <string name="hbm_not_supported">Not supported by the running kernel</string>
+    <string name="auto_hbm_switch">Auto HBM</string>
+    <string name="auto_hbm_summary">Turns high brightness on in bright light and off again indoors</string>
+    <string name="auto_hbm_threshold">Light threshold</string>
+    <string name="auto_hbm_disable_time">Turn off after</string>
+    <string name="hbm_warning">Using high brightness mode for a long time can damage the display.</string>
+
+    <!-- Thermal -->
+    <string name="thermal_title">Thermal engine</string>
+    <string name="thermal_note">Pick a thermal profile for each app. It switches automatically when the app opens.</string>
+    <string name="thermal_default">No optimization</string>
+    <string name="thermal_benchmark">Performance</string>
     <string name="thermal_browser">Browser</string>
     <string name="thermal_camera">Camera</string>
     <string name="thermal_dialer">Dialer</string>
@@ -40,74 +120,193 @@
     <string name="thermal_navigation">Navigation</string>
     <string name="thermal_streaming">Streaming</string>
     <string name="thermal_video">Video</string>
-    <string name="thermal_reset">Reset to defaults</string>
-    <string name="thermal_reset_message">Are you sure you want to reset thermal profile for all apps?</string>
 
-    <!-- Clear Speaker -->
-   <string name="clear_speaker_title">Clear speaker</string>
-   <string name="clear_speaker_summary">Play a 30-second audio to clear the speaker</string>
-   <string name="clear_speaker_description">Run this feature once or twice if you find that your speaker is lightly blocked by dust. Set media volume to maximum.\n\nIf the speaker is blocked heavily, run this feature 2-5 times while shaking your device with the speaker facing downwards.</string>
+    <!-- Kernel manager -->
+    <string name="kernel_manager_title">Kernel manager</string>
+    <string name="cpu_governor">CPU governor</string>
+    <string name="efficiency_cluster">Efficiency cores</string>
+    <string name="performance_cluster">Performance cores</string>
+    <string name="min_frequency">Minimum frequency</string>
+    <string name="max_frequency">Maximum frequency</string>
+    <string name="frequencies_unavailable">CPU frequencies can\'t be read on this kernel.</string>
+    <string name="kernel_manager_note">Changes apply when you tap Apply and are restored after a reboot. Reset goes back to walt and the full frequency range.</string>
 
-    <!-- Saturation -->
-    <string name="saturation_title">Display Saturation</string>
-    <string name="saturation_reset">Reset to default</string>
-    <string name="saturation_summary">Control the saturation level of the display</string>
-    <string name="saturation_footer_summary">Changing the color mode in display settings will override the saturation level, requiring it to be reapplied.</string>
+    <!-- GPU manager -->
+    <string name="gpu_manager_title">GPU manager</string>
+    <string name="gpu_model">GPU</string>
+    <string name="gpu_current_freq">Frequency</string>
+    <string name="gpu_busy">Load</string>
+    <string name="gpu_temperature">Temperature</string>
+    <string name="gpu_thermal_level">Thermal level</string>
+    <string name="gpu_level_value">Level <xliff:g id="level">%1$s</xliff:g></string>
+    <string name="gpu_governor">GPU governor</string>
+    <string name="gpu_power">Power</string>
+    <string name="gpu_force_clk_on">Force clock on</string>
+    <string name="gpu_force_clk_on_summary">Keep the GPU clock running when idle</string>
+    <string name="gpu_force_bus_on">Force bus on</string>
+    <string name="gpu_force_bus_on_summary">Keep the GPU memory bus active</string>
+    <string name="gpu_force_rail_on">Force rail on</string>
+    <string name="gpu_force_rail_on_summary">Keep the GPU power rail on</string>
+    <string name="gpu_force_no_nap">No nap</string>
+    <string name="gpu_force_no_nap_summary">Prevent the GPU from napping between frames</string>
+    <string name="gpu_bus_split">Bus split</string>
+    <string name="gpu_bus_split_summary">Scale the memory bus separately from the GPU clock</string>
+    <string name="gpu_manager_note">Power switches apply right away. Governor and frequencies apply when you tap Apply. The frequency range is restored after a reboot; governor and power switches reset.</string>
 
-    <!-- Image preview -->
-    <string name="image_preview_content_description">Preview</string>
-    <string name="image_preview_next_page_content_description">Next</string>
-    <string name="image_preview_previous_page_content_description">Previous</string>
+    <!-- Core control -->
+    <string name="core_control_title">Core control</string>
+    <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
+    <string name="core_control_min_online">At least two efficiency cores must stay online</string>
+    <string name="core_control_note">Tap a core to take it offline or bring it back. At least two of cores 0 to 5 always stay online. Cores come back after a reboot.</string>
 
-    <!-- Custom seekbar -->
-    <string name="custom_seekbar_value">Value: <xliff:g id="v">%s</xliff:g></string>
-    <string name="custom_seekbar_default_value">by default</string>
-    <string name="custom_seekbar_default_value_to_set">Default value: <xliff:g id="v">%s</xliff:g>\nLong tap to set</string>
-    <string name="custom_seekbar_default_value_is_set">Default value is set</string>
+    <!-- ZRAM -->
+    <string name="zram_title">ZRAM</string>
+    <string name="zram_size_title">Size</string>
+    <string name="zram_disabled">Off</string>
+    <string name="zram_size_2gb">2 GB</string>
+    <string name="zram_size_4gb">4 GB</string>
+    <string name="zram_size_8gb">8 GB</string>
+    <string name="zram_size_dynamic">Auto</string>
+    <string name="zram_compression_title">Compression</string>
+    <string name="swappiness_title">Swappiness</string>
+    <string name="zram_note">Size and compression apply after a reboot. Swappiness applies right away.</string>
+    <string name="zram_change_applied">ZRAM setting saved</string>
+    <string name="zram_reboot_recommended">Reboot your device for this change to take effect.</string>
 
-    <!-- Power Profile Strings -->
-    <string name="powerprofile_tile_label">Power Profile</string>
-    <string name="powerprofile_mode_balance">Balanced</string>
-    <string name="powerprofile_mode_performance">Performance</string>
-    <string name="powerprofile_mode_battery_saver">Battery Saver</string>
-    <string name="powerprofile_mode_gaming">Gaming</string>
-    <string name="powerprofile_mode_unknown">Unknown Mode</string>
-    <string name="powerprofile_tile_disabled_subtitle">Disabled (Per-app thermal profiles enabled)</string>
-    <string name="perf_mode_title">High Performance Mode</string>
-    <string name="perf_mode_notification">High Performance Mode is now activated for enhanced performance.</string>
-    <string name="gaming_mode_title">Game Boost</string>
-    <string name="gaming_mode_notification">Game Boost Mode is now activated for optimal gaming performance.</string>
-    <string name="power_profile_footer_summary">Note: Higher frequencies (e.g., GPU over 900MHz and prime core higher clock) are available only in Game Boost mode.</string>
+    <!-- Headphone model names stay in English. -->
 
-    <!-- Powertools Main Title -->
-    <string name="Powertools_title">Powertools</string>
-    <string name="Powertools_summary">Customize power profiles, CPU/GPU frequencies, and governor settings for optimized performance and efficiency</string>
+    <!-- Clear speaker -->
+    <string name="clear_speaker_title">Clear speaker</string>
+    <string name="clear_speaker_start">Start cleaning</string>
+    <string name="clear_speaker_running">Cleaning, <xliff:g id="seconds">%1$d</xliff:g> s left</string>
+    <string name="clear_speaker_description">Plays a low tone for 30 seconds to push water and dust out of the speaker. Set media volume to maximum and remove headphones first. If the speaker is heavily blocked, run it 2 to 5 times with the speaker facing down.</string>
 
-    <!-- GPU Strings -->
-    <string name="gpu_min_frequency">GPU Minimum Frequency</string>
-    <string name="gpu_max_frequency">GPU Maximum Frequency</string>
+    <!-- FPS overlay -->
+    <string name="fps_overlay_title">FPS overlay</string>
+    <string name="fps_info_tile_label">FPS overlay</string>
+    <string name="fps_overlay_switch">Show frame rate</string>
+    <string name="fps_overlay_note">Shows the display frame rate in the top corner, updated every second. Also available as a quick settings tile.</string>
+    <string name="fps_overlay_not_supported">The frame counter isn\'t available on the running kernel.</string>
 
-    <!-- HyperCharge Strings -->
-    <string name="hypercharge_title">120W HyperCharge</string>
-    <string name="hypercharge_tile_label">HyperCharge</string>
-    <string name="hypercharge_main_switch_title">Enable 120W HyperCharge</string>
-    <string name="hypercharge_settings_category">Charging Configuration</string>
-    <string name="hypercharge_limit_title">Charging Speed Limit</string>
+    <!-- Useless mode -->
+    <string name="useless_mode_title">Useless mode</string>
+    <string name="useless_mode_switch">Enable useless mode</string>
+    <string name="useless_mode_enabled_summary">Useless mode is on. Expect random buzzing and flickering.</string>
+    <string name="useless_mode_disabled_summary">Useless mode is off. Your device stays boringly normal.</string>
+    <string name="useless_mode_warning">Random vibrations, screen flicker, and sounds. It does nothing useful, as promised.</string>
+    <string name="useless_mode_warning_title">Useless mode warning</string>
+    <string name="useless_mode_status_title">Useless mode status</string>
+    <string name="useless_mode_accept">I accept the uselessness</string>
+    <string name="useless_mode_cancel">Cancel</string>
+    <string name="useless_mode_amazing">Amazing</string>
 
-    <!-- HyperCharge QS Tile speed subtitles -->
-    <string name="hypercharge_speed_120w">120W</string>
-    <string name="hypercharge_speed_90w">90W</string>
-    <string name="hypercharge_speed_67w">67W</string>
-    <string name="hypercharge_speed_50w">50W</string>
-    <string name="hypercharge_speed_33w">33W</string>
-    <string name="hypercharge_speed_30w">30W</string>
-    
-    <string name="hypercharge_description_title">About HyperCharge Control</string>
-    <string name="hypercharge_description_summary">HyperCharge (120W) provides extreme charging speeds but generates significant heat, which can accelerate battery wear and reduce long-term lifespan. \n\n• ON (120W): Service is stopped — the kernel controls charging at full factory speed.\n• ON (other speed): Service enforces your selected speed limit.\n• OFF: Service runs and enforces a 33W protection limit to reduce battery wear and heat.\n\nNote: This service only intervenes when a Xiaomi HyperCharge power brick is detected.</string>
-    <!-- Aux Camera -->
-    <string name="aux_camera_title">Restrict Auxiliary Cameras</string>
-    <string name="aux_camera_summary">Hide auxiliary camera lenses from selected apps</string>
-    <string name="aux_camera_enable">Enable restrictions</string>
-    <string name="aux_camera_empty">No apps found</string>
-    <string name="aux_camera_limit_reached">Too many apps selected, turn another one off first</string>
+    <!-- Appearance -->
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_colors">Colors</string>
+    <string name="colors_material_you">Material You</string>
+    <string name="colors_signature">Signature</string>
+    <string name="colors_material_you_summary">Colors follow your wallpaper.</string>
+    <string name="colors_signature_summary">Graphite with an amber accent, the same on every wallpaper.</string>
+    <string name="appearance_language">Language</string>
+    <string name="language_system">System default</string>
+
+    <!-- Credits -->
+    <string name="credits_title">Credits</string>
+    <string name="credits_developed_by">Developed and maintained by</string>
+    <string name="credits_developer_summary">Built this dashboard, reworked most of XiaomiParts and brought it to zeus.</string>
+    <string name="credits_github" translatable="false">GitHub</string>
+    <string name="credits_telegram" translatable="false">Telegram</string>
+    <string name="credits_built_by">Built and reworked by acerhizmq</string>
+    <string name="credits_work_dashboard">XiaomiParts dashboard, design, and all 13 translations</string>
+    <string name="credits_work_fps">FPS overlay port with display paths and SELinux rules</string>
+    <string name="credits_work_hbm">Auto HBM hardening and HBM fixes</string>
+    <string name="credits_work_fixes">GPU manager fixes, ZRAM tuning, and memory leak fixes across parts</string>
+    <string name="credits_work_integration">KamisStuff integration and every feature adapted to zeus</string>
+    <string name="credits_original_code">Original code from</string>
+    <string name="credits_source_kami">KamisStuff: core control, ZRAM, kernel and GPU manager, resolution, and useless mode</string>
+    <string name="credits_source_guidixx">FPS overlay source</string>
+    <string name="credits_projects">Projects</string>
+    <string name="credits_contributors">Contributors</string>
+
+    <!-- zeus -->
+    <string name="prime_cluster">Prime core</string>
+    <string name="power_profile_title">Power profile</string>
+    <string name="power_profile_mode">Profile</string>
+    <string name="power_profile_note">Sets the thermal profile for the whole system. Apps with their own thermal mode keep it while they are open. Battery saver also turns on Android\'s battery saver.</string>
+    <string name="power_profile_balance">Balanced</string>
+    <string name="power_profile_gaming">Gaming</string>
+    <string name="power_profile_performance">Performance</string>
+    <string name="power_profile_battery_saver">Battery saver</string>
+    <string name="perf_mode_title">Performance profile on</string>
+    <string name="perf_mode_notification">The phone runs at full speed and may get warmer.</string>
+    <string name="gaming_mode_title">Gaming profile on</string>
+    <string name="gaming_mode_notification">Background apps were closed to give the game more room.</string>
+    <string name="hypercharge_switch">Use HyperCharge</string>
+    <string name="hypercharge_limit_title">Charging power limit</string>
+    <string name="hypercharge_note">Applies only with a HyperCharge charger. With HyperCharge off, charging is capped at 33W. Thermal protection always applies.</string>
+    <string name="hypercharge_unsupported">Not supported by the running kernel.</string>
+    <string name="hypercharge_limit_120w">120W (unlimited)</string>
+    <string name="hypercharge_limit_90w">90W (fast)</string>
+    <string name="hypercharge_limit_67w">67W (balanced)</string>
+    <string name="hypercharge_limit_50w">50W (cool)</string>
+    <string name="hypercharge_limit_33w">33W (battery saver)</string>
+    <string name="hypercharge_limit_30w">30W (slow)</string>
+    <string name="quick_auto_hbm">Auto HBM</string>
+    <string name="made_for_device">Made for %1$s by acerhizmq</string>
+    <string name="credits_work_zeus">zeus port: mi_disp HBM, SM8450 CPU clusters, ZRAM controls, and SELinux rules</string>
+    <string name="credits_work_power">Power profiles merged with per-app thermal so both work together</string>
+    <string name="credits_source_joshaby">sm8450 device tree, kernel, and the power profile and thermal logic</string>
+    <string name="credits_source_hypercharge">HyperCharge charging limits</string>
+    <string name="hypercharge_title" translatable="false">HyperCharge</string>
+    <string name="quick_hypercharge" translatable="false">HyperCharge</string>
+
+    <!-- zeus -->
+    <string name="aux_camera_title">Auxiliary cameras</string>
+    <string name="aux_camera_enable">Restrict auxiliary cameras</string>
+    <string name="aux_camera_note">Selected apps only see the main and front cameras, which fixes apps that pick the wrong lens. Reopen an app after changing it.</string>
+    <string name="aux_camera_limit_reached">Too many apps selected. Turn another one off first.</string>
+
+    <!-- zeus -->
+    <string name="charge_boost_title">Fast charge boost</string>
+    <string name="charge_boost_summary">Faster wired charging, as in HyperOS. The phone may get warmer while charging.</string>
+    <string name="reverse_charge_title">Reverse charging</string>
+    <string name="reverse_charge_switch">Reverse wireless charging</string>
+    <string name="reverse_charge_limit_title">Stop at battery level</string>
+    <string name="reverse_charge_note">Place the other device on the back of the phone. Reverse charging stops when the battery falls below the chosen level or when this phone starts charging wirelessly. With a wired charger plugged in, it keeps running.</string>
+    <string name="reverse_charge_card_summary">Off, limit %1$d %%</string>
+    <string name="reverse_charge_blocked_wireless">Not available while this phone charges wirelessly</string>
+    <string name="reverse_charge_blocked_low">Battery is below %1$d %%</string>
+    <string name="reverse_charge_stopped_title">Reverse charging stopped</string>
+    <string name="reverse_charge_stopped_limit">Battery fell below %1$d %%.</string>
+    <string name="reverse_charge_stopped_wireless">This phone started charging wirelessly.</string>
+    <string name="misound_title" translatable="false">MiSound</string>
+    <string name="misound_switch">Use MiSound</string>
+    <string name="misound_card_dolby">Off, Dolby is on</string>
+    <string name="misound_scenario_title">Scenario</string>
+    <string name="misound_scenario_smart">Smart</string>
+    <string name="misound_scenario_music">Music</string>
+    <string name="misound_scenario_video">Video</string>
+    <string name="misound_scenario_vocal">Voice</string>
+    <string name="misound_headset_title">Headphone type</string>
+    <string name="misound_headset_general">General headphones</string>
+    <string name="misound_headset_inear">In-ear headphones</string>
+    <string name="misound_3d_title">3D surround</string>
+    <string name="misound_3d_summary">Headphones only</string>
+    <string name="misound_dolby_on">Dolby is on. MiSound and Dolby can\'t run together, so turn Dolby off first.</string>
+    <string name="misound_open_dolby">Open Dolby</string>
+    <string name="misound_note">Scenario also applies to the speaker. Headphone type, 3D surround and the equalizer only apply while headphones are connected.</string>
+    <string name="misound_unsupported">This device has no MiSound effect.</string>
+    <string name="misound_eq_percent" translatable="false">%1$d %%</string>
+    <string name="misound_eq_title">Equalizer</string>
+    <string name="misound_eq_preset">Preset</string>
+    <string name="misound_eq_band">Band <xliff:g id="band">%1$d</xliff:g></string>
+    <string name="misound_eq_custom">Custom</string>
+    <string name="misound_eq_rock">Rock</string>
+    <string name="misound_eq_jazz">Jazz</string>
+    <string name="misound_eq_pop">Pop</string>
+    <string name="misound_eq_classical">Classical</string>
+    <string name="misound_eq_hiphop">Hip hop</string>
+    <string name="misound_eq_blues">Blues</string>
+    <string name="misound_eq_electronic">Electronic</string>
+    <string name="misound_eq_metal">Metal</string>
 </resources>

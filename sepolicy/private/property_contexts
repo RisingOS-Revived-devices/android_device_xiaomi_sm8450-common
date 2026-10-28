@@ -9,6 +9,8 @@ settingsdebug.instant.packages u:object_r:settingslib_prop:s0
 sys.perf_mode_active                             u:object_r:exported_system_prop:s0
 persist.sys.parts.gpu.min_frequency              u:object_r:exported_system_prop:s0
 persist.sys.parts.gpu.max_frequency              u:object_r:exported_system_prop:s0
+persist.sys.parts.gpu.min_clock                  u:object_r:exported_system_prop:s0
+persist.sys.parts.gpu.max_clock                  u:object_r:exported_system_prop:s0
 persist.sys.parts.cpu.little.min_frequency       u:object_r:exported_system_prop:s0
 persist.sys.parts.cpu.little.max_frequency       u:object_r:exported_system_prop:s0
 persist.sys.parts.cpu.little.governor            u:object_r:exported_system_prop:s0

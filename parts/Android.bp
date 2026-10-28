@@ -6,51 +6,35 @@
 
 android_app {
     name: "XiaomiParts",
-    defaults: [
-        "SettingsLibDefaults",
-        "platform_app_defaults",
-    ],
 
     srcs: [
+        "src/**/*.java",
         "src/**/*.kt",
-        "src/**/*.java"
     ],
 
     certificate: "platform",
-    resource_dirs: ["res"],
     platform_apis: true,
     system_ext_specific: true,
     privileged: true,
 
-    use_embedded_native_libs: true,
-
     static_libs: [
-        "androidx.core_core",
         "org.lineageos.settings.resources",
-        "SettingsLib",
-        "SpaLib",
         "androidx.activity_activity-compose",
-        "androidx.compose.animation_animation-core",
+        "androidx.core_core-ktx",
+        "androidx.lifecycle_lifecycle-runtime-compose",
+        "androidx.compose.animation_animation",
         "androidx.compose.foundation_foundation",
         "androidx.compose.material3_material3",
         "androidx.compose.material_material-icons-core",
+        "androidx.compose.material_material-icons-extended",
         "androidx.compose.runtime_runtime",
         "androidx.compose.ui_ui",
-        "androidx.lifecycle_lifecycle-viewmodel-compose",
-        "kotlinx-coroutines-core",
     ],
 
-   kotlincflags: [
+    kotlincflags: [
         "-Xjvm-default=all",
-        "-opt-in=kotlin.RequiresOptIn",
-        "-opt-in=androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
-        "-P plugin:androidx.compose.compiler.plugins.kotlin:sourceInformation=true",
+        "-Xopt-in=kotlin.RequiresOptIn",
     ],
-
-    optimize: {
-        enabled: true,
-        proguard_flags_files: ["proguard.flags"],
-    },
 
     required: [
         "privapp_whitelist_org.lineageos.settings.xml",

@@ -9,7 +9,7 @@ package org.lineageos.settings.auxcamera
 
 import android.content.Context
 import android.provider.Settings
-import org.lineageos.settings.utils.Logging
+import android.util.Log
 
 object AuxCameraUtils {
 
@@ -80,7 +80,7 @@ object AuxCameraUtils {
                 SETTINGS_KEY,
                 cleaned,
             )
-            Logging.i(TAG, "Cleaned aux camera app list")
+            Log.i(TAG, "Cleaned aux camera app list")
         }
 
         cachedApps = validApps
@@ -108,7 +108,7 @@ object AuxCameraUtils {
         val serialized = apps.joinToString(",")
 
         if (enabled && serialized.toByteArray().size > MAX_PROP_VALUE_BYTES) {
-            Logging.w(TAG, "App list exceeds property limit, not adding $packageName")
+            Log.w(TAG, "App list exceeds property limit, not adding $packageName")
             return false
         }
 
@@ -152,7 +152,7 @@ object AuxCameraUtils {
                 value.ifBlank { "none" },
             )
         } catch (e: Exception) {
-            Logging.e(TAG, "Failed to set $PROP", e)
+            Log.e(TAG, "Failed to set $PROP", e)
         }
     }
 }

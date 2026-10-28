@@ -25,13 +25,16 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
-
-    <protected-broadcast android:name="com.android.systemui.doze.pulse" />
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-sdk
         android:minSdkVersion="24"
@@ -39,17 +42,18 @@
 
     <application
         android:label="@string/app_title"
+        android:icon="@mipmap/ic_launcher"
         android:persistent="true"
         android:defaultToDeviceProtectedStorage="true"
         android:directBootAware="true"
-        android:theme="@style/Theme.SubSettingsBase.Expressive">
+        android:localeConfig="@xml/locales_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SubSettingsBase">
 
         <receiver
             android:name=".BootCompletedReceiver"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -60,11 +64,6 @@
             android:authorities="${applicationId}.androidx-startup"
             tools:replace="android:authorities"/>
 
-        <provider
-            android:name=".SummaryProvider"
-            android:authorities="org.lineageos.settings.summary"
-            android:exported="true" />
-
         <receiver
             android:name=".Startup"
             android:exported="false">
@@ -74,167 +73,120 @@
             </intent-filter>
         </receiver>
 
-        <!-- Thermal Settings -->
+        <!-- The dashboard: the only entry point, from the launcher and from Settings. -->
         <activity
-            android:name=".thermal.ThermalComposeActivity"
-            android:label="@string/thermal_title"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
-            android:exported="true">
+            android:name=".ui.PartsActivity"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density|uiMode|keyboardHidden"
+            android:theme="@style/Theme.XiaomiParts">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="com.android.settings.action.IA_SETTINGS" />
             </intent-filter>
             <meta-data
                 android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.battery" />
+                android:value="com.android.settings.category.ia.system" />
             <meta-data
                 android:name="com.android.settings.summary"
-                android:resource="@string/thermal_summary" />
-            <meta-data
-                android:name="com.android.settings.summary_uri"
-                android:value="content://org.lineageos.settings.summary/thermalSummary" />
+                android:resource="@string/settings_entry_summary" />
             <meta-data
                 android:name="com.android.settings.icon"
-                android:resource="@drawable/ic_thermal_settings" />
+                android:resource="@drawable/ic_parts_settings" />
         </activity>
 
         <service
             android:name=".thermal.ThermalService"
-            android:permission="ThermalService" />
+            android:permission="ThermalService">
+        </service>
 
-        <!-- Aux Camera activity -->
-        <activity
-            android:name=".auxcamera.AuxCameraActivity"
-            android:label="@string/aux_camera_title"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
-            android:exported="true">
+        <service
+            android:name=".refreshrate.RefreshService"
+            android:exported="true"
+            android:permission="RefreshService">
+        </service>
+
+        <service
+            android:name=".resolution.ResolutionService"
+            android:exported="true"
+            android:permission="ResolutionService">
+        </service>
+
+        <service
+            android:name=".hbm.AutoHBMService"
+            android:exported="false" />
+
+        <service
+            android:name=".display.FpsInfoService"
+            android:exported="false" />
+
+        <service
+            android:name=".hypercharge.HyperChargeService"
+            android:exported="false" />
+
+        <service
+            android:name=".charge.ChargeService"
+            android:exported="false" />
+
+        <!-- Quick settings tiles -->
+        <service
+            android:name=".display.FpsInfoTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_fps_tile"
+            android:label="@string/fps_info_tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="com.android.settings.action.IA_SETTINGS" />
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
-            <meta-data
-                android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.apps" />
-            <meta-data
-                android:name="com.android.settings.summary"
-                android:resource="@string/aux_camera_summary" />
-            <meta-data
-                android:name="com.android.settings.summary_uri"
-                android:value="content://org.lineageos.settings.summary/auxCameraSummary" />
-        </activity>
+        </service>
 
-        <!-- Clear Speaker -->
-        <activity
-            android:name=".speaker.ClearSpeakerActivity"
-            android:label="@string/clear_speaker_title"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.settings.action.IA_SETTINGS" />
-            </intent-filter>
-            <meta-data
-                android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.sound" />
-            <meta-data
-                android:name="com.android.settings.summary"
-                android:resource="@string/clear_speaker_summary" />
-        </activity>
-
-        <!-- Display Saturation activity -->
-        <activity
-            android:name=".saturation.SaturationActivity"
-            android:label="@string/saturation_title"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.settings.action.IA_SETTINGS" />
-            </intent-filter>
-            <meta-data
-                android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.display" />
-            <meta-data
-                android:name="com.android.settings.summary"
-                android:resource="@string/saturation_summary" />
-            <meta-data
-                android:name="com.android.settings.summary_uri"
-                android:value="content://org.lineageos.settings.summary/saturationSummary" />
-        </activity>
-
-        <!-- Display Saturation tile service -->
-        <service  
-            android:name=".saturation.SaturationTileService"
-            android:label="@string/saturation_title"
-            android:icon="@drawable/ic_saturation_tile"
-            android:exported="true"  
+        <service
+            android:name=".hbm.HBMModeTileService"
+            android:icon="@drawable/ic_hbm_tile"
+            android:label="@string/hbm_mode_title"
+            android:exported="true"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
-        <!-- Powertools Activity -->
-        <activity
-            android:name=".powertools.PowertoolsActivity"
-            android:label="@string/Powertools_title"
-            android:theme="@style/Theme.SubSettingsBase"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.settings.action.IA_SETTINGS" />
-            </intent-filter>
-            <meta-data
-                android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.battery" />
-            <meta-data
-                android:name="com.android.settings.summary"
-                android:resource="@string/Powertools_summary" />
-        </activity>
-
-        <!-- Powertools Quick Settings Tile Service -->
         <service
-            android:name=".powertools.PowerProfileTileService"
-            android:label="@string/powerprofile_tile_label"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:icon="@drawable/ic_thermal_balance"
-            android:exported="true">
+            android:name=".saturation.SaturationTileService"
+            android:label="@string/saturation_title"
+            android:icon="@drawable/ic_saturation_tile"
+            android:exported="true"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <meta-data
-                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
-                android:value="true" />
         </service>
 
-        <!-- Powertool BootReceiver -->
-        <receiver android:name=".powertools.PowertoolBootReceiver"
-            android:exported="true"
-            android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
-
-        <!-- HyperCharge Activity -->
-        <activity
-            android:name=".hypercharge.HyperChargeSettingsActivity"
-            android:label="@string/hypercharge_title"
-            android:theme="@style/Theme.SubSettingsBase"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.settings.action.IA_SETTINGS" />
-            </intent-filter>
-            <meta-data
-                android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.battery" />
-            <meta-data
-                android:name="com.android.settings.summary"
-                android:resource="@string/hypercharge_main_switch_title" />
-        </activity>
-
-        <!-- HyperCharge Service -->
         <service
-            android:name=".hypercharge.HyperChargeService"
-            android:exported="false" />
+            android:name=".thermal.ThermalTileService"
+            android:icon="@drawable/ic_thermal"
+            android:label="@string/thermal_title"
+            android:exported="true"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
 
+        <service
+            android:name=".powerprofile.PowerProfileTileService"
+            android:icon="@drawable/ic_thermal_balance"
+            android:label="@string/power_profile_title"
+            android:exported="true"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
     </application>
 </manifest>

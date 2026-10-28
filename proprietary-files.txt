@@ -21,6 +21,8 @@ vendor/lib64/libcapiv2uvvendor.so
 vendor/lib64/libmcs.so
 vendor/lib64/libqtigefar.so
 vendor/lib64/soundfx/libasphere.so
+# From zeus HyperOS 3, pinned: TheMuppets dumps don't carry it
+vendor/lib64/soundfx/libmisoundfx.so|9f2f62f50bfcee7edb5b051462034f977aac0ca1
 
 # Bluetooth
 vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti
