@@ -188,6 +188,11 @@ PRODUCT_COPY_FILES += \
 # Dolby
 $(call inherit-product, hardware/dolby/dolby.mk)
 
+# ViPER4AndroidFX, where the tree has it
+ifneq ($(wildcard packages/apps/ViPER4AndroidFX/config.mk),)
+$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
+endif
+
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
