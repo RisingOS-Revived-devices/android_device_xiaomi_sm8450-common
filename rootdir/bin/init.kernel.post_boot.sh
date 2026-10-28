@@ -53,7 +53,19 @@ function configure_zram_parameters() {
 		let zRamSizeMB=4096
 	fi
 
-	echo lz4kd > /sys/block/zram0/comp_algorithm
+	# XiaomiParts overrides: size in GB (0 disables zram) and algorithm
+	zramSizeGB=`getprop persist.sys.parts.zram.size`
+	case "$zramSizeGB" in
+		0) return ;;
+		2|4|8) let zRamSizeMB="$zramSizeGB * 1024" ;;
+	esac
+
+	zramComp=`getprop persist.sys.parts.zram.comp_algorithm`
+	if [ -n "$zramComp" ] && grep -qw "$zramComp" /sys/block/zram0/comp_algorithm; then
+		echo $zramComp > /sys/block/zram0/comp_algorithm
+	else
+		echo lz4kd > /sys/block/zram0/comp_algorithm
+	fi
 
 	if [ -f /sys/block/zram0/disksize ]; then
 		if [ -f /sys/block/zram0/use_dedup ]; then
@@ -127,7 +139,8 @@ function configure_memory_parameters() {
 
 	configure_zram_parameters
 	configure_read_ahead_kb_values
-	echo 100 > /proc/sys/vm/swappiness
+	swappiness=`getprop persist.sys.parts.vm.swappiness`
+	echo ${swappiness:-100} > /proc/sys/vm/swappiness
 
 	# Disable periodic kcompactd wakeups. We do not use THP, so having many
 	# huge pages is not as necessary.

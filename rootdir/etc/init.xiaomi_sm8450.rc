@@ -442,3 +442,7 @@ on property:persist.sys.parts.cpu.prime.max_frequency=*
     write /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq ${persist.sys.parts.cpu.prime.max_frequency}
 on property:persist.sys.parts.cpu.prime.governor=*
     write /sys/devices/system/cpu/cpufreq/policy7/scaling_governor ${persist.sys.parts.cpu.prime.governor}
+
+# XiaomiParts swappiness
+on property:persist.sys.parts.vm.swappiness=*
+    write /proc/sys/vm/swappiness ${persist.sys.parts.vm.swappiness}

@@ -21,3 +21,6 @@ persist.sys.parts.cpu.prime.governor             u:object_r:exported_system_prop
 
 # XiaomiParts
 persist.sys.aux_camera_control               u:object_r:aux_camera_control_prop:s0
+persist.sys.parts.zram.size                  u:object_r:exported_system_prop:s0
+persist.sys.parts.zram.comp_algorithm        u:object_r:exported_system_prop:s0
+persist.sys.parts.vm.swappiness              u:object_r:exported_system_prop:s0
