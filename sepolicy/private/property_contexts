@@ -20,5 +20,4 @@ persist.sys.parts.cpu.prime.max_frequency        u:object_r:exported_system_prop
 persist.sys.parts.cpu.prime.governor             u:object_r:exported_system_prop:s0
 
 # XiaomiParts
-sys.perf_mode_active                         u:object_r:exported_system_prop:s0
 persist.sys.aux_camera_control               u:object_r:aux_camera_control_prop:s0
