@@ -36,3 +36,6 @@ genfscon sysfs /kernel/kprofiles/kp_mode u:object_r:sysfs_kprofiles:s0
 # Charger
 genfscon sysfs /class/power_supply/battery/constant_charge_current    u:object_r:vendor_sysfs_power_supply:s0
 genfscon sysfs /class/qcom-battery/fastchg_mode    u:object_r:vendor_sysfs_power_supply:s0
+
+# Torch
+genfscon sysfs /devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-02/c42d000.qcom,spmi:qcom,pm8350c@2:qcom,flash_led@ee00/leds/led:torch_0 u:object_r:sysfs_led_torch:s0
