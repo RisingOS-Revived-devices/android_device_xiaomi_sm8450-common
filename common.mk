@@ -81,14 +81,25 @@ PRODUCT_PACKAGES += \
 
 $(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
 
+# hardware/dolby comes in two flavours: LunarisDolby (with Dolby Vision, ships
+# the effect libraries audio_effects.xml loads) and the older DAX one.
+ifneq ($(wildcard hardware/dolby/LunarisDolby),)
+TARGET_INCLUDES_DolbyVision := true
+AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects.xml
+MEDIA_CODECS_C2_AUDIO_XML := $(LOCAL_PATH)/media/media_codecs_c2_audio.xml
+else
+AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_dax.xml
+MEDIA_CODECS_C2_AUDIO_XML := hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/codec2/media_codecs_c2_audio.xml
+endif
+
 $(foreach sku, taro diwali cape ukee parrot, \
     $(eval PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_effects.xml \
+        $(AUDIO_EFFECTS_XML):$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_effects.xml \
         $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_policy_configuration.xml \
     ))
 
 PRODUCT_COPY_FILES += \
-    hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/codec2/media_codecs_c2_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2_audio.xml \
+    $(MEDIA_CODECS_C2_AUDIO_XML):$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2_audio.xml \
     hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/codec2/service/1.0/c2audio.vendor.base-arm64.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/c2audio.vendor.base-arm64.policy \
     hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/codec2/service/1.0/c2audio.vendor.ext-arm64.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/c2audio.vendor.ext-arm64.policy \
     hardware/qcom-caf/sm8450/audio/primary-hal/configs/taro/card-defs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/card-defs.xml \
