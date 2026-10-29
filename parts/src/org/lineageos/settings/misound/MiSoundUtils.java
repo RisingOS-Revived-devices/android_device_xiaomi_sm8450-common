@@ -14,6 +14,7 @@ import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
@@ -75,6 +76,8 @@ public final class MiSoundUtils {
 
     private static final int MAX_ATTEMPTS = 5;
     private static final long RETRY_DELAY_MS = 1000;
+    private static final long CRASH_WINDOW_MS = 5000;
+    private static final int MAX_QUICK_CRASHES = 3;
 
     private static MiSoundUtils sInstance;
 
@@ -89,6 +92,8 @@ public final class MiSoundUtils {
     private boolean mCallbackRegistered;
     private int mCallbackAttempts;
     private int mAttempts;
+    private long mCreatedAt;
+    private int mQuickCrashes;
 
     private final Runnable mCallbackTask = this::registerCallback;
     private final Runnable mRestoreTask = this::restore;
@@ -99,6 +104,19 @@ public final class MiSoundUtils {
                 public void onAudioServerDown() {
                     mServerDown = true;
                     mHandler.removeCallbacks(mRestoreTask);
+                    // On some units libmisoundfx takes the audio HAL down as soon as it starts;
+                    // stop recreating it there instead of crash-looping the audio server.
+                    if (mCreatedAt != 0
+                            && SystemClock.elapsedRealtime() - mCreatedAt < CRASH_WINDOW_MS) {
+                        if (++mQuickCrashes >= MAX_QUICK_CRASHES) {
+                            Log.e(TAG, "Audio server keeps dying when MiSound starts, turning it off");
+                            mPrefs.edit().putBoolean(PREF_ENABLE, false).apply();
+                            mQuickCrashes = 0;
+                        }
+                    } else {
+                        mQuickCrashes = 0;
+                    }
+                    mCreatedAt = 0;
                     releaseEffect();
                 }
 
@@ -191,6 +209,7 @@ public final class MiSoundUtils {
             MiSound effect = requireEffect();
             if (enable) applySettings(effect);
             applyEnabled(effect, enable);
+            if (!enable) releaseEffect();
         });
     }
 
@@ -309,6 +328,14 @@ public final class MiSoundUtils {
     }
 
     private void restore() {
+        // Creating the effect is what loads libmisoundfx in the audio HAL; only do it when used.
+        // With Dolby on, libmisoundfx crashes the audio HAL even while MiSound is disabled.
+        if (!isEnabled() || isDolbyEnabled()) {
+            releaseEffect();
+            mAttempts = 0;
+            mHandler.removeCallbacks(mRestoreTask);
+            return;
+        }
         try {
             MiSound effect = requireEffect();
             if (effect.isNativeEnabled() != isEnabled() || effect.getEnabled() != isEnabled()) {
@@ -352,6 +379,7 @@ public final class MiSoundUtils {
         }
         MiSound effect = new MiSound(0, 0);
         mMiSound = effect;
+        mCreatedAt = SystemClock.elapsedRealtime();
         try {
             effect.setControlStatusListener((e, granted) -> mHandler.post(() -> {
                 if (mMiSound != effect || mServerDown || !granted) return;
