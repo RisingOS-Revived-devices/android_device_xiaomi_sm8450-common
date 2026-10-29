@@ -92,9 +92,11 @@ void NonUiNotifier::notify() {
             continue;
         }
 
+        // Read every node: an unread sysfs node keeps poll() returning at once,
+        // which turns this into a busy loop that floods the sensor HAL.
         bool enabled = false;
         for (size_t i = 0; i < paths.size(); ++i) {
-            enabled = enabled || readBool(pollfds[i].fd);
+            enabled |= readBool(pollfds[i].fd);
         }
         if (enabled) {
             res = mQueue->enableSensor(mSensorHandle, 20000 /* sample period */, 0 /* latency */);
