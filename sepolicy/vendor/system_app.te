@@ -19,9 +19,6 @@ allow system_app {
   vibrator_manager_service
 }:service_manager find;
 
-# Allow KProfiles to be adjusted by a system app
-allow system_app sysfs_kprofiles:file rw_file_perms;
-
 # Gestures
 allow system_app vendor_sysfs_sensors:file rw_file_perms;
 

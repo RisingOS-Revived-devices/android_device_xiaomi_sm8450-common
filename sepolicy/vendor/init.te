@@ -7,9 +7,6 @@ set_prop(vendor_init, vendor_ssr_prop)
 set_prop(vendor_init, vendor_qcc_prop)
 get_prop(vendor_init, aux_camera_control_prop)
 
-# KProfiles
-allow init sysfs_kprofiles:file { setattr };
-
 # Battery
 allow init vendor_sysfs_usb_supply:file setattr;
 allow init vendor_sysfs_battery_supply:file setattr;

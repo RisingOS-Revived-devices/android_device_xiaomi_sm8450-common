@@ -305,12 +305,6 @@ on property:vendor.post_boot.parsed=1
     # Set power profile mode on boot
     # setprop sys.perf_mode_active 1
 
-    # Allow system to manipulate KProfiles modes and parameters
-    chown system system /sys/module/kprofiles/parameters/auto_kprofiles
-    chmod 0660 /sys/module/kprofiles/parameters/auto_kp
-    chown system system /sys/kernel/kprofiles/kp_mode
-    chmod 0660 /sys/kernel/kprofiles/kp_mode
-
 on property:vendor.post_boot.parsed=1
     # Set restricted cpuset to the same CPUs as system-background
     copy /dev/cpuset/system-background/cpus /dev/cpuset/restricted/cpus

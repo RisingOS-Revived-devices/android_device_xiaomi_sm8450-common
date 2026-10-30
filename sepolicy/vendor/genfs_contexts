@@ -29,10 +29,6 @@ genfscon sysfs /devices/platform/soc/soc:fingerprint_fpc/wakeup u:object_r:sysfs
 # Touchscreen
 genfscon sysfs /devices/virtual/touch/touch_dev/bump_sample_rate u:object_r:vendor_sysfs_touch:s0
 
-# KProfiles
-genfscon sysfs /module/kprofiles/parameters/auto_kp u:object_r:sysfs_kprofiles:s0
-genfscon sysfs /kernel/kprofiles/kp_mode u:object_r:sysfs_kprofiles:s0
-
 # Charger
 genfscon sysfs /class/power_supply/battery/constant_charge_current    u:object_r:vendor_sysfs_power_supply:s0
 genfscon sysfs /class/qcom-battery/fastchg_mode    u:object_r:vendor_sysfs_power_supply:s0
