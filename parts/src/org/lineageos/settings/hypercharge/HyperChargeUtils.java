@@ -8,15 +8,17 @@
 package org.lineageos.settings.hypercharge;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import java.io.File;
+import org.lineageos.settings.utils.FileUtils;
 
-/** HyperCharge settings and the rule that decides whether HyperChargeService has to run. */
+/**
+ * HyperCharge settings. The chosen limit is the ceiling the kernel puts on the charge current
+ * mi_thermald asks for, so the thermal limits keep working under it.
+ */
 public final class HyperChargeUtils {
 
     private static final String TAG = "HyperChargeUtils";
@@ -24,9 +26,10 @@ public final class HyperChargeUtils {
     public static final String KEY_STATUS = "hypercharge_status";
     public static final String KEY_LIMIT = "hypercharge_limit";
 
-    public static final String NODE_CONSTANT_CHARGE_CURRENT =
-            "/sys/class/power_supply/battery/constant_charge_current";
-    public static final String NODE_FASTCHG_MODE = "/sys/class/qcom-battery/fastchg_mode";
+    // Ceiling on constant_charge_current in uA, 0 for none
+    private static final String NODE_CONSTANT_CHARGE_CURRENT_MAX =
+            "/sys/class/power_supply/battery/constant_charge_current_max";
+    private static final String NO_CEILING = "0";
 
     // Charge current in uA; 22 A is the unrestricted 120 W HyperCharge current.
     public static final String LIMIT_120W = "22000000";
@@ -39,7 +42,7 @@ public final class HyperChargeUtils {
     }
 
     public static boolean isSupported() {
-        return new File(NODE_CONSTANT_CHARGE_CURRENT).exists() && new File(NODE_FASTCHG_MODE).exists();
+        return FileUtils.fileExists(NODE_CONSTANT_CHARGE_CURRENT_MAX);
     }
 
     public static boolean isEnabled(Context context) {
@@ -72,21 +75,18 @@ public final class HyperChargeUtils {
         update(context);
     }
 
-    /** The current the service enforces: 33 W with HyperCharge off, else the chosen limit. */
-    static String getTargetLimit(Context context) {
-        return isEnabled(context) ? getLimit(context) : LIMIT_33W;
+    /** 33 W with HyperCharge off, no ceiling at the unrestricted 120 W, else the chosen limit. */
+    static String getCeiling(Context context) {
+        if (!isEnabled(context)) return LIMIT_33W;
+        String limit = getLimit(context);
+        return LIMIT_120W.equals(limit) ? NO_CEILING : limit;
     }
 
-    /**
-     * Unrestricted 120 W is the kernel default, so the service only has to run when
-     * HyperCharge is off or a lower limit is selected.
-     */
+    /** Writes the ceiling; the kernel keeps it until reboot, so boot and every change call this. */
     public static void update(Context context) {
-        Intent intent = new Intent(context, HyperChargeService.class);
-        if (isEnabled(context) && LIMIT_120W.equals(getLimit(context))) {
-            context.stopService(intent);
-        } else {
-            context.startService(intent);
+        if (!isSupported()) return;
+        if (!FileUtils.writeLine(NODE_CONSTANT_CHARGE_CURRENT_MAX, getCeiling(context))) {
+            Log.e(TAG, "Failed to write the charge current ceiling");
         }
     }
 }

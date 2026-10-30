@@ -23,8 +23,6 @@ allow system_app {
 allow system_app vendor_sysfs_sensors:file rw_file_perms;
 
 # Battery
-allow system_app vendor_sysfs_power_supply:file rw_file_perms;
-allow system_app vendor_sysfs_power_supply:dir r_dir_perms;
 allow system_app vendor_sysfs_battery_supply:file rw_file_perms;
 allow system_app vendor_sysfs_battery_supply:dir r_dir_perms;
 allow system_app vendor_sysfs_qcom_battery:file rw_file_perms;
@@ -34,7 +32,5 @@ allow system_app vendor_sysfs_usb_supply:file r_file_perms;
 allow system_app vendor_sysfs_usb_supply:dir r_dir_perms;
 
 # Hyper Charging
-allow system_app vendor_sysfs_power_supply:file { read write open setattr getattr };
-allow system_app vendor_sysfs_power_supply:dir search;
 allow system_app vendor_sysfs_battery_supply:file { read write open setattr getattr };
 allow system_app vendor_sysfs_battery_supply:dir search;

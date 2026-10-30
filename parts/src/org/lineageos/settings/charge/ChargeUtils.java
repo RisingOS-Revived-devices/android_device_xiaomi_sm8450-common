@@ -18,18 +18,19 @@ import org.lineageos.settings.utils.FileUtils;
 
 /**
  * Wired fast charge boost and reverse wireless charging, written to the same nodes with the
- * same values as HyperOS (SecurityCenter through the MiCharge HAL).
+ * same values as HyperOS: SecurityCenter's fast charge switch for the boost, the MiCharge HAL
+ * for reverse charging.
  */
 public final class ChargeUtils {
 
     public static final String KEY_BOOST = "charge_boost";
     public static final String KEY_REVERSE_LIMIT = "reverse_charge_limit";
 
-    static final String NODE_SPORT_MODE = "/sys/class/qcom-battery/sport_mode";
     static final String NODE_CHARGER_TEMP = "/sys/class/thermal/thermal_message/charger_temp";
     static final String NODE_REVERSE_CHG_MODE = "/sys/class/qcom-battery/reverse_chg_mode";
 
-    // HyperOS tells the thermal driver about boost with charger_temp 8, and 0 without it.
+    // HyperOS tells mi_thermald about boost with charger_temp 8, and 0 without it. Its
+    // sport_mode write is gated on persist.vendor.smartchg bit 3, which zeus never sets.
     private static final String CHARGER_TEMP_BOOST = "8";
 
     public static final int[] REVERSE_LIMITS = {20, 30, 40};
@@ -47,7 +48,7 @@ public final class ChargeUtils {
     }
 
     public static boolean isBoostSupported() {
-        return FileUtils.fileExists(NODE_SPORT_MODE) && FileUtils.fileExists(NODE_CHARGER_TEMP);
+        return FileUtils.fileExists(NODE_CHARGER_TEMP);
     }
 
     public static boolean isBoostEnabled(Context context) {
@@ -62,9 +63,7 @@ public final class ChargeUtils {
 
     static void applyBoost(Context context) {
         if (!isBoostSupported()) return;
-        boolean on = isBoostEnabled(context);
-        FileUtils.writeLine(NODE_SPORT_MODE, on ? "1" : "0");
-        FileUtils.writeLine(NODE_CHARGER_TEMP, on ? CHARGER_TEMP_BOOST : "0");
+        FileUtils.writeLine(NODE_CHARGER_TEMP, isBoostEnabled(context) ? CHARGER_TEMP_BOOST : "0");
     }
 
     public static boolean isReverseSupported() {

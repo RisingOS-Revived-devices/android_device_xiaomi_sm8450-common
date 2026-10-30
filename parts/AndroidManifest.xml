@@ -126,10 +126,6 @@
             android:exported="false" />
 
         <service
-            android:name=".hypercharge.HyperChargeService"
-            android:exported="false" />
-
-        <service
             android:name=".charge.ChargeService"
             android:exported="false" />
 
