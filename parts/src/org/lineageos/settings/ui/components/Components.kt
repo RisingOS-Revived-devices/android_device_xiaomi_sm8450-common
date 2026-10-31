@@ -6,6 +6,7 @@
 
 package org.lineageos.settings.ui.components
 
+import android.content.SharedPreferences
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -62,8 +63,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -74,6 +77,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -82,6 +86,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.preference.PreferenceManager
 import org.lineageos.settings.R
 import org.lineageos.settings.ui.theme.SectionTitleStyle
 import kotlin.math.roundToInt
@@ -98,6 +103,21 @@ fun groupShape(index: Int, count: Int): Shape = when {
     index == 0 -> RoundedCornerShape(OuterRadius, OuterRadius, InnerRadius, InnerRadius)
     index == count - 1 -> RoundedCornerShape(InnerRadius, InnerRadius, OuterRadius, OuterRadius)
     else -> RoundedCornerShape(InnerRadius)
+}
+
+/** Calls [onChange] when [key] changes: tiles and services write it while a page stays open. */
+@Composable
+fun OnPrefChanged(key: String, onChange: () -> Unit) {
+    val context = LocalContext.current
+    val latest by rememberUpdatedState(onChange)
+    DisposableEffect(key) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, changed ->
+            if (changed == key) latest()
+        }
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose { prefs.unregisterOnSharedPreferenceChangeListener(listener) }
+    }
 }
 
 /** Full-screen page with the round back button and large title. */

@@ -7,12 +7,10 @@
 
 package org.lineageos.settings.powerprofile;
 
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +18,6 @@ import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
-import android.os.Process;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
@@ -28,22 +25,20 @@ import android.util.Log;
 import androidx.preference.PreferenceManager;
 
 import org.lineageos.settings.R;
-import org.lineageos.settings.utils.FileUtils;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
- * System wide thermal profile (Balanced, Gaming, Performance, Battery saver) written to
- * thermal_message/sconfig. Apps with their own per-app thermal mode override it while
- * they are in the foreground, see ThermalUtils.
+ * System wide thermal profile (Balanced, Gaming, Performance, Battery saver). ThermalService
+ * follows it and is the only writer of thermal_message/sconfig: apps with their own per-app
+ * thermal mode override it while they are in the foreground, see ThermalUtils.
  */
 public class PowerProfileUtil {
 
     private static final String TAG = "PowerProfileUtil";
-    private static final String THERMAL_SCONFIG = "/sys/class/thermal/thermal_message/sconfig";
-    private static final String PREF_MODE = "power_profile_mode";
-    private static final String SYS_PROP = "sys.perf_mode_active";
+    public static final String PREF_MODE = "power_profile_mode";
+    // The profile battery saver replaced, put back when battery saver turns off
+    private static final String PREF_MODE_BEFORE_SAVER = "power_profile_mode_before_saver";
+    // init applies the CPU side once post_boot is done, so it survives reboots
+    private static final String PERF_MODE_PROP = "persist.sys.parts.perf_mode";
     private static final String CHANNEL_ID = TAG;
     private static final int NOTIFICATION_ID_PERFORMANCE = 1001;
     private static final int NOTIFICATION_ID_GAMING = 1002;
@@ -53,24 +48,28 @@ public class PowerProfileUtil {
     public static final int MODE_PERFORMANCE = 2;
     public static final int MODE_BATTERY_SAVER = 3;
 
-    // sconfig values of the mi_thermald profiles, indexed by mode.
-    private static final String[] SCONFIG = {"0", "13", "20", "3"};
-    // sys.perf_mode_active values, indexed by mode.
+    // sconfig values of the mi_thermald profiles, indexed by mode: normal, tgame, mgame and
+    // normal again, as zeus' thermal-map.conf has no battery saver profile (3 is huanji).
+    private static final String[] SCONFIG = {"0", "13", "20", "0"};
+    // persist.sys.parts.perf_mode values, indexed by mode.
     private static final int[] PERF_MODE = {1, 3, 2, 0};
 
     private final Context mContext;
     private final SharedPreferences mSharedPrefs;
     private final NotificationManager mNotificationManager;
-    private final List<String> mGamePackages;
     private ContentObserver mBatterySaverObserver;
 
     public PowerProfileUtil(Context context) {
+        this(context, false);
+    }
+
+    /** watchBatterySaver: follow the system battery saver, for the always running ThermalService. */
+    public PowerProfileUtil(Context context, boolean watchBatterySaver) {
         mContext = context;
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mNotificationManager = context.getSystemService(NotificationManager.class);
-        mGamePackages = Arrays.asList(context.getResources().getStringArray(R.array.game_packages));
         setupNotificationChannel();
-        registerBatterySaverObserver();
+        if (watchBatterySaver) registerBatterySaverObserver();
     }
 
     /** The selected profile; Balanced until the user picks another one. */
@@ -93,13 +92,31 @@ public class PowerProfileUtil {
     }
 
     public void setMode(int mode) {
-        if (mode < MODE_BALANCE || mode > MODE_BATTERY_SAVER) mode = MODE_BALANCE;
-        mSharedPrefs.edit().putInt(PREF_MODE, mode).apply();
-        SystemProperties.set(SYS_PROP, String.valueOf(PERF_MODE[mode]));
-        boolean success = FileUtils.writeLine(THERMAL_SCONFIG, SCONFIG[mode]);
-        Log.d(TAG, "Power profile set to " + mode + ": " + success);
+        mSharedPrefs.edit().remove(PREF_MODE_BEFORE_SAVER).apply();
+        applyMode(mode);
+    }
 
-        enableBatterySaver(mode == MODE_BATTERY_SAVER);
+    private void applyMode(int mode) {
+        if (mode < MODE_BALANCE || mode > MODE_BATTERY_SAVER) mode = MODE_BALANCE;
+        // Android refuses battery saver on a charger, and nothing would end the profile then.
+        boolean saver = mode == MODE_BATTERY_SAVER;
+        if (!enableBatterySaver(saver) && saver) mode = MODE_BALANCE;
+        mSharedPrefs.edit().putInt(PREF_MODE, mode).apply();
+        SystemProperties.set(PERF_MODE_PROP, String.valueOf(PERF_MODE[mode]));
+        Log.d(TAG, "Power profile set to " + mode);
+
+        updateNotifications(mode);
+    }
+
+    /** Boot: catch up with battery saver, which turns off before this service starts, and hand the profile to init. */
+    public void restore() {
+        syncBatterySaver();
+        int mode = getMode();
+        SystemProperties.set(PERF_MODE_PROP, String.valueOf(PERF_MODE[mode]));
+        updateNotifications(mode);
+    }
+
+    private void updateNotifications(int mode) {
         if (mode == MODE_PERFORMANCE) {
             showNotification(NOTIFICATION_ID_PERFORMANCE, R.string.perf_mode_title,
                     R.string.perf_mode_notification, R.drawable.ic_thermal_performance);
@@ -109,7 +126,6 @@ public class PowerProfileUtil {
         if (mode == MODE_GAMING) {
             showNotification(NOTIFICATION_ID_GAMING, R.string.gaming_mode_title,
                     R.string.gaming_mode_notification, R.drawable.ic_thermal_gaming);
-            optimizeGameLaunch();
         } else {
             mNotificationManager.cancel(NOTIFICATION_ID_GAMING);
         }
@@ -120,36 +136,9 @@ public class PowerProfileUtil {
         setMode((getMode() + 1) % SCONFIG.length);
     }
 
-    private void optimizeGameLaunch() {
-        ActivityManager am = mContext.getSystemService(ActivityManager.class);
-        if (am == null) return;
-        List<ActivityManager.RunningAppProcessInfo> running = am.getRunningAppProcesses();
-        if (running == null) return;
-
-        for (ActivityManager.RunningAppProcessInfo info : running) {
-            if (mGamePackages.contains(info.processName)) {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
-                trimMemory(am, ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW);
-                Log.d(TAG, "Optimizations applied to game package: " + info.processName);
-            } else if (info.importance > ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                am.killBackgroundProcesses(info.processName);
-            }
-        }
-    }
-
-    private void trimMemory(ActivityManager am, int level) {
-        try {
-            am.getClass().getMethod("trimMemory", int.class).invoke(am, level);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to trim memory", e);
-        }
-    }
-
-    private void enableBatterySaver(boolean enable) {
+    private boolean enableBatterySaver(boolean enable) {
         PowerManager pm = mContext.getSystemService(PowerManager.class);
-        if (pm != null && pm.isPowerSaveMode() != enable) {
-            pm.setPowerSaveModeEnabled(enable);
-        }
+        return pm == null || pm.isPowerSaveMode() == enable || pm.setPowerSaveModeEnabled(enable);
     }
 
     private void setupNotificationChannel() {
@@ -172,16 +161,28 @@ public class PowerProfileUtil {
         mNotificationManager.notify(id, notification);
     }
 
+    private void syncBatterySaver() {
+        boolean on = Settings.Global.getInt(mContext.getContentResolver(),
+                Settings.Global.LOW_POWER_MODE, 0) == 1;
+        int mode = getMode();
+        if (on && mode != MODE_BATTERY_SAVER) {
+            Log.d(TAG, "Battery saver enabled, switching to the battery saver profile.");
+            mSharedPrefs.edit().putInt(PREF_MODE_BEFORE_SAVER, mode).apply();
+            applyMode(MODE_BATTERY_SAVER);
+        } else if (!on && mode == MODE_BATTERY_SAVER) {
+            // Nothing is saved when the user picked the profile by hand, so that ends on Balanced.
+            int before = mSharedPrefs.getInt(PREF_MODE_BEFORE_SAVER, MODE_BALANCE);
+            Log.d(TAG, "Battery saver disabled, going back to profile " + before);
+            mSharedPrefs.edit().remove(PREF_MODE_BEFORE_SAVER).apply();
+            applyMode(before);
+        }
+    }
+
     private void registerBatterySaverObserver() {
         mBatterySaverObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
             @Override
             public void onChange(boolean selfChange) {
-                boolean on = Settings.Global.getInt(mContext.getContentResolver(),
-                        Settings.Global.LOW_POWER_MODE, 0) == 1;
-                if (on && getMode() != MODE_BATTERY_SAVER) {
-                    Log.d(TAG, "Battery saver enabled, switching to the battery saver profile.");
-                    setMode(MODE_BATTERY_SAVER);
-                }
+                syncBatterySaver();
             }
         };
         mContext.getContentResolver().registerContentObserver(

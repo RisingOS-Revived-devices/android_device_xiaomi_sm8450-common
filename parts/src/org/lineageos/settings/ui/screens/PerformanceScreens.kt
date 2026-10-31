@@ -52,6 +52,7 @@ import org.lineageos.settings.ui.components.NoteText
 import org.lineageos.settings.ui.components.PartsPage
 import org.lineageos.settings.ui.components.QuickToggle
 import org.lineageos.settings.ui.components.SectionTitle
+import org.lineageos.settings.ui.components.OnPrefChanged
 import org.lineageos.settings.ui.components.StatCard
 import org.lineageos.settings.ui.components.SwitchRow
 
@@ -64,8 +65,9 @@ fun PowerProfileScreen(onBack: () -> Unit) {
     PartsPage(stringResource(R.string.power_profile_title), onBack) {
         item {
             ChipGroupCard(stringResource(R.string.power_profile_mode), stringArrayResource(R.array.power_profile_entries).toList(), mode) {
+    OnPrefChanged(PowerProfileUtil.PREF_MODE) { mode = manager.mode }
                 manager.setMode(it)
-                mode = it
+                mode = manager.mode
             }
         }
         item { NoteText(stringResource(R.string.power_profile_note)) }

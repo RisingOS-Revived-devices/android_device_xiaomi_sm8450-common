@@ -293,8 +293,6 @@ on property:persist.sys.device_provisioned=1 && property:sys.boot_completed=1
 on property:vendor.post_boot.parsed=1
     # Set restricted cpuset to the same CPUs as system-background
     copy /dev/cpuset/system-background/cpus /dev/cpuset/restricted/cpus
-    # Set power profile mode on boot
-    # setprop sys.perf_mode_active 1
 
 on property:vendor.post_boot.parsed=1
     # Set restricted cpuset to the same CPUs as system-background
@@ -353,11 +351,9 @@ on property:persist.vendor.ssr.restart_level=ALL_ENABLE
 on property:persist.vendor.ssr.restart_level=ALL_DISABLE
     write /sys/kernel/cnss/recovery 0
 
-# Gaming Mode: sys.perf_mode_active=3
-on property:sys.perf_mode_active=3
+# Gaming Mode: persist.sys.parts.perf_mode=3
+on property:vendor.post_boot.parsed=1 && property:persist.sys.parts.perf_mode=3
     write /sys/devices/system/cpu/qcom_lpm/parameters/sleep_disabled 1
-
-    write /sys/class/thermal/thermal_message/sconfig 13
 
     write /sys/devices/system/cpu/cpufreq/policy0/walt/down_rate_limit_us 0
     write /sys/devices/system/cpu/cpufreq/policy0/walt/up_rate_limit_us 0
@@ -366,11 +362,9 @@ on property:sys.perf_mode_active=3
     write /sys/devices/system/cpu/cpufreq/policy7/walt/down_rate_limit_us 0
     write /sys/devices/system/cpu/cpufreq/policy7/walt/up_rate_limit_us 0
 
-# Performance Mode: sys.perf_mode_active=2
-on property:sys.perf_mode_active=2
+# Performance Mode: persist.sys.parts.perf_mode=2
+on property:vendor.post_boot.parsed=1 && property:persist.sys.parts.perf_mode=2
     write /sys/devices/system/cpu/qcom_lpm/parameters/sleep_disabled 1
-
-    write /sys/class/thermal/thermal_message/sconfig 20
 
     write /sys/devices/system/cpu/cpufreq/policy0/walt/down_rate_limit_us 20000
     write /sys/devices/system/cpu/cpufreq/policy0/walt/up_rate_limit_us 500
@@ -379,11 +373,9 @@ on property:sys.perf_mode_active=2
     write /sys/devices/system/cpu/cpufreq/policy7/walt/down_rate_limit_us 5000
     write /sys/devices/system/cpu/cpufreq/policy7/walt/up_rate_limit_us 500
 
-# Balance Mode: sys.perf_mode_active=1
-on property:sys.perf_mode_active=1
+# Balance Mode: persist.sys.parts.perf_mode=1
+on property:vendor.post_boot.parsed=1 && property:persist.sys.parts.perf_mode=1
     write /sys/devices/system/cpu/qcom_lpm/parameters/sleep_disabled 0
-
-    write /sys/class/thermal/thermal_message/sconfig 0
 
     write /sys/devices/system/cpu/cpufreq/policy0/walt/down_rate_limit_us 5000
     write /sys/devices/system/cpu/cpufreq/policy0/walt/up_rate_limit_us 500
@@ -392,11 +384,9 @@ on property:sys.perf_mode_active=1
     write /sys/devices/system/cpu/cpufreq/policy7/walt/down_rate_limit_us 1000
     write /sys/devices/system/cpu/cpufreq/policy7/walt/up_rate_limit_us 500
 
-# Battery Saver/Powersave Mode: sys.perf_mode_active=0
-on property:sys.perf_mode_active=0
+# Battery Saver/Powersave Mode: persist.sys.parts.perf_mode=0
+on property:vendor.post_boot.parsed=1 && property:persist.sys.parts.perf_mode=0
     write /sys/devices/system/cpu/qcom_lpm/parameters/sleep_disabled 0
-
-    write /sys/class/thermal/thermal_message/sconfig 0
 
     write /sys/devices/system/cpu/cpufreq/policy0/walt/down_rate_limit_us 40000
     write /sys/devices/system/cpu/cpufreq/policy0/walt/up_rate_limit_us 20000
@@ -406,7 +396,7 @@ on property:sys.perf_mode_active=0
     write /sys/devices/system/cpu/cpufreq/policy7/walt/up_rate_limit_us 10000
 
 # GPU Settings
-on property:persist.sys.parts.gpu.min_frequency=*
+on property:vendor.post_boot.parsed=1 && property:persist.sys.parts.gpu.min_frequency=*
     write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq ${persist.sys.parts.gpu.min_frequency}
     write /sys/class/kgsl/kgsl-3d0/min_clock_mhz ${persist.sys.parts.gpu.min_clock}
 
