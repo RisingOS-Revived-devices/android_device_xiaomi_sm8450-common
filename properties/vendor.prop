@@ -65,8 +65,6 @@ persist.vendor.qcom.bluetooth.aptxadaptiver2_1_support=false
 persist.vendor.qcom.bluetooth.aptxadaptiver2_2_support=false
 persist.vendor.qcom.bluetooth.scram.enabled=false
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
-persist.vendor.btstack.enable.twsplus=true 
-persist.vendor.btstack.enable.twsplussho=true
 ro.bluetooth.a2dp_offload.supported=true
 vendor.hw.fm.init=0
 
@@ -93,7 +91,6 @@ ro.crypto.volume.options=::v2
 dalvik.vm.dex2oat64.enabled=true
 
 # Display
-ro.config.avoid_gfx_accel=true
 vendor.display.comp_mask=0
 vendor.display.disable_3d_adaptive_tm=0
 vendor.display.disable_excl_rect=0
@@ -202,7 +199,6 @@ vendor.gralloc.disable_ubwc=0
 ro.surface_flinger.support_kernel_idle_timer=true
 
 # HWUI
-ro.hwui.render_ahead=3
 debug.hwui.target_cpu_time_percent=30
 debug.hwui.skia_atrace_enabled=false
 debug.hwui.skia_tracing_enabled=false
@@ -284,10 +280,8 @@ persist.vendor.sensors.debug.hal=0
 # DexOPT Optimizer
 pm.dexopt.install=speed-profile
 pm.dexopt.bg-dexopt=speed
-pm.dexopt.boot=verify
 
 # JNI/Kernel Optimization
-ro.kernel.android.checkjni=0
 ro.kernel.checkjni=0
 
 # Low RAM

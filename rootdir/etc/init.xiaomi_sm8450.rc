@@ -245,8 +245,6 @@ on property:sys.boot_completed=1
     setprop dalvik.vm.image-dex2oat-threads 6
 
     # Configure uclamp
-    setprop kernel.sched_util_clamp_min_rt_default 128
-    write /proc/sys/kernel/sched_util_clamp_min_rt_default 128
 
     write /dev/cpuctl/top-app/cpu.uclamp.min 15
     write /dev/cpuctl/background/cpu.uclamp.max 80
@@ -267,6 +265,8 @@ on property:persist.sys.device_provisioned=1 && property:sys.boot_completed=1
 on property:vendor.post_boot.parsed=1
     # Set restricted cpuset to the same CPUs as system-background
     copy /dev/cpuset/system-background/cpus /dev/cpuset/restricted/cpus
+
+on property:vendor.post_boot.parsed=1
     # GPU (XiaomiParts): msm_kgsl loads asynchronously, so not before post_boot is done
     chown system system /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
     chown system system /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
@@ -281,8 +281,6 @@ on property:vendor.post_boot.parsed=1
     chmod 0664 /sys/class/kgsl/kgsl-3d0/force_no_nap
     chmod 0664 /sys/class/kgsl/kgsl-3d0/bus_split
 
-
-on property:vendor.post_boot.parsed=1
     # Set restricted cpuset to the same CPUs as system-background
     copy /dev/cpuset/system-background/cpus /dev/cpuset/restricted/cpus
 
