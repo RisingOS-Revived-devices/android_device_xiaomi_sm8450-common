@@ -52,6 +52,7 @@ import org.lineageos.settings.saturation.SaturationUtils
 import org.lineageos.settings.ui.components.ChipGroupCard
 import org.lineageos.settings.ui.components.Group
 import org.lineageos.settings.ui.components.NoteText
+import org.lineageos.settings.ui.components.OnPrefChanged
 import org.lineageos.settings.ui.components.PartsCard
 import org.lineageos.settings.ui.components.PartsPage
 import org.lineageos.settings.ui.components.PillButton
@@ -190,6 +191,7 @@ fun HbmScreen(onBack: () -> Unit) {
     var hbm by remember { mutableStateOf(HbmUtils.isHbmEnabled(context)) }
     var autoHbm by remember { mutableStateOf(HbmUtils.isAutoHbmEnabled(context)) }
     var threshold by remember { mutableIntStateOf(HbmUtils.getThreshold(context)) }
+    OnPrefChanged(HbmUtils.KEY_HBM_SWITCH) { hbm = HbmUtils.isHbmEnabled(context) }
     var disableTime by remember { mutableIntStateOf(HbmUtils.getDisableTime(context)) }
     val numbers = remember { NumberFormat.getIntegerInstance() }
     PartsPage(stringResource(R.string.hbm_title), onBack) {

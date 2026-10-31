@@ -24,7 +24,6 @@ import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import androidx.preference.PreferenceManager;
 
 
 public class HBMModeTileService extends TileService {
@@ -33,8 +32,7 @@ public class HBMModeTileService extends TileService {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
-                PreferenceManager.getDefaultSharedPreferences(context).edit()
-                        .putBoolean(HbmUtils.KEY_HBM_SWITCH, false).commit();
+                HbmUtils.resetHbm(context);
                 updateUI(false);
             }
         }

@@ -179,21 +179,18 @@ public final class FileUtils {
         }
         return defValue;
     }
-    private static boolean mServiceEnabled = false;
     private static void startService(Context context) {
         context.startServiceAsUser(new Intent(context, AutoHBMService.class),
                 UserHandle.CURRENT);
-        mServiceEnabled = true;
     }
     private static void stopService(Context context) {
-        mServiceEnabled = false;
         context.stopServiceAsUser(new Intent(context, AutoHBMService.class),
                 UserHandle.CURRENT);
     }
     public static void enableService(Context context) {
-        if (HbmUtils.isAutoHbmEnabled(context) && !mServiceEnabled) {
+        if (HbmUtils.isSupported() && HbmUtils.isAutoHbmEnabled(context)) {
             startService(context);
-        } else if (!HbmUtils.isAutoHbmEnabled(context) && mServiceEnabled) {
+        } else {
             stopService(context);
         }
     }

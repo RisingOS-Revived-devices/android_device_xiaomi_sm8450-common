@@ -25,8 +25,13 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Display.HdrCapabilities;
 
+import androidx.preference.PreferenceManager;
+
 import org.lineageos.settings.auxcamera.AuxCameraUtils;
 import org.lineageos.settings.charge.ChargeUtils;
+import org.lineageos.settings.display.FpsInfoService;
+import org.lineageos.settings.gpumanager.GpuManagerUtils;
+import org.lineageos.settings.hbm.HbmUtils;
 import org.lineageos.settings.hypercharge.HyperChargeUtils;
 import org.lineageos.settings.misound.MiSoundUtils;
 import org.lineageos.settings.refreshrate.RefreshUtils;
@@ -50,6 +55,10 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         restore("per-app resolution", () -> ResolutionUtils.startService(context));
         restore("auto HBM", () -> FileUtils.enableService(context));
         restore("aux camera restrictions", () -> AuxCameraUtils.INSTANCE.restore(context));
+        restore("manual HBM", () -> HbmUtils.resetHbm(context));
+        // The overlay never survives a reboot; drop a running flag left by a crash or reboot
+        restore("FPS overlay", () -> PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .remove(FpsInfoService.PREF_KEY_FPS_STATE).apply());
         restore("HyperCharge", () -> HyperChargeUtils.update(context));
         // Wired boost and the reverse charging limit
         restore("charge service", () -> ChargeUtils.startService(context));

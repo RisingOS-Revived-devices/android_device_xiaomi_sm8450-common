@@ -56,6 +56,7 @@ public class AutoHBMService extends Service {
     private SharedPreferences mSharedPrefs;
 
     private int mStoredBrightness = -1;
+    private int mStoredBrightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
 
     // Sensor thread'in en son okuduğu lux; worker thread sleep sonrası burayı okur (stale closure değil).
     private volatile float mLastLux = 0f;
@@ -102,6 +103,8 @@ public class AutoHBMService extends Service {
                     mSensorManager.unregisterListener(mSensorEventListener);
                 }
                 mAutoHBMActive = false;
+                // Stale from here on; a queued evaluateLux() must not act on it.
+                mLastLux = 0f;
                 setHbmImmediate(false);
             } catch (Exception e) {
                 Log.w(TAG, "deactivateLightSensorRead failed", e);
@@ -175,10 +178,29 @@ public class AutoHBMService extends Service {
         }
     }
 
-    private void transitionToHbmEnabled() throws InterruptedException {
-        if (mStoredBrightness == -1) {
-            mStoredBrightness = getCurrentBrightness();
+    private void storeBrightness() {
+        if (mStoredBrightness != -1) {
+            return;
         }
+        mStoredBrightness = getCurrentBrightness();
+        mStoredBrightnessMode = HbmUtils.holdManualBrightness(this);
+        // A reboot or crash skips the way back, so onCreate needs these to restore them.
+        mSharedPrefs.edit()
+                .putInt(HbmUtils.KEY_AUTO_SAVED_BRIGHTNESS, mStoredBrightness)
+                .putInt(HbmUtils.KEY_AUTO_SAVED_MODE, mStoredBrightnessMode)
+                .commit();
+    }
+
+    private void clearStoredBrightness() {
+        mStoredBrightness = -1;
+        mSharedPrefs.edit()
+                .remove(HbmUtils.KEY_AUTO_SAVED_BRIGHTNESS)
+                .remove(HbmUtils.KEY_AUTO_SAVED_MODE)
+                .commit();
+    }
+
+    private void transitionToHbmEnabled() throws InterruptedException {
+        storeBrightness();
         final int startSettings = mStoredBrightness;
         final int startBacklight = readBacklightLevel();
 
@@ -187,7 +209,22 @@ public class AutoHBMService extends Service {
         rampSettingsBrightness(startSettings, DEFAULT_BRIGHTNESS);
     }
 
+    /** Manual HBM wins: it keeps the panel in HBM and takes over the brightness to go back to. */
+    private boolean handOverToManualHbm() {
+        if (!HbmUtils.isHbmEnabled(this)) {
+            return false;
+        }
+        if (mStoredBrightness != -1) {
+            HbmUtils.setLastBrightness(this, mStoredBrightness, mStoredBrightnessMode);
+            clearStoredBrightness();
+        }
+        return true;
+    }
+
     private void transitionToHbmDisabled() throws InterruptedException {
+        if (handOverToManualHbm()) {
+            return;
+        }
         if (mStoredBrightness == -1) {
             HbmUtils.writeHbm(false);
             return;
@@ -199,30 +236,27 @@ public class AutoHBMService extends Service {
         rampBacklight(startBacklight, targetBacklight);
         HbmUtils.writeHbm(false);
         try {
-            Settings.System.putInt(getContentResolver(),
-                    Settings.System.SCREEN_BRIGHTNESS, targetSettings);
+            HbmUtils.releaseManualBrightness(this, mStoredBrightnessMode, targetSettings);
         } catch (Exception e) {
             Log.w(TAG, "Failed to restore screen brightness", e);
         }
-        mStoredBrightness = -1;
+        clearStoredBrightness();
     }
 
     private void setHbmImmediate(boolean enable) {
         try {
             if (enable) {
-                if (mStoredBrightness == -1) {
-                    mStoredBrightness = getCurrentBrightness();
-                }
+                storeBrightness();
                 HbmUtils.writeHbm(true);
                 FileUtils.writeLine(BACKLIGHT, String.valueOf(BACKLIGHT_MAX));
                 Settings.System.putInt(getContentResolver(),
                         Settings.System.SCREEN_BRIGHTNESS, DEFAULT_BRIGHTNESS);
-            } else {
+            } else if (!handOverToManualHbm()) {
                 HbmUtils.writeHbm(false);
                 if (mStoredBrightness != -1) {
-                    Settings.System.putInt(getContentResolver(),
-                            Settings.System.SCREEN_BRIGHTNESS, mStoredBrightness);
-                    mStoredBrightness = -1;
+                    HbmUtils.releaseManualBrightness(this, mStoredBrightnessMode,
+                            mStoredBrightness);
+                    clearStoredBrightness();
                 }
             }
         } catch (Throwable t) {
@@ -263,8 +297,10 @@ public class AutoHBMService extends Service {
         return onThreshold * HBM_OFF_THRESHOLD_RATIO;
     }
 
-    private boolean canToggleState() {
-        return SystemClock.elapsedRealtime() - mLastToggleTime >= MIN_TOGGLE_INTERVAL_MS;
+    /** The delay, stretched so the toggle lands at least MIN_TOGGLE_INTERVAL_MS after the last. */
+    private long toggleWaitMs(long delaySec) {
+        return Math.max(delaySec * 1000L,
+                mLastToggleTime + MIN_TOGGLE_INTERVAL_MS - SystemClock.elapsedRealtime());
     }
 
     private void markToggled() {
@@ -275,87 +311,14 @@ public class AutoHBMService extends Service {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            try {
-                if (event == null || event.values == null || event.values.length == 0) {
-                    return;
-                }
-                // The light sensor is on-change: a steady light sends few events, so an
-                // average over the last N events stays stuck on old readings. The enable and
-                // disable delays below already require the new level to hold.
-                mLastLux = event.values[0];
-                final float lux = mLastLux;
-
-                final KeyguardManager km = mKeyguardManager;
-                final boolean keyguardShowing = km != null && km.isKeyguardLocked();
-
-                final float luxThreshold = readFloatPref(
-                        HbmUtils.KEY_AUTO_HBM_THRESHOLD, DEFAULT_LUX_THRESHOLD);
-                final float offThreshold = getOffThreshold(luxThreshold);
-                final long timeToEnableHBM = DEFAULT_ENABLE_TIME_SEC;
-                final long timeToDisableHBM = readLongPref(
-                        HbmUtils.KEY_HBM_DISABLE_TIME, DEFAULT_DISABLE_TIME_SEC);
-
-                if (mTransitionInProgress) {
-                    return;
-                }
-
-                if (lux > luxThreshold) {
-                    cancelPendingDisable();
-                    if ((!mAutoHBMActive || !isCurrentlyEnabled())
-                            && !keyguardShowing
-                            && canToggleState()) {
-                        final Future<?> pendingEnable = mPendingEnable;
-                        if (pendingEnable == null || pendingEnable.isDone()) {
-                            final float enableLuxThreshold = luxThreshold;
-                            mPendingEnable = safeSubmit(() -> {
-                                if (timeToEnableHBM > 0L) {
-                                    try {
-                                        Thread.sleep(timeToEnableHBM * 1000L);
-                                    } catch (InterruptedException ignored) {
-                                        return;
-                                    }
-                                }
-                                if (mLastLux > enableLuxThreshold
-                                        && !mAutoHBMActive && canToggleState()) {
-                                    enableHBM(true);
-                                    if (isCurrentlyEnabled()) {
-                                        mAutoHBMActive = true;
-                                        markToggled();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                } else if (lux < offThreshold) {
-                    cancelPendingEnable();
-                    final Future<?> pending = mPendingDisable;
-                    if (mAutoHBMActive && (pending == null || pending.isDone())) {
-                        final float disableLuxThreshold = offThreshold;
-                        mPendingDisable = safeSubmit(() -> {
-                            if (timeToDisableHBM > 0L) {
-                                try {
-                                    Thread.sleep(timeToDisableHBM * 1000L);
-                                } catch (InterruptedException ignored) {
-                                    return;
-                                }
-                            }
-                            if (mLastLux < disableLuxThreshold && mAutoHBMActive
-                                    && canToggleState()) {
-                                enableHBM(false);
-                                if (!isCurrentlyEnabled()) {
-                                    mAutoHBMActive = false;
-                                    markToggled();
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    cancelPendingEnable();
-                    cancelPendingDisable();
-                }
-            } catch (Throwable t) {
-                Log.e(TAG, "onSensorChanged failed", t);
+            if (event == null || event.values == null || event.values.length == 0) {
+                return;
             }
+            // The light sensor is on-change: a steady light sends few events, so an
+            // average over the last N events stays stuck on old readings. The enable and
+            // disable delays below already require the new level to hold.
+            mLastLux = event.values[0];
+            evaluateLux();
         }
 
         @Override
@@ -363,6 +326,91 @@ public class AutoHBMService extends Service {
             // do nothing
         }
     };
+
+    /**
+     * Acts on the last reading: on every event, after a toggle and on unlock, as steady light
+     * sends no new event for one skipped during a ramp or on the keyguard.
+     */
+    private void evaluateLux() {
+        try {
+            final float lux = mLastLux;
+
+            final KeyguardManager km = mKeyguardManager;
+            final boolean keyguardShowing = km != null && km.isKeyguardLocked();
+
+            final float luxThreshold = Math.max(HbmUtils.THRESHOLD_MIN, readFloatPref(
+                    HbmUtils.KEY_AUTO_HBM_THRESHOLD, DEFAULT_LUX_THRESHOLD));
+            final float offThreshold = getOffThreshold(luxThreshold);
+            final long timeToEnableHBM = DEFAULT_ENABLE_TIME_SEC;
+            final long timeToDisableHBM = readLongPref(
+                    HbmUtils.KEY_HBM_DISABLE_TIME, DEFAULT_DISABLE_TIME_SEC);
+
+            if (mTransitionInProgress) {
+                return;
+            }
+
+            if (lux > luxThreshold) {
+                cancelPendingDisable();
+                // Manual HBM owns the brightness while on; holding it here would save its 255 as the user's.
+                if ((!mAutoHBMActive || !isCurrentlyEnabled()) && !keyguardShowing
+                        && !HbmUtils.isHbmEnabled(this)) {
+                    final Future<?> pendingEnable = mPendingEnable;
+                    if (pendingEnable == null || pendingEnable.isDone()) {
+                        final float enableLuxThreshold = luxThreshold;
+                        mPendingEnable = safeSubmit(() -> {
+                            final long waitMs = toggleWaitMs(timeToEnableHBM);
+                            if (waitMs > 0L) {
+                                try {
+                                    Thread.sleep(waitMs);
+                                } catch (InterruptedException ignored) {
+                                    return;
+                                }
+                            }
+                            if (mLastLux > enableLuxThreshold
+                                    && (!mAutoHBMActive || !isCurrentlyEnabled())
+                                    && !HbmUtils.isHbmEnabled(this)) {
+                                enableHBM(true);
+                                if (isCurrentlyEnabled()) {
+                                    mAutoHBMActive = true;
+                                    markToggled();
+                                    safeSubmit(this::evaluateLux);
+                                }
+                            }
+                        });
+                    }
+                }
+            } else if (lux < offThreshold) {
+                cancelPendingEnable();
+                final Future<?> pending = mPendingDisable;
+                if (mAutoHBMActive && (pending == null || pending.isDone())) {
+                    final float disableLuxThreshold = offThreshold;
+                    mPendingDisable = safeSubmit(() -> {
+                        final long waitMs = toggleWaitMs(timeToDisableHBM);
+                        if (waitMs > 0L) {
+                            try {
+                                Thread.sleep(waitMs);
+                            } catch (InterruptedException ignored) {
+                                return;
+                            }
+                        }
+                        if (mLastLux < disableLuxThreshold && mAutoHBMActive) {
+                            enableHBM(false);
+                            if (!isCurrentlyEnabled()) {
+                                mAutoHBMActive = false;
+                                markToggled();
+                                safeSubmit(this::evaluateLux);
+                            }
+                        }
+                    });
+                }
+            } else {
+                cancelPendingEnable();
+                cancelPendingDisable();
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "evaluateLux failed", t);
+        }
+    }
 
     private float readFloatPref(String key, float defaultVal) {
         try {
@@ -408,6 +456,8 @@ public class AutoHBMService extends Service {
                 activateLightSensorRead();
             } else if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
                 deactivateLightSensorRead();
+            } else if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+                evaluateLux();
             }
         }
     };
@@ -423,13 +473,22 @@ public class AutoHBMService extends Service {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
 
+        mStoredBrightness = mSharedPrefs.getInt(HbmUtils.KEY_AUTO_SAVED_BRIGHTNESS, -1);
+        mStoredBrightnessMode = mSharedPrefs.getInt(HbmUtils.KEY_AUTO_SAVED_MODE,
+                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        if (mStoredBrightness != -1) {
+            safeSubmit(() -> setHbmImmediate(false));
+        }
+
         final IntentFilter screenStateFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         screenStateFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // API 33+ explicit export flag zorunlu.
+                // API 33+ explicit export flag zorunlu. USER_PRESENT comes from SystemUI, which
+                // NOT_EXPORTED drops; all three actions are protected broadcasts.
                 registerReceiver(mScreenStateReceiver, screenStateFilter,
-                        Context.RECEIVER_NOT_EXPORTED);
+                        Context.RECEIVER_EXPORTED);
             } else {
                 registerReceiver(mScreenStateReceiver, screenStateFilter);
             }
