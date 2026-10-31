@@ -128,7 +128,7 @@
     <string name="core_control_title">Điều khiển nhân</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">Phải giữ ít nhất hai nhân tiết kiệm hoạt động</string>
-    <string name="core_control_note">Nhấn vào một nhân để tắt hoặc bật lại. Ít nhất hai trong các nhân 0 đến 5 luôn hoạt động. Các nhân sẽ bật lại sau khi khởi động lại.</string>
+    <string name="core_control_note">Nhấn vào một nhân để tắt hoặc bật lại. Nhân 0 và ít nhất một trong các nhân 1 đến 3 luôn hoạt động. Các nhân sẽ bật lại sau khi khởi động lại.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Đã bật cấu hình hiệu năng</string>
     <string name="perf_mode_notification">Điện thoại chạy hết tốc độ và có thể nóng hơn.</string>
     <string name="gaming_mode_title">Đã bật cấu hình chơi game</string>
-    <string name="gaming_mode_notification">Đã đóng các ứng dụng chạy nền để trò chơi có thêm tài nguyên.</string>
+    <string name="gaming_mode_notification">Điện thoại dùng cấu hình nhiệt chơi game và có thể nóng hơn.</string>
     <string name="hypercharge_switch">Dùng HyperCharge</string>
     <string name="hypercharge_limit_title">Giới hạn công suất sạc</string>
     <string name="hypercharge_note">Chỉ áp dụng với bộ sạc HyperCharge. Khi tắt HyperCharge, sạc bị giới hạn ở 33W. Bảo vệ nhiệt luôn hoạt động.</string>

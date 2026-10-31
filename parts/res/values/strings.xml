@@ -153,7 +153,7 @@
     <string name="core_control_title">Core control</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">At least two efficiency cores must stay online</string>
-    <string name="core_control_note">Tap a core to take it offline or bring it back. At least two of cores 0 to 5 always stay online. Cores come back after a reboot.</string>
+    <string name="core_control_note">Tap a core to take it offline or bring it back. Core 0 and at least one of cores 1 to 3 always stay online. Cores come back after a reboot.</string>
 
     <!-- ZRAM -->
     <string name="zram_title">ZRAM</string>
@@ -236,7 +236,7 @@
     <string name="perf_mode_title">Performance profile on</string>
     <string name="perf_mode_notification">The phone runs at full speed and may get warmer.</string>
     <string name="gaming_mode_title">Gaming profile on</string>
-    <string name="gaming_mode_notification">Background apps were closed to give the game more room.</string>
+    <string name="gaming_mode_notification">The phone uses the gaming thermal profile and may get warmer.</string>
     <string name="hypercharge_switch">Use HyperCharge</string>
     <string name="hypercharge_limit_title">Charging power limit</string>
     <string name="hypercharge_note">Applies only with a HyperCharge charger. With HyperCharge off, charging is capped at 33W. Thermal protection always applies.</string>

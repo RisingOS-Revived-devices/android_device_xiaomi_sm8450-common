@@ -128,7 +128,7 @@
     <string name="core_control_title">Kernsteuerung</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">Mindestens zwei Effizienzkerne müssen aktiv bleiben</string>
-    <string name="core_control_note">Tippe auf einen Kern, um ihn zu deaktivieren oder wieder zu aktivieren. Mindestens zwei der Kerne 0 bis 5 bleiben immer aktiv. Nach einem Neustart sind alle Kerne wieder aktiv.</string>
+    <string name="core_control_note">Tippe auf einen Kern, um ihn zu deaktivieren oder wieder zu aktivieren. Kern 0 und mindestens einer der Kerne 1 bis 3 bleiben immer aktiv. Nach einem Neustart sind alle Kerne wieder aktiv.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Leistungsprofil aktiv</string>
     <string name="perf_mode_notification">Das Telefon läuft mit voller Leistung und kann wärmer werden.</string>
     <string name="gaming_mode_title">Gaming-Profil aktiv</string>
-    <string name="gaming_mode_notification">Hintergrund-Apps wurden geschlossen, um dem Spiel mehr Platz zu geben.</string>
+    <string name="gaming_mode_notification">Das Telefon nutzt das thermische Gaming-Profil und kann wärmer werden.</string>
     <string name="hypercharge_switch">HyperCharge verwenden</string>
     <string name="hypercharge_limit_title">Ladeleistungsgrenze</string>
     <string name="hypercharge_note">Gilt nur mit einem HyperCharge-Ladegerät. Ist HyperCharge aus, wird mit höchstens 33W geladen. Der Überhitzungsschutz greift immer.</string>

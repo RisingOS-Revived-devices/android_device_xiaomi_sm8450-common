@@ -128,7 +128,7 @@
     <string name="core_control_title">核心控制</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">至少需要保留两个能效核心在线</string>
-    <string name="core_control_note">点按核心可将其下线或重新上线。核心 0 至 5 中至少两个始终保持在线。重启后核心会恢复在线。</string>
+    <string name="core_control_note">点按核心可将其下线或重新上线。核心 0 以及核心 1 至 3 中至少一个始终保持在线。重启后核心会恢复在线。</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">性能配置已开启</string>
     <string name="perf_mode_notification">手机以全速运行，可能会更热。</string>
     <string name="gaming_mode_title">游戏配置已开启</string>
-    <string name="gaming_mode_notification">已关闭后台应用，为游戏腾出更多空间。</string>
+    <string name="gaming_mode_notification">手机正在使用游戏温控配置，可能会更热。</string>
     <string name="hypercharge_switch">使用 HyperCharge</string>
     <string name="hypercharge_limit_title">充电功率上限</string>
     <string name="hypercharge_note">仅在使用 HyperCharge 充电器时生效。关闭 HyperCharge 后，充电功率上限为 33W。温度保护始终有效。</string>

@@ -128,7 +128,7 @@
     <string name="core_control_title">Kontrol inti</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">Minimal dua inti efisiensi harus tetap aktif</string>
-    <string name="core_control_note">Ketuk inti untuk menonaktifkan atau mengaktifkannya kembali. Minimal dua dari inti 0 hingga 5 selalu aktif. Inti kembali aktif setelah mulai ulang.</string>
+    <string name="core_control_note">Ketuk inti untuk menonaktifkan atau mengaktifkannya kembali. Inti 0 dan minimal satu dari inti 1 hingga 3 selalu aktif. Inti kembali aktif setelah mulai ulang.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Profil performa aktif</string>
     <string name="perf_mode_notification">Ponsel berjalan dengan kecepatan penuh dan bisa menjadi lebih hangat.</string>
     <string name="gaming_mode_title">Profil gaming aktif</string>
-    <string name="gaming_mode_notification">Aplikasi latar belakang ditutup agar game punya ruang lebih.</string>
+    <string name="gaming_mode_notification">Ponsel memakai profil termal gaming dan bisa menjadi lebih hangat.</string>
     <string name="hypercharge_switch">Gunakan HyperCharge</string>
     <string name="hypercharge_limit_title">Batas daya pengisian</string>
     <string name="hypercharge_note">Hanya berlaku dengan pengisi daya HyperCharge. Saat HyperCharge mati, pengisian dibatasi 33W. Perlindungan termal selalu aktif.</string>

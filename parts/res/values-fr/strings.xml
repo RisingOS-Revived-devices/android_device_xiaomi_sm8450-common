@@ -128,7 +128,7 @@
     <string name="core_control_title">Contrôle des cœurs</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">Au moins deux cœurs d\'efficacité doivent rester actifs</string>
-    <string name="core_control_note">Appuyez sur un cœur pour le désactiver ou le réactiver. Au moins deux des cœurs 0 à 5 restent toujours actifs. Les cœurs reviennent après un redémarrage.</string>
+    <string name="core_control_note">Appuyez sur un cœur pour le désactiver ou le réactiver. Le cœur 0 et au moins un des cœurs 1 à 3 restent toujours actifs. Les cœurs reviennent après un redémarrage.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Profil performance activé</string>
     <string name="perf_mode_notification">Le téléphone tourne à pleine vitesse et peut chauffer davantage.</string>
     <string name="gaming_mode_title">Profil jeu activé</string>
-    <string name="gaming_mode_notification">Les applis en arrière-plan ont été fermées pour laisser plus de place au jeu.</string>
+    <string name="gaming_mode_notification">Le téléphone utilise le profil thermique jeu et peut chauffer davantage.</string>
     <string name="hypercharge_switch">Utiliser HyperCharge</string>
     <string name="hypercharge_limit_title">Limite de puissance de charge</string>
     <string name="hypercharge_note">S\'applique uniquement avec un chargeur HyperCharge. HyperCharge désactivé, la charge est limitée à 33W. La protection thermique reste toujours active.</string>

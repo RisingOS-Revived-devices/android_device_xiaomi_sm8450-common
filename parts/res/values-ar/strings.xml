@@ -128,7 +128,7 @@
     <string name="core_control_title">التحكم في الأنوية</string>
     <string name="core_label">المعالج <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">يجب أن تبقى نواتان للكفاءة على الأقل قيد التشغيل</string>
-    <string name="core_control_note">انقر على نواة لإيقافها أو إعادة تشغيلها. تبقى نواتان على الأقل من الأنوية 0 إلى 5 قيد التشغيل دائمًا. تعود الأنوية بعد إعادة التشغيل.</string>
+    <string name="core_control_note">انقر على نواة لإيقافها أو إعادة تشغيلها. تبقى النواة 0 ونواة واحدة على الأقل من الأنوية 1 إلى 3 قيد التشغيل دائمًا. تعود الأنوية بعد إعادة التشغيل.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">ملف الأداء مفعّل</string>
     <string name="perf_mode_notification">يعمل الهاتف بأقصى سرعة وقد ترتفع حرارته.</string>
     <string name="gaming_mode_title">ملف الألعاب مفعّل</string>
-    <string name="gaming_mode_notification">تم إغلاق التطبيقات في الخلفية لمنح اللعبة مساحة أكبر.</string>
+    <string name="gaming_mode_notification">يستخدم الهاتف الملف الحراري للألعاب وقد ترتفع حرارته.</string>
     <string name="hypercharge_switch">استخدام HyperCharge</string>
     <string name="hypercharge_limit_title">حد قدرة الشحن</string>
     <string name="hypercharge_note">يُطبَّق فقط مع شاحن HyperCharge. عند إيقاف HyperCharge يكون الشحن محدودًا بـ 33W. الحماية الحرارية مفعّلة دائمًا.</string>

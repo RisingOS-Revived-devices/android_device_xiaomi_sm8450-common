@@ -158,21 +158,16 @@ public class FpsInfoService extends Service {
     }
 
     protected static class CurFPSThread extends Thread {
-        private boolean mInterrupt = false;
         private final Handler mHandler;
 
         CurFPSThread(Handler handler) {
             mHandler = handler;
         }
 
-        public void interrupt() {
-            mInterrupt = true;
-        }
-
         @Override
         public void run() {
             try {
-                while (!mInterrupt) {
+                while (!isInterrupted()) {
                     sleep(1000);
                     String fpsVal = readOneLine(FPS_PATH);
                     mHandler.sendMessage(mHandler.obtainMessage(1, fpsVal));
@@ -289,7 +284,7 @@ public class FpsInfoService extends Service {
     }
 
     private void broadcastServiceState(boolean started) {
-        Intent intent = new Intent(ACTION_FPS_SERVICE_CHANGED);
+        Intent intent = new Intent(ACTION_FPS_SERVICE_CHANGED).setPackage(getPackageName());
         intent.putExtra(EXTRA_FPS_STATE, started);
         intent.setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY);
         sendBroadcastAsUser(intent, UserHandle.CURRENT);

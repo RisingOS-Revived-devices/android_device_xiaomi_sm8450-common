@@ -32,12 +32,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.lineageos.settings.R
 import org.lineageos.settings.display.FpsInfoService
 import org.lineageos.settings.ui.components.MainSwitchCard
 import org.lineageos.settings.ui.components.NoteText
+import org.lineageos.settings.ui.components.OnPrefChanged
 import org.lineageos.settings.ui.components.PartsPage
 import org.lineageos.settings.ui.components.WarningCard
 import java.io.File
@@ -49,6 +51,9 @@ fun FpsOverlayScreen(onBack: () -> Unit) {
     val prefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
     val supported = remember { File(FpsInfoService.FPS_PATH).exists() }
     var running by remember { mutableStateOf(prefs.getBoolean(FpsInfoService.PREF_KEY_FPS_STATE, false)) }
+    OnPrefChanged(FpsInfoService.PREF_KEY_FPS_STATE) {
+        running = prefs.getBoolean(FpsInfoService.PREF_KEY_FPS_STATE, false)
+    }
     PartsPage(stringResource(R.string.fps_overlay_title), onBack) {
         item {
             MainSwitchCard(stringResource(R.string.fps_overlay_switch), running && supported, enabled = supported) {
@@ -80,6 +85,7 @@ private class UselessEffects(private val context: Context, private val scope: Co
     private val audioManager = context.getSystemService(AudioManager::class.java)
     private var mediaPlayer: MediaPlayer? = null
     private var originalVolume = 0
+    private var flickerJob: Job? = null
 
     private val canVibrate get() = vibrator != null && vibrator.hasVibrator()
 
@@ -99,7 +105,9 @@ private class UselessEffects(private val context: Context, private val scope: Co
 
     fun flicker() {
         val window = (context as? Activity)?.window ?: return
-        scope.launch {
+        // A second run would save the first one's 10 % as the brightness to go back to.
+        if (flickerJob?.isActive == true) return
+        flickerJob = scope.launch {
             val params = window.attributes
             val original = params.screenBrightness
             try {
@@ -127,8 +135,8 @@ private class UselessEffects(private val context: Context, private val scope: Co
                 audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0)
             val player = MediaPlayer.create(context, R.raw.useless_sound) ?: return restoreVolume()
             mediaPlayer = player
-            player.setOnCompletionListener { release(); restoreVolume() }
-            player.setOnErrorListener { _, _, _ -> release(); restoreVolume(); true }
+            player.setOnCompletionListener { release() }
+            player.setOnErrorListener { _, _, _ -> release(); true }
             player.start()
         } catch (e: Exception) {
             Log.e("UselessMode", "Error playing sound", e)
@@ -145,6 +153,7 @@ private class UselessEffects(private val context: Context, private val scope: Co
         mediaPlayer?.let {
             runCatching { it.stop() }
             it.release()
+            restoreVolume()
         }
         mediaPlayer = null
     }

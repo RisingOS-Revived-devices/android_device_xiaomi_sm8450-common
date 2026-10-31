@@ -60,7 +60,7 @@ public class FpsInfoTileService extends TileService {
         mIsShowing = isRunning();
         updateTile();
         IntentFilter filter = new IntentFilter(FpsInfoService.ACTION_FPS_SERVICE_CHANGED);
-        registerReceiver(mServiceStateReceiver, filter, Context.RECEIVER_EXPORTED);
+        registerReceiver(mServiceStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         mReceiverRegistered = true;
     }
 

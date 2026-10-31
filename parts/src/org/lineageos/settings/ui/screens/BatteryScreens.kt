@@ -12,17 +12,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.lineageos.settings.R
 import org.lineageos.settings.charge.ChargeUtils
@@ -99,12 +101,16 @@ fun ReverseChargeScreen(onBack: () -> Unit) {
     val supported = remember { ChargeUtils.isReverseSupported() }
     var on by remember { mutableStateOf(false) }
     var limit by remember { mutableIntStateOf(ChargeUtils.REVERSE_LIMITS.indexOf(ChargeUtils.getReverseLimit(context))) }
+    val scope = rememberCoroutineScope()
     // The firmware or ChargeService can stop reverse charging while this page is open.
-    LaunchedEffect(supported) {
-        while (supported) {
-            on = withContext(Dispatchers.IO) { ChargeUtils.isReverseOn() }
-            delay(REVERSE_REFRESH_MS)
+    LifecycleResumeEffect(supported) {
+        val poll = scope.launch {
+            while (supported) {
+                on = withContext(Dispatchers.IO) { ChargeUtils.isReverseOn() }
+                delay(REVERSE_REFRESH_MS)
+            }
         }
+        onPauseOrDispose { poll.cancel() }
     }
     PartsPage(stringResource(R.string.reverse_charge_title), onBack) {
         item {

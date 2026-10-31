@@ -128,7 +128,7 @@
     <string name="core_control_title">कोर कंट्रोल</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">कम से कम दो एफ़िशिएंसी कोर चालू रहने चाहिए</string>
-    <string name="core_control_note">किसी कोर को बंद या फिर से चालू करने के लिए उस पर टैप करें। कोर 0 से 5 में से कम से कम दो हमेशा चालू रहते हैं। रीबूट के बाद कोर वापस चालू हो जाते हैं।</string>
+    <string name="core_control_note">किसी कोर को बंद या फिर से चालू करने के लिए उस पर टैप करें। कोर 0 और कोर 1 से 3 में से कम से कम एक हमेशा चालू रहते हैं। रीबूट के बाद कोर वापस चालू हो जाते हैं।</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">परफ़ॉर्मेंस प्रोफ़ाइल चालू है</string>
     <string name="perf_mode_notification">फ़ोन पूरी रफ़्तार से चल रहा है और ज़्यादा गर्म हो सकता है।</string>
     <string name="gaming_mode_title">गेमिंग प्रोफ़ाइल चालू है</string>
-    <string name="gaming_mode_notification">गेम को ज़्यादा जगह देने के लिए बैकग्राउंड ऐप्स बंद कर दिए गए।</string>
+    <string name="gaming_mode_notification">फ़ोन गेमिंग थर्मल प्रोफ़ाइल का उपयोग कर रहा है और ज़्यादा गर्म हो सकता है।</string>
     <string name="hypercharge_switch">HyperCharge इस्तेमाल करें</string>
     <string name="hypercharge_limit_title">चार्जिंग पावर सीमा</string>
     <string name="hypercharge_note">यह सिर्फ़ HyperCharge चार्जर पर लागू होता है। HyperCharge बंद होने पर चार्जिंग 33W तक सीमित रहती है। थर्मल सुरक्षा हमेशा लागू रहती है।</string>

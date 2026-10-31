@@ -128,7 +128,7 @@
     <string name="core_control_title">Управление ядрами</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">Должны оставаться включёнными минимум два энергоэффективных ядра</string>
-    <string name="core_control_note">Нажмите на ядро, чтобы отключить или снова включить его. Минимум два из ядер 0–5 всегда остаются включёнными. После перезагрузки ядра включаются снова.</string>
+    <string name="core_control_note">Нажмите на ядро, чтобы отключить или снова включить его. Ядро 0 и минимум одно из ядер 1–3 всегда остаются включёнными. После перезагрузки ядра включаются снова.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Профиль производительности включён</string>
     <string name="perf_mode_notification">Телефон работает на полной скорости и может сильнее нагреваться.</string>
     <string name="gaming_mode_title">Игровой профиль включён</string>
-    <string name="gaming_mode_notification">Фоновые приложения закрыты, чтобы освободить место для игры.</string>
+    <string name="gaming_mode_notification">Телефон использует игровой тепловой профиль и может сильнее нагреваться.</string>
     <string name="hypercharge_switch">Использовать HyperCharge</string>
     <string name="hypercharge_limit_title">Ограничение мощности зарядки</string>
     <string name="hypercharge_note">Работает только с зарядным устройством HyperCharge. Если HyperCharge выключен, мощность зарядки ограничена 33W. Тепловая защита действует всегда.</string>

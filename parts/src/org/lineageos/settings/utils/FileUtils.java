@@ -81,6 +81,8 @@ public final class FileUtils {
         try {
             writer = new BufferedWriter(new FileWriter(fileName));
             writer.write(value);
+            // The store handler runs here, so a rejected write ends up in the catch below.
+            writer.flush();
         } catch (FileNotFoundException e) {
             Log.w(TAG, "No such file " + fileName + " for writing", e);
             return false;

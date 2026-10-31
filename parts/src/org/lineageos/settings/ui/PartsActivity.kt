@@ -95,7 +95,9 @@ class PartsActivity : ComponentActivity() {
         /** Opens the dashboard directly on [route]; used by the QS tiles. */
         @JvmStatic
         fun intentFor(context: Context, route: String): Intent =
+            // The identifier gives each route its own PendingIntent; extras do not count.
             Intent(context, PartsActivity::class.java)
+                .setIdentifier(route)
                 .putExtra(EXTRA_ROUTE, route)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
@@ -140,6 +142,8 @@ private fun PartsApp(pendingRoute: String?, onRouteConsumed: () -> Unit) {
     }
 
     fun navigate(route: Route) {
+        // The dashboard stays clickable while it animates out, a second tap must not stack.
+        if (stack.last() != Route.DASHBOARD.key) return
         stack = stack + route.key
         refreshTick++
     }

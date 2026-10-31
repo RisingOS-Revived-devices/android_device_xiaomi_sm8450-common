@@ -128,7 +128,7 @@
     <string name="core_control_title">Çekirdek kontrolü</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">En az iki verimlilik çekirdeği açık kalmalı</string>
-    <string name="core_control_note">Bir çekirdeği kapatmak veya yeniden açmak için ona dokunun. 0-5 arasındaki çekirdeklerden en az ikisi her zaman açık kalır. Yeniden başlatmadan sonra çekirdekler geri gelir.</string>
+    <string name="core_control_note">Bir çekirdeği kapatmak veya yeniden açmak için ona dokunun. Çekirdek 0 ve 1-3 arasındaki çekirdeklerden en az biri her zaman açık kalır. Yeniden başlatmadan sonra çekirdekler geri gelir.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Performans profili açık</string>
     <string name="perf_mode_notification">Telefon tam hızda çalışıyor ve daha fazla ısınabilir.</string>
     <string name="gaming_mode_title">Oyun profili açık</string>
-    <string name="gaming_mode_notification">Oyuna daha fazla yer açmak için arka plandaki uygulamalar kapatıldı.</string>
+    <string name="gaming_mode_notification">Telefon oyun termal profilini kullanıyor ve daha fazla ısınabilir.</string>
     <string name="hypercharge_switch">HyperCharge\'ı kullan</string>
     <string name="hypercharge_limit_title">Şarj gücü sınırı</string>
     <string name="hypercharge_note">Yalnızca HyperCharge şarj aletiyle geçerlidir. HyperCharge kapalıyken şarj 33W ile sınırlanır. Termal koruma her zaman devrededir.</string>

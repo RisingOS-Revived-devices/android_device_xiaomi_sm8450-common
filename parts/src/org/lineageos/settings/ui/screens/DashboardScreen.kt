@@ -60,6 +60,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -94,6 +95,7 @@ import org.lineageos.settings.resolution.ResolutionUtils
 import org.lineageos.settings.saturation.SaturationUtils
 import org.lineageos.settings.ui.Route
 import org.lineageos.settings.ui.components.FeatureCard
+import org.lineageos.settings.ui.components.OnPrefChanged
 import org.lineageos.settings.ui.components.PartsCard
 import org.lineageos.settings.ui.components.QuickToggle
 import org.lineageos.settings.ui.components.RoundIconButton
@@ -130,14 +132,20 @@ fun DashboardScreen(refreshTick: Int, navigate: (Route) -> Unit) {
     val context = LocalContext.current
     val prefs = remember { PreferenceManager.getDefaultSharedPreferences(context) }
 
-    val state by produceState(DashboardState(), refreshTick) {
+    // Tiles tapped from the shade do not pause the activity, so refreshTick misses them.
+    var prefTick by remember { mutableIntStateOf(0) }
+    OnPrefChanged(HbmUtils.KEY_HBM_SWITCH) { prefTick++ }
+    OnPrefChanged(FpsInfoService.PREF_KEY_FPS_STATE) { prefTick++ }
+    OnPrefChanged(PowerProfileUtil.PREF_MODE) { prefTick++ }
+
+    val state by produceState(DashboardState(), refreshTick, prefTick) {
         value = withContext(Dispatchers.IO) { readDashboardState(context) }
     }
 
     // Quick toggle states, re-read whenever the dashboard comes back into view.
-    var hbmOn by remember(refreshTick) { mutableStateOf(HbmUtils.isHbmEnabled(context)) }
-    var autoHbmOn by remember(refreshTick) { mutableStateOf(HbmUtils.isAutoHbmEnabled(context)) }
-    var fpsOn by remember(refreshTick) { mutableStateOf(prefs.getBoolean(FpsInfoService.PREF_KEY_FPS_STATE, false)) }
+    var hbmOn by remember(refreshTick, prefTick) { mutableStateOf(HbmUtils.isHbmEnabled(context)) }
+    var autoHbmOn by remember(refreshTick, prefTick) { mutableStateOf(HbmUtils.isAutoHbmEnabled(context)) }
+    var fpsOn by remember(refreshTick, prefTick) { mutableStateOf(prefs.getBoolean(FpsInfoService.PREF_KEY_FPS_STATE, false)) }
     var hyperChargeOn by remember(refreshTick) { mutableStateOf(HyperChargeUtils.isEnabled(context)) }
     val hbmSupported = remember { HbmUtils.isSupported() }
     val fpsSupported = remember { File(FpsInfoService.FPS_PATH).exists() }
@@ -196,6 +204,7 @@ fun DashboardScreen(refreshTick: Int, navigate: (Route) -> Unit) {
                 when {
                     !state.misoundSupported -> unsupported
                     state.dolbyOn -> stringResource(R.string.misound_card_dolby)
+                    state.misoundOn -> on
                     else -> off
                 }),
             Card(Route.CLEAR_SPEAKER, Icons.Rounded.WaterDrop, R.string.clear_speaker_title, stringResource(R.string.clear_speaker_card_summary)),
@@ -204,7 +213,6 @@ fun DashboardScreen(refreshTick: Int, navigate: (Route) -> Unit) {
             Card(Route.AUX_CAMERA, Icons.Rounded.CameraAlt, R.string.aux_camera_title,
                 if (AuxCameraUtils.isEnabled(context)) on else off),
             Card(Route.FPS_OVERLAY, Icons.Rounded.Timer, R.string.fps_overlay_title,
-                    state.misoundOn -> on
                 if (!fpsSupported) unsupported else if (fpsOn) on else off),
             Card(Route.USELESS, Icons.Rounded.SentimentVerySatisfied, R.string.useless_mode_title, if (state.useless) on else off),
         )),
@@ -345,6 +353,7 @@ fun setFpsOverlay(context: Context, enabled: Boolean) {
 private fun readDashboardState(context: Context): DashboardState {
     val zram = ZramUtils(context)
     val coresOnline = (0 until CoreControlUtils.NUM_CORES).count { CoreControlUtils.isCoreOnline(it) }
+    MiSoundUtils.getInstance(context).refresh()
     return DashboardState(
         systemResolution = ResolutionUtils(context).globalState,
         saturation = SaturationUtils.get(context),
@@ -353,7 +362,6 @@ private fun readDashboardState(context: Context): DashboardState {
         coresOnline = coresOnline,
         powerProfile = PowerProfileUtil.getMode(context),
         hyperChargeLimit = context.resources.getStringArray(R.array.hypercharge_limit_values)
-    MiSoundUtils.getInstance(context).refresh()
             .indexOf(HyperChargeUtils.getLimit(context)),
         reverseOn = ChargeUtils.isReverseSupported() && ChargeUtils.isReverseOn(),
         reverseLimit = ChargeUtils.getReverseLimit(context),

@@ -128,7 +128,7 @@
     <string name="core_control_title">Controle de núcleos</string>
     <string name="core_label">CPU <xliff:g id="core">%1$d</xliff:g></string>
     <string name="core_control_min_online">Pelo menos dois núcleos de eficiência precisam ficar ativos</string>
-    <string name="core_control_note">Toque em um núcleo para desligá-lo ou religá-lo. Pelo menos dois dos núcleos 0 a 5 sempre ficam ativos. Os núcleos voltam após reiniciar.</string>
+    <string name="core_control_note">Toque em um núcleo para desligá-lo ou religá-lo. O núcleo 0 e pelo menos um dos núcleos 1 a 3 sempre ficam ativos. Os núcleos voltam após reiniciar.</string>
 
 
     <string name="zram_title">ZRAM</string>
@@ -234,7 +234,7 @@
     <string name="perf_mode_title">Perfil de desempenho ativado</string>
     <string name="perf_mode_notification">O telefone funciona em velocidade máxima e pode esquentar mais.</string>
     <string name="gaming_mode_title">Perfil de jogos ativado</string>
-    <string name="gaming_mode_notification">Os apps em segundo plano foram fechados para dar mais espaço ao jogo.</string>
+    <string name="gaming_mode_notification">O telefone usa o perfil térmico de jogos e pode esquentar mais.</string>
     <string name="hypercharge_switch">Usar HyperCharge</string>
     <string name="hypercharge_limit_title">Limite de potência de carga</string>
     <string name="hypercharge_note">Só vale com um carregador HyperCharge. Com o HyperCharge desligado, a carga fica limitada a 33W. A proteção térmica sempre se aplica.</string>
