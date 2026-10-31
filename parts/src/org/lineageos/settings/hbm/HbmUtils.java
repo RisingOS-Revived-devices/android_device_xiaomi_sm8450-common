@@ -11,6 +11,7 @@ package org.lineageos.settings.hbm;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.SystemProperties;
 import android.provider.Settings;
 
 import androidx.preference.PreferenceManager;
@@ -26,11 +27,11 @@ public final class HbmUtils {
     public static final String KEY_AUTO_HBM_THRESHOLD = "auto_hbm_threshold";
     public static final String KEY_HBM_DISABLE_TIME = "hbm_disable_time";
     private static final String KEY_LAST_BRIGHTNESS = "last_brightness";
-
     private static final String KEY_LAST_BRIGHTNESS_MODE = "last_brightness_mode";
     // What Auto HBM has to put back; set only while it holds the brightness.
     public static final String KEY_AUTO_SAVED_BRIGHTNESS = "auto_hbm_saved_brightness";
     public static final String KEY_AUTO_SAVED_MODE = "auto_hbm_saved_mode";
+
     // Auto HBM turns off below 65 % of the threshold, so 0 lux would never turn it off
     public static final int THRESHOLD_MIN = 1000;
     public static final int THRESHOLD_MAX = 60000;
@@ -43,6 +44,7 @@ public final class HbmUtils {
     // mi_disp feature interface: "<feature id> <value>", DISP_FEATURE_HBM is 1.
     private static final String DISP_PARAM = "/sys/class/mi_display/disp-DSI-0/disp_param";
     private static final String DISP_FEATURE_HBM = "1";
+    private static final String PROP_HBM = "ro.xiaomiparts.hbm";
     public static final String BACKLIGHT = "/sys/class/backlight/panel0-backlight/brightness";
     private static final String MAX_BACKLIGHT = "/sys/class/backlight/panel0-backlight/max_brightness";
     private static final int MAX_BACKLIGHT_FALLBACK = 8191;
@@ -63,7 +65,7 @@ public final class HbmUtils {
         return sHbmActive;
     }
 
-    /** Highest value accepted by the backlight node (8191 on the zeus panel). */
+    /** Highest value accepted by the backlight node. */
     public static int getMaxBacklight() {
         String raw = FileUtils.readOneLine(MAX_BACKLIGHT);
         try {
@@ -77,17 +79,15 @@ public final class HbmUtils {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+    /** Only some panels get a real HBM command from mi_disp, so the device tree opts in. */
     public static boolean isSupported() {
-        return FileUtils.isFileWritable(DISP_PARAM);
+        return SystemProperties.getBoolean(PROP_HBM, false) && FileUtils.isFileWritable(DISP_PARAM);
     }
 
     public static boolean isHbmEnabled(Context context) {
         return prefs(context).getBoolean(KEY_HBM_SWITCH, false);
     }
 
-    public static boolean setHbmEnabled(Context context, boolean enabled) {
-        SharedPreferences sharedPrefs = prefs(context);
-        if (enabled) {
     /** The brightness and mode manual HBM goes back to when it turns off. */
     public static void setLastBrightness(Context context, int brightness, int mode) {
         prefs(context).edit()
@@ -96,8 +96,11 @@ public final class HbmUtils {
                 .commit();
     }
 
-            int currentBrightness = Settings.System.getInt(context.getContentResolver(),
+    public static boolean setHbmEnabled(Context context, boolean enabled) {
         if (enabled == isHbmEnabled(context)) return true;
+        SharedPreferences sharedPrefs = prefs(context);
+        if (enabled) {
+            int currentBrightness = Settings.System.getInt(context.getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS, 128);
             sharedPrefs.edit()
                     .putInt(KEY_LAST_BRIGHTNESS, currentBrightness)
@@ -118,9 +121,6 @@ public final class HbmUtils {
         return true;
     }
 
-    public static boolean isAutoHbmEnabled(Context context) {
-        return prefs(context).getBoolean(KEY_AUTO_HBM_SWITCH, false);
-    }
     /**
      * Switches to manual brightness and returns the mode in use: in auto mode the framework
      * takes a SCREEN_BRIGHTNESS write as a user choice and teaches it to the brightness curve.
@@ -154,6 +154,9 @@ public final class HbmUtils {
         if (isHbmEnabled(context)) setHbmEnabled(context, false);
     }
 
+    public static boolean isAutoHbmEnabled(Context context) {
+        return prefs(context).getBoolean(KEY_AUTO_HBM_SWITCH, false);
+    }
 
     public static void setAutoHbmEnabled(Context context, boolean enabled) {
         prefs(context).edit().putBoolean(KEY_AUTO_HBM_SWITCH, enabled).commit();

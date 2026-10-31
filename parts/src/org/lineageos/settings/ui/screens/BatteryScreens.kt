@@ -41,7 +41,7 @@ import org.lineageos.settings.zram.ZramUtils
 fun HyperChargeScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val supported = remember { HyperChargeUtils.isSupported() }
-    val values = stringArrayResource(R.array.hypercharge_limit_values).toList()
+    val values = stringArrayResource(R.array.hypercharge_limit_values).drop(HyperChargeUtils.firstLimit())
     var enabled by remember { mutableStateOf(HyperChargeUtils.isEnabled(context)) }
     var limit by remember { mutableIntStateOf(values.indexOf(HyperChargeUtils.getLimit(context)).coerceAtLeast(0)) }
     val boostSupported = remember { ChargeUtils.isBoostSupported() }
@@ -59,7 +59,7 @@ fun HyperChargeScreen(onBack: () -> Unit) {
                     ChoiceRow(
                         shape = shape,
                         title = stringResource(R.string.hypercharge_limit_title),
-                        options = stringArrayResource(R.array.hypercharge_limit_entries).toList(),
+                        options = stringArrayResource(R.array.hypercharge_limit_entries).drop(HyperChargeUtils.firstLimit()),
                         selected = limit,
                         enabled = enabled && supported,
                     ) {
@@ -69,7 +69,7 @@ fun HyperChargeScreen(onBack: () -> Unit) {
                 },
             )
         }
-        item {
+        if (boostSupported) item {
             Group(
                 { shape ->
                     SwitchRow(

@@ -2,6 +2,11 @@
 ro.camera.req.fmq.                  u:object_r:exported_default_prop:s0
 ro.camera.res.fmq.                  u:object_r:exported_default_prop:s0
 
+# Marketing name and device features, read by XiaomiParts
+ro.product.marketname                        u:object_r:build_prop:s0 exact string
+ro.xiaomiparts.hbm                           u:object_r:build_prop:s0 exact bool
+ro.xiaomiparts.hypercharge.max_watts         u:object_r:build_prop:s0 exact int
+
 # SettingsLib
 settingsdebug.instant.packages u:object_r:settingslib_prop:s0
 

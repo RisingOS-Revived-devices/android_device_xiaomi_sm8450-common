@@ -9,6 +9,7 @@ package org.lineageos.settings.hypercharge;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
@@ -31,9 +32,15 @@ public final class HyperChargeUtils {
             "/sys/class/power_supply/battery/constant_charge_current_max";
     private static final String NO_CEILING = "0";
 
-    // Charge current in uA; 22 A is the unrestricted 120 W HyperCharge current.
+    // Charge current in uA; 22 A is the 120 W HyperCharge current.
     public static final String LIMIT_120W = "22000000";
     public static final String LIMIT_33W = "6000000";
+    private static final String LIMIT_90W = "16500000";
+    private static final String LIMIT_67W = "12300000";
+
+    // The device tree sets this; limits above it can't apply and its top limit means no ceiling.
+    private static final int MAX_WATTS =
+            SystemProperties.getInt("ro.xiaomiparts.hypercharge.max_watts", 67);
 
     private HyperChargeUtils() {}
 
@@ -55,13 +62,22 @@ public final class HyperChargeUtils {
         }
     }
 
+    /** Index of the first entry of the limit arrays this device can use. */
+    public static int firstLimit() {
+        return MAX_WATTS >= 120 ? 0 : MAX_WATTS >= 90 ? 1 : 2;
+    }
+
+    private static String topLimit() {
+        return MAX_WATTS >= 120 ? LIMIT_120W : MAX_WATTS >= 90 ? LIMIT_90W : LIMIT_67W;
+    }
+
     public static String getLimit(Context context) {
         try {
-            return prefs(context).getString(KEY_LIMIT, LIMIT_120W);
+            return prefs(context).getString(KEY_LIMIT, topLimit());
         } catch (ClassCastException e) {
             Log.w(TAG, "Corrupt " + KEY_LIMIT + " pref, resetting");
             prefs(context).edit().remove(KEY_LIMIT).apply();
-            return LIMIT_120W;
+            return topLimit();
         }
     }
 
@@ -75,11 +91,11 @@ public final class HyperChargeUtils {
         update(context);
     }
 
-    /** 33 W with HyperCharge off, no ceiling at the unrestricted 120 W, else the chosen limit. */
+    /** 33 W with HyperCharge off, no ceiling at the top limit, else the chosen limit. */
     static String getCeiling(Context context) {
         if (!isEnabled(context)) return LIMIT_33W;
         String limit = getLimit(context);
-        return LIMIT_120W.equals(limit) ? NO_CEILING : limit;
+        return LIMIT_120W.equals(limit) || topLimit().equals(limit) ? NO_CEILING : limit;
     }
 
     /** Writes the ceiling; the kernel keeps it until reboot, so boot and every change call this. */

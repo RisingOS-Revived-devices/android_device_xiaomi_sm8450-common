@@ -41,7 +41,11 @@ public class HBMModeTileService extends TileService {
     private void updateUI(boolean enabled) {
         final Tile tile = getQsTile();
         if (tile == null) return;
-        tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        if (!HbmUtils.isSupported()) {
+            tile.setState(Tile.STATE_UNAVAILABLE);
+        } else {
+            tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        }
         tile.updateTile();
     }
 

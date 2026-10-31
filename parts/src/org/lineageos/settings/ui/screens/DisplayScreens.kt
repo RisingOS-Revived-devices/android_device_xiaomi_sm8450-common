@@ -68,7 +68,9 @@ fun SystemResolutionScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val utils = remember { ResolutionUtils(context) }
     var state by remember { mutableIntStateOf(utils.globalState) }
+    // 1080p is the last entry, so the indexes still match the states.
     val modes = stringArrayResource(R.array.resolution_mode_entries).toList()
+        .let { if (utils.isAbove1080p) it else it.dropLast(1) }
     PartsPage(stringResource(R.string.system_resolution_title), onBack) {
         item {
             PartsCard {
@@ -189,9 +191,9 @@ fun HbmScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val supported = remember { HbmUtils.isSupported() }
     var hbm by remember { mutableStateOf(HbmUtils.isHbmEnabled(context)) }
+    OnPrefChanged(HbmUtils.KEY_HBM_SWITCH) { hbm = HbmUtils.isHbmEnabled(context) }
     var autoHbm by remember { mutableStateOf(HbmUtils.isAutoHbmEnabled(context)) }
     var threshold by remember { mutableIntStateOf(HbmUtils.getThreshold(context)) }
-    OnPrefChanged(HbmUtils.KEY_HBM_SWITCH) { hbm = HbmUtils.isHbmEnabled(context) }
     var disableTime by remember { mutableIntStateOf(HbmUtils.getDisableTime(context)) }
     val numbers = remember { NumberFormat.getIntegerInstance() }
     PartsPage(stringResource(R.string.hbm_title), onBack) {
