@@ -88,6 +88,7 @@ public final class MiSoundUtils {
 
     // Worker-thread state.
     private MiSound mMiSound;
+    private AudioEffect mDolbyWatcher;
     private boolean mServerDown;
     private boolean mCallbackRegistered;
     private int mCallbackAttempts;
@@ -118,6 +119,10 @@ public final class MiSoundUtils {
                     }
                     mCreatedAt = 0;
                     releaseEffect();
+                    if (mDolbyWatcher != null) {
+                        mDolbyWatcher.release();
+                        mDolbyWatcher = null;
+                    }
                 }
 
                 @Override
@@ -206,11 +211,20 @@ public final class MiSoundUtils {
     public void setEnabled(boolean enable) {
         mPrefs.edit().putBoolean(PREF_ENABLE, enable).apply();
         submit(() -> {
+            if (!enable) {
+                if (mMiSound != null && mMiSound.hasControl()) applyEnabled(mMiSound, false);
+                releaseEffect();
+                return;
+            }
             MiSound effect = requireEffect();
-            if (enable) applySettings(effect);
-            applyEnabled(effect, enable);
-            if (!enable) releaseEffect();
+            applySettings(effect);
+            applyEnabled(effect, true);
         });
+    }
+
+    /** Fallback for watchDolby: drops or recreates the effect when Dolby's state changed. */
+    public void refresh() {
+        mHandler.post(mRestoreTask);
     }
 
     public void setScenario(int scenario) {
@@ -327,7 +341,24 @@ public final class MiSoundUtils {
         restore();
     }
 
+    /**
+     * Keeps a handle behind LunarisDolby's: AudioFlinger forwards enable changes to every handle
+     * but the owner's, so toggles from Dolby's own app and tile reach us. Runs before the state
+     * read in restore, so a change cannot fall between them.
+     */
+    private void watchDolby() {
+        if (mDolbyWatcher != null || mServerDown || !mCallbackRegistered) return;
+        try {
+            mDolbyWatcher = new AudioEffect(AudioEffect.EFFECT_TYPE_NULL, EFFECT_TYPE_DOLBY,
+                    DOLBY_PROBE_PRIORITY, 0);
+            mDolbyWatcher.setEnableStatusListener((effect, enabled) -> mHandler.post(mRestoreTask));
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Cannot watch Dolby state", e);
+        }
+    }
+
     private void restore() {
+        watchDolby();
         // Creating the effect is what loads libmisoundfx in the audio HAL; only do it when used.
         // With Dolby on, libmisoundfx crashes the audio HAL even while MiSound is disabled.
         if (!isEnabled() || isDolbyEnabled()) {
@@ -377,6 +408,7 @@ public final class MiSoundUtils {
             if (!mMiSound.hasControl()) throw new IllegalStateException("Effect control unavailable");
             return mMiSound;
         }
+        if (isDolbyEnabled()) throw new IllegalStateException("Dolby is on");
         MiSound effect = new MiSound(0, 0);
         mMiSound = effect;
         mCreatedAt = SystemClock.elapsedRealtime();

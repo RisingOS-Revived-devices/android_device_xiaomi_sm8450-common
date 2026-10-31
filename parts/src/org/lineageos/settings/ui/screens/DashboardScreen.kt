@@ -195,7 +195,6 @@ fun DashboardScreen(refreshTick: Int, navigate: (Route) -> Unit) {
             Card(Route.MISOUND, Icons.Rounded.GraphicEq, R.string.misound_title,
                 when {
                     !state.misoundSupported -> unsupported
-                    state.misoundOn -> on
                     state.dolbyOn -> stringResource(R.string.misound_card_dolby)
                     else -> off
                 }),
@@ -205,6 +204,7 @@ fun DashboardScreen(refreshTick: Int, navigate: (Route) -> Unit) {
             Card(Route.AUX_CAMERA, Icons.Rounded.CameraAlt, R.string.aux_camera_title,
                 if (AuxCameraUtils.isEnabled(context)) on else off),
             Card(Route.FPS_OVERLAY, Icons.Rounded.Timer, R.string.fps_overlay_title,
+                    state.misoundOn -> on
                 if (!fpsSupported) unsupported else if (fpsOn) on else off),
             Card(Route.USELESS, Icons.Rounded.SentimentVerySatisfied, R.string.useless_mode_title, if (state.useless) on else off),
         )),
@@ -353,6 +353,7 @@ private fun readDashboardState(context: Context): DashboardState {
         coresOnline = coresOnline,
         powerProfile = PowerProfileUtil.getMode(context),
         hyperChargeLimit = context.resources.getStringArray(R.array.hypercharge_limit_values)
+    MiSoundUtils.getInstance(context).refresh()
             .indexOf(HyperChargeUtils.getLimit(context)),
         reverseOn = ChargeUtils.isReverseSupported() && ChargeUtils.isReverseOn(),
         reverseLimit = ChargeUtils.getReverseLimit(context),

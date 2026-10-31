@@ -71,13 +71,11 @@ import kotlin.math.roundToInt
 private const val CLEAN_DURATION_SECONDS = 30
 private const val TAG = "ClearSpeaker"
 
-/** Loops the low tone on the media stream with the earpiece clean mode on. */
+/** Loops the low tone on the media stream. */
 private class ClearSpeakerPlayer(private val context: Context) {
-    private val audioManager = context.getSystemService(AudioManager::class.java)
     private var player: MediaPlayer? = null
 
     fun start(): Boolean {
-        audioManager.setParameters("status_earpiece_clean=on")
         val mp = MediaPlayer()
         mp.setAudioAttributes(
             AudioAttributes.Builder()
@@ -98,7 +96,6 @@ private class ClearSpeakerPlayer(private val context: Context) {
         } catch (e: IOException) {
             Log.e(TAG, "Failed to play speaker clean sound!", e)
             mp.release()
-            audioManager.setParameters("status_earpiece_clean=off")
             false
         }
     }
@@ -110,7 +107,6 @@ private class ClearSpeakerPlayer(private val context: Context) {
             it.release()
         }
         player = null
-        audioManager.setParameters("status_earpiece_clean=off")
     }
 }
 
@@ -196,8 +192,11 @@ fun MiSoundScreen(onBack: () -> Unit) {
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { resumeTick++ }
     LaunchedEffect(resumeTick) {
         dolbyOn = withContext(Dispatchers.IO) { MiSoundUtils.isDolbyEnabled() }
+        utils.refresh()
     }
     val active = supported && enabled
+    // With Dolby on there is no effect to tune.
+    val tunable = active && !dolbyOn
 
     PartsPage(stringResource(R.string.misound_title), onBack) {
         item {
@@ -234,7 +233,7 @@ fun MiSoundScreen(onBack: () -> Unit) {
                             stringResource(R.string.misound_scenario_vocal),
                         ),
                         selected = scenario,
-                        enabled = active,
+                        enabled = tunable,
                     ) {
                         utils.setScenario(MiSoundUtils.SCENARIOS[it])
                         scenario = it
@@ -249,7 +248,7 @@ fun MiSoundScreen(onBack: () -> Unit) {
                             stringResource(R.string.misound_headset_inear),
                         ),
                         selected = headset,
-                        enabled = active,
+                        enabled = tunable,
                     ) {
                         utils.setHeadsetType(MiSoundUtils.HEADSETS[it])
                         headset = it
@@ -261,7 +260,7 @@ fun MiSoundScreen(onBack: () -> Unit) {
                         title = stringResource(R.string.misound_3d_title),
                         summary = stringResource(R.string.misound_3d_summary),
                         checked = surround,
-                        enabled = active,
+                        enabled = tunable,
                     ) {
                         utils.set3dSurroundEnabled(it)
                         surround = it
@@ -281,7 +280,7 @@ fun MiSoundScreen(onBack: () -> Unit) {
                         R.string.misound_eq_blues, R.string.misound_eq_electronic, R.string.misound_eq_metal,
                     ).map { stringResource(it) },
                     selected = eqPreset,
-                    enabled = active,
+                    enabled = tunable,
                 ) {
                     utils.setEqPreset(it)
                     eqPreset = it
@@ -298,7 +297,7 @@ fun MiSoundScreen(onBack: () -> Unit) {
                     range = -100..100,
                     step = 5,
                     defaultValue = 0,
-                    enabled = active,
+                    enabled = tunable,
                     format = { context.getString(R.string.misound_eq_percent, it) },
                     onValueChange = { eqLevels[band] = it * MiSound.EQ_MAX_DB / 100 },
                     onValueChangeFinished = {
