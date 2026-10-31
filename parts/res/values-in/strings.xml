@@ -106,7 +106,7 @@
     <string name="min_frequency">Frekuensi minimum</string>
     <string name="max_frequency">Frekuensi maksimum</string>
     <string name="frequencies_unavailable">Frekuensi CPU tidak dapat dibaca pada kernel ini.</string>
-    <string name="kernel_manager_note">Perubahan berlaku saat Anda mengetuk Terapkan dan dipulihkan setelah mulai ulang. Reset kembali ke walt dan rentang frekuensi penuh.</string>
+    <string name="kernel_manager_note">Perubahan berlaku saat Anda mengetuk Terapkan dan dipulihkan setelah mulai ulang. Reset kembali ke walt dan rentang frekuensi bawaan.</string>
 
     <string name="gpu_manager_title">Pengelola GPU</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Level <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">Governor GPU</string>
     <string name="gpu_power">Daya</string>
-    <string name="gpu_force_clk_on">Paksa clock aktif</string>
-    <string name="gpu_force_clk_on_summary">Biarkan clock GPU tetap berjalan saat diam</string>
     <string name="gpu_force_bus_on">Paksa bus aktif</string>
     <string name="gpu_force_bus_on_summary">Biarkan bus memori GPU tetap aktif</string>
-    <string name="gpu_force_rail_on">Paksa rail aktif</string>
-    <string name="gpu_force_rail_on_summary">Biarkan jalur daya GPU tetap menyala</string>
     <string name="gpu_force_no_nap">Tanpa tidur singkat</string>
     <string name="gpu_force_no_nap_summary">Cegah GPU tidur singkat di antara frame</string>
     <string name="gpu_bus_split">Pemisahan bus</string>

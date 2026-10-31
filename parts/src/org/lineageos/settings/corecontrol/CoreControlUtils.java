@@ -31,6 +31,10 @@ public final class CoreControlUtils {
     }
 
     public static boolean canOffline(int core) {
+        // The boot CPU keeps the timers and IRQs init pins to it
+        if (core == 0) {
+            return false;
+        }
         if (core < 0 || core > LAST_LITTLE_CORE) {
             return true;
         }

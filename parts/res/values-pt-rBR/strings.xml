@@ -106,7 +106,7 @@
     <string name="min_frequency">Frequência mínima</string>
     <string name="max_frequency">Frequência máxima</string>
     <string name="frequencies_unavailable">Não é possível ler as frequências da CPU neste kernel.</string>
-    <string name="kernel_manager_note">As mudanças valem ao tocar em Aplicar e são restauradas após reiniciar. Redefinir volta para walt e para a faixa completa de frequências.</string>
+    <string name="kernel_manager_note">As mudanças valem ao tocar em Aplicar e são restauradas após reiniciar. Redefinir volta para walt e para a faixa de frequências padrão.</string>
 
     <string name="gpu_manager_title">Gerenciador da GPU</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Nível <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">Governador da GPU</string>
     <string name="gpu_power">Energia</string>
-    <string name="gpu_force_clk_on">Forçar clock</string>
-    <string name="gpu_force_clk_on_summary">Manter o clock da GPU ativo quando ociosa</string>
     <string name="gpu_force_bus_on">Forçar barramento</string>
     <string name="gpu_force_bus_on_summary">Manter ativo o barramento de memória da GPU</string>
-    <string name="gpu_force_rail_on">Forçar alimentação</string>
-    <string name="gpu_force_rail_on_summary">Manter ligada a linha de energia da GPU</string>
     <string name="gpu_force_no_nap">Sem cochilo</string>
     <string name="gpu_force_no_nap_summary">Impedir que a GPU cochile entre os quadros</string>
     <string name="gpu_bus_split">Divisão do barramento</string>

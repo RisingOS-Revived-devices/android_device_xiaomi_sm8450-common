@@ -106,7 +106,7 @@
     <string name="min_frequency">最低频率</string>
     <string name="max_frequency">最高频率</string>
     <string name="frequencies_unavailable">无法在此内核上读取 CPU 频率。</string>
-    <string name="kernel_manager_note">点按“应用”后生效，重启后会自动恢复。重置会恢复为 walt 和完整频率范围。</string>
+    <string name="kernel_manager_note">点按“应用”后生效，重启后会自动恢复。重置会恢复为 walt 和默认频率范围。</string>
 
     <string name="gpu_manager_title">GPU 管理</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">等级 <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">GPU 调速器</string>
     <string name="gpu_power">电源</string>
-    <string name="gpu_force_clk_on">强制时钟开启</string>
-    <string name="gpu_force_clk_on_summary">空闲时保持 GPU 时钟运行</string>
     <string name="gpu_force_bus_on">强制总线开启</string>
     <string name="gpu_force_bus_on_summary">保持 GPU 内存总线活动</string>
-    <string name="gpu_force_rail_on">强制供电开启</string>
-    <string name="gpu_force_rail_on_summary">保持 GPU 供电轨开启</string>
     <string name="gpu_force_no_nap">禁止小睡</string>
     <string name="gpu_force_no_nap_summary">防止 GPU 在帧之间进入小睡状态</string>
     <string name="gpu_bus_split">总线分离</string>

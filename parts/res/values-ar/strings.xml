@@ -106,7 +106,7 @@
     <string name="min_frequency">أدنى تردد</string>
     <string name="max_frequency">أقصى تردد</string>
     <string name="frequencies_unavailable">لا يمكن قراءة ترددات المعالج في هذه النواة.</string>
-    <string name="kernel_manager_note">تُطبَّق التغييرات عند النقر على تطبيق وتُستعاد بعد إعادة التشغيل. إعادة الضبط تعيد walt والنطاق الكامل للترددات.</string>
+    <string name="kernel_manager_note">تُطبَّق التغييرات عند النقر على تطبيق وتُستعاد بعد إعادة التشغيل. إعادة الضبط تعيد walt والنطاق الافتراضي للترددات.</string>
 
     <string name="gpu_manager_title">مدير معالج الرسومات</string>
     <string name="gpu_model">معالج الرسومات</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">المستوى <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">حاكم معالج الرسومات</string>
     <string name="gpu_power">الطاقة</string>
-    <string name="gpu_force_clk_on">فرض تشغيل الساعة</string>
-    <string name="gpu_force_clk_on_summary">إبقاء ساعة معالج الرسومات تعمل في وضع الخمول</string>
     <string name="gpu_force_bus_on">فرض تشغيل الناقل</string>
     <string name="gpu_force_bus_on_summary">إبقاء ناقل ذاكرة معالج الرسومات نشطًا</string>
-    <string name="gpu_force_rail_on">فرض تشغيل خط الطاقة</string>
-    <string name="gpu_force_rail_on_summary">إبقاء خط طاقة معالج الرسومات مفعّلًا</string>
     <string name="gpu_force_no_nap">بدون غفوة</string>
     <string name="gpu_force_no_nap_summary">منع معالج الرسومات من الغفو بين الإطارات</string>
     <string name="gpu_bus_split">فصل الناقل</string>

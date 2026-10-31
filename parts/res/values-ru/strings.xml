@@ -106,7 +106,7 @@
     <string name="min_frequency">Минимальная частота</string>
     <string name="max_frequency">Максимальная частота</string>
     <string name="frequencies_unavailable">Частоты CPU невозможно прочитать на этом ядре.</string>
-    <string name="kernel_manager_note">Изменения применяются по кнопке «Применить» и восстанавливаются после перезагрузки. Сброс возвращает walt и полный диапазон частот.</string>
+    <string name="kernel_manager_note">Изменения применяются по кнопке «Применить» и восстанавливаются после перезагрузки. Сброс возвращает walt и диапазон частот по умолчанию.</string>
 
     <string name="gpu_manager_title">Менеджер GPU</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Уровень <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">Регулятор GPU</string>
     <string name="gpu_power">Питание</string>
-    <string name="gpu_force_clk_on">Принудительная частота</string>
-    <string name="gpu_force_clk_on_summary">Не останавливать тактирование GPU в простое</string>
     <string name="gpu_force_bus_on">Принудительная шина</string>
     <string name="gpu_force_bus_on_summary">Держать шину памяти GPU активной</string>
-    <string name="gpu_force_rail_on">Принудительное питание</string>
-    <string name="gpu_force_rail_on_summary">Держать линию питания GPU включённой</string>
     <string name="gpu_force_no_nap">Без дремоты</string>
     <string name="gpu_force_no_nap_summary">Не давать GPU дремать между кадрами</string>
     <string name="gpu_bus_split">Разделение шины</string>

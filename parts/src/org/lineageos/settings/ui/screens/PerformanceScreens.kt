@@ -22,15 +22,18 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.lineageos.settings.R
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,10 +52,10 @@ import org.lineageos.settings.ui.components.ApplyResetButtons
 import org.lineageos.settings.ui.components.ChoiceRow
 import org.lineageos.settings.ui.components.Group
 import org.lineageos.settings.ui.components.NoteText
+import org.lineageos.settings.ui.components.OnPrefChanged
 import org.lineageos.settings.ui.components.PartsPage
 import org.lineageos.settings.ui.components.QuickToggle
 import org.lineageos.settings.ui.components.SectionTitle
-import org.lineageos.settings.ui.components.OnPrefChanged
 import org.lineageos.settings.ui.components.StatCard
 import org.lineageos.settings.ui.components.SwitchRow
 
@@ -62,10 +65,10 @@ fun PowerProfileScreen(onBack: () -> Unit) {
     val manager = remember { PowerProfileUtil(context) }
     DisposableEffect(Unit) { onDispose { manager.cleanup() } }
     var mode by remember { mutableIntStateOf(manager.mode) }
+    OnPrefChanged(PowerProfileUtil.PREF_MODE) { mode = manager.mode }
     PartsPage(stringResource(R.string.power_profile_title), onBack) {
         item {
             ChipGroupCard(stringResource(R.string.power_profile_mode), stringArrayResource(R.array.power_profile_entries).toList(), mode) {
-    OnPrefChanged(PowerProfileUtil.PREF_MODE) { mode = manager.mode }
                 manager.setMode(it)
                 mode = manager.mode
             }
@@ -170,6 +173,7 @@ fun KernelManagerScreen(onBack: () -> Unit) {
                         val hi = max[cluster.policy]
                         if (lo != null && hi != null) utils.setFrequencyRange(cluster.policy, lo, hi)
                     }
+                    reload++
                     Toast.makeText(context, R.string.settings_applied, Toast.LENGTH_SHORT).show()
                 },
                 onReset = {
@@ -190,9 +194,7 @@ private class GpuState(
     val frequencies: List<String>,
     val min: String,
     val max: String,
-    val forceClkOn: Boolean,
     val forceBusOn: Boolean,
-    val forceRailOn: Boolean,
     val forceNoNap: Boolean,
     val busSplit: Boolean,
 )
@@ -213,36 +215,37 @@ fun GpuManagerScreen(onBack: () -> Unit) {
                 frequencies = utils.availableFrequencies?.toList()?.filter { it.isNotBlank() }.orEmpty(),
                 min = utils.currentMinFrequency,
                 max = utils.currentMaxFrequency,
-                forceClkOn = utils.forceClkOn,
                 forceBusOn = utils.forceBusOn,
-                forceRailOn = utils.forceRailOn,
                 forceNoNap = utils.forceNoNap,
                 busSplit = utils.busSplit,
             )
         }
     }
     val unknown = stringResource(R.string.value_unknown)
-    val live by produceState<GpuLive?>(null) {
-        while (isActive) {
-            value = withContext(Dispatchers.IO) {
-                val freq = utils.currentFrequency
-                val temp = utils.gpuTemperature
-                GpuLive(
-                    frequency = if (freq == "0") unknown else hzLabel(freq),
-                    busy = utils.gpuBusyPercentage,
-                    temperature = if (temp == "0") unknown else context.getString(R.string.celsius_value, temp),
-                    thermalLevel = context.getString(R.string.gpu_level_value, utils.thermalPowerLevel),
-                )
+    var live by remember { mutableStateOf<GpuLive?>(null) }
+    val scope = rememberCoroutineScope()
+    LifecycleResumeEffect(Unit) {
+        val poll = scope.launch {
+            while (isActive) {
+                live = withContext(Dispatchers.IO) {
+                    val freq = utils.currentFrequency
+                    val temp = utils.gpuTemperature
+                    GpuLive(
+                        frequency = if (freq == "0") unknown else hzLabel(freq),
+                        busy = utils.gpuBusyPercentage,
+                        temperature = if (temp == "0") unknown else context.getString(R.string.celsius_value, temp),
+                        thermalLevel = context.getString(R.string.gpu_level_value, utils.thermalPowerLevel),
+                    )
+                }
+                delay(2000)
             }
-            delay(2000)
         }
+        onPauseOrDispose { poll.cancel() }
     }
     var governor by remember(state) { mutableStateOf(state?.governor) }
     var min by remember(state) { mutableStateOf(state?.min) }
     var max by remember(state) { mutableStateOf(state?.max) }
-    var forceClk by remember(state) { mutableStateOf(state?.forceClkOn == true) }
     var forceBus by remember(state) { mutableStateOf(state?.forceBusOn == true) }
-    var forceRail by remember(state) { mutableStateOf(state?.forceRailOn == true) }
     var noNap by remember(state) { mutableStateOf(state?.forceNoNap == true) }
     var busSplit by remember(state) { mutableStateOf(state?.busSplit == true) }
 
@@ -286,9 +289,7 @@ fun GpuManagerScreen(onBack: () -> Unit) {
         item { SectionTitle(stringResource(R.string.gpu_power)) }
         item {
             Group(
-                { shape -> SwitchRow(shape, stringResource(R.string.gpu_force_clk_on), stringResource(R.string.gpu_force_clk_on_summary), forceClk) { utils.setForceClkOn(it); forceClk = it } },
                 { shape -> SwitchRow(shape, stringResource(R.string.gpu_force_bus_on), stringResource(R.string.gpu_force_bus_on_summary), forceBus) { utils.setForceBusOn(it); forceBus = it } },
-                { shape -> SwitchRow(shape, stringResource(R.string.gpu_force_rail_on), stringResource(R.string.gpu_force_rail_on_summary), forceRail) { utils.setForceRailOn(it); forceRail = it } },
                 { shape -> SwitchRow(shape, stringResource(R.string.gpu_force_no_nap), stringResource(R.string.gpu_force_no_nap_summary), noNap) { utils.setForceNoNap(it); noNap = it } },
                 { shape -> SwitchRow(shape, stringResource(R.string.gpu_bus_split), stringResource(R.string.gpu_bus_split_summary), busSplit) { utils.setBusSplit(it); busSplit = it } },
             )
@@ -300,11 +301,10 @@ fun GpuManagerScreen(onBack: () -> Unit) {
                     val gMin = min
                     val gMax = max
                     if (gMin != null && gMax != null) utils.setFrequencyRange(gMin, gMax)
-                    utils.setForceClkOn(forceClk)
                     utils.setForceBusOn(forceBus)
-                    utils.setForceRailOn(forceRail)
                     utils.setForceNoNap(noNap)
                     utils.setBusSplit(busSplit)
+                    reload++
                     Toast.makeText(context, R.string.settings_applied, Toast.LENGTH_SHORT).show()
                 },
                 onReset = {
@@ -342,7 +342,8 @@ fun CoreControlScreen(onBack: () -> Unit) {
                                 icon = Icons.Rounded.Memory,
                                 label = stringResource(R.string.core_label, core),
                                 checked = online[core],
-                                enabled = true,
+                                // Core 0 never goes offline; an offline one can still come back
+                                enabled = core != 0 || !online[core],
                             ) { requested ->
                                 if (!requested && !CoreControlUtils.canOffline(core)) {
                                     Toast.makeText(context, R.string.core_control_min_online, Toast.LENGTH_SHORT).show()

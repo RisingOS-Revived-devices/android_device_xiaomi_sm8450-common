@@ -106,7 +106,7 @@
     <string name="min_frequency">Fréquence minimale</string>
     <string name="max_frequency">Fréquence maximale</string>
     <string name="frequencies_unavailable">Les fréquences du CPU ne peuvent pas être lues sur ce noyau.</string>
-    <string name="kernel_manager_note">Les changements s\'appliquent en appuyant sur Appliquer et sont restaurés après un redémarrage. Réinitialiser revient à walt et à la plage de fréquences complète.</string>
+    <string name="kernel_manager_note">Les changements s\'appliquent en appuyant sur Appliquer et sont restaurés après un redémarrage. Réinitialiser revient à walt et à la plage de fréquences par défaut.</string>
 
     <string name="gpu_manager_title">Gestionnaire du GPU</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Niveau <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">Gouverneur du GPU</string>
     <string name="gpu_power">Alimentation</string>
-    <string name="gpu_force_clk_on">Forcer l\'horloge</string>
-    <string name="gpu_force_clk_on_summary">Garder l\'horloge du GPU active au repos</string>
     <string name="gpu_force_bus_on">Forcer le bus</string>
     <string name="gpu_force_bus_on_summary">Garder le bus mémoire du GPU actif</string>
-    <string name="gpu_force_rail_on">Forcer l\'alimentation</string>
-    <string name="gpu_force_rail_on_summary">Garder la ligne d\'alimentation du GPU allumée</string>
     <string name="gpu_force_no_nap">Pas de micro-veille</string>
     <string name="gpu_force_no_nap_summary">Empêcher le GPU de se mettre en veille entre les images</string>
     <string name="gpu_bus_split">Séparation du bus</string>

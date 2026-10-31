@@ -129,7 +129,7 @@
     <string name="min_frequency">Minimum frequency</string>
     <string name="max_frequency">Maximum frequency</string>
     <string name="frequencies_unavailable">CPU frequencies can\'t be read on this kernel.</string>
-    <string name="kernel_manager_note">Changes apply when you tap Apply and are restored after a reboot. Reset goes back to walt and the full frequency range.</string>
+    <string name="kernel_manager_note">Changes apply when you tap Apply and are restored after a reboot. Reset goes back to walt and the default frequency range.</string>
 
     <!-- GPU manager -->
     <string name="gpu_manager_title">GPU manager</string>
@@ -141,12 +141,8 @@
     <string name="gpu_level_value">Level <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">GPU governor</string>
     <string name="gpu_power">Power</string>
-    <string name="gpu_force_clk_on">Force clock on</string>
-    <string name="gpu_force_clk_on_summary">Keep the GPU clock running when idle</string>
     <string name="gpu_force_bus_on">Force bus on</string>
     <string name="gpu_force_bus_on_summary">Keep the GPU memory bus active</string>
-    <string name="gpu_force_rail_on">Force rail on</string>
-    <string name="gpu_force_rail_on_summary">Keep the GPU power rail on</string>
     <string name="gpu_force_no_nap">No nap</string>
     <string name="gpu_force_no_nap_summary">Prevent the GPU from napping between frames</string>
     <string name="gpu_bus_split">Bus split</string>

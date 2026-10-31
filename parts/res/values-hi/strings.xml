@@ -106,7 +106,7 @@
     <string name="min_frequency">न्यूनतम फ़्रीक्वेंसी</string>
     <string name="max_frequency">अधिकतम फ़्रीक्वेंसी</string>
     <string name="frequencies_unavailable">इस कर्नेल पर CPU फ़्रीक्वेंसी नहीं पढ़ी जा सकतीं।</string>
-    <string name="kernel_manager_note">बदलाव Apply पर टैप करने पर लागू होते हैं और रीबूट के बाद फिर से लागू हो जाते हैं। रीसेट walt और पूरी फ़्रीक्वेंसी रेंज पर लौटा देता है।</string>
+    <string name="kernel_manager_note">बदलाव Apply पर टैप करने पर लागू होते हैं और रीबूट के बाद फिर से लागू हो जाते हैं। रीसेट walt और डिफ़ॉल्ट फ़्रीक्वेंसी रेंज पर लौटा देता है।</string>
 
     <string name="gpu_manager_title">GPU मैनेजर</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">लेवल <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">GPU गवर्नर</string>
     <string name="gpu_power">पावर</string>
-    <string name="gpu_force_clk_on">क्लॉक चालू रखें</string>
-    <string name="gpu_force_clk_on_summary">खाली होने पर भी GPU क्लॉक चलती रहे</string>
     <string name="gpu_force_bus_on">बस चालू रखें</string>
     <string name="gpu_force_bus_on_summary">GPU मेमोरी बस सक्रिय रखें</string>
-    <string name="gpu_force_rail_on">पावर रेल चालू रखें</string>
-    <string name="gpu_force_rail_on_summary">GPU पावर रेल चालू रखें</string>
     <string name="gpu_force_no_nap">नैप बंद</string>
     <string name="gpu_force_no_nap_summary">फ़्रेम के बीच GPU को आराम करने से रोकें</string>
     <string name="gpu_bus_split">बस स्प्लिट</string>

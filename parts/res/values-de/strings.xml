@@ -106,7 +106,7 @@
     <string name="min_frequency">Minimale Frequenz</string>
     <string name="max_frequency">Maximale Frequenz</string>
     <string name="frequencies_unavailable">CPU-Frequenzen können auf diesem Kernel nicht gelesen werden.</string>
-    <string name="kernel_manager_note">Änderungen gelten nach Tippen auf Übernehmen und werden nach einem Neustart wiederhergestellt. Zurücksetzen stellt walt und den vollen Frequenzbereich ein.</string>
+    <string name="kernel_manager_note">Änderungen gelten nach Tippen auf Übernehmen und werden nach einem Neustart wiederhergestellt. Zurücksetzen stellt walt und den Standard-Frequenzbereich ein.</string>
 
     <string name="gpu_manager_title">GPU-Manager</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Stufe <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">GPU-Governor</string>
     <string name="gpu_power">Energie</string>
-    <string name="gpu_force_clk_on">Takt erzwingen</string>
-    <string name="gpu_force_clk_on_summary">GPU-Takt auch im Leerlauf laufen lassen</string>
     <string name="gpu_force_bus_on">Bus erzwingen</string>
     <string name="gpu_force_bus_on_summary">GPU-Speicherbus aktiv halten</string>
-    <string name="gpu_force_rail_on">Spannungsschiene erzwingen</string>
-    <string name="gpu_force_rail_on_summary">GPU-Stromversorgung eingeschaltet lassen</string>
     <string name="gpu_force_no_nap">Kein Nap</string>
     <string name="gpu_force_no_nap_summary">Verhindert, dass die GPU zwischen Frames ruht</string>
     <string name="gpu_bus_split">Bus-Split</string>

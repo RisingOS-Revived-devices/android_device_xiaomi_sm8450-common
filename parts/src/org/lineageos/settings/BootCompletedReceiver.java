@@ -33,6 +33,7 @@ import org.lineageos.settings.display.FpsInfoService;
 import org.lineageos.settings.gpumanager.GpuManagerUtils;
 import org.lineageos.settings.hbm.HbmUtils;
 import org.lineageos.settings.hypercharge.HyperChargeUtils;
+import org.lineageos.settings.kernelmanager.KernelManagerUtils;
 import org.lineageos.settings.misound.MiSoundUtils;
 import org.lineageos.settings.refreshrate.RefreshUtils;
 import org.lineageos.settings.resolution.ResolutionUtils;
@@ -54,12 +55,14 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         restore("HDR types", () -> overrideHdrTypes(context));
         restore("per-app resolution", () -> ResolutionUtils.startService(context));
         restore("auto HBM", () -> FileUtils.enableService(context));
-        restore("aux camera restrictions", () -> AuxCameraUtils.INSTANCE.restore(context));
         restore("manual HBM", () -> HbmUtils.resetHbm(context));
         // The overlay never survives a reboot; drop a running flag left by a crash or reboot
         restore("FPS overlay", () -> PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .remove(FpsInfoService.PREF_KEY_FPS_STATE).apply());
+        restore("aux camera restrictions", () -> AuxCameraUtils.INSTANCE.restore(context));
         restore("HyperCharge", () -> HyperChargeUtils.update(context));
+        restore("GPU frequency range", () -> new GpuManagerUtils().fixStoredRange());
+        restore("CPU frequency ranges", () -> new KernelManagerUtils().fixStoredRanges());
         // Wired boost and the reverse charging limit
         restore("charge service", () -> ChargeUtils.startService(context));
         // MiSound: the persistent process owns the effect and restores its settings

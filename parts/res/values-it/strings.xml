@@ -106,7 +106,7 @@
     <string name="min_frequency">Frequenza minima</string>
     <string name="max_frequency">Frequenza massima</string>
     <string name="frequencies_unavailable">Impossibile leggere le frequenze della CPU su questo kernel.</string>
-    <string name="kernel_manager_note">Le modifiche si applicano toccando Applica e vengono ripristinate dopo il riavvio. Ripristina torna a walt e all\'intervallo di frequenze completo.</string>
+    <string name="kernel_manager_note">Le modifiche si applicano toccando Applica e vengono ripristinate dopo il riavvio. Ripristina torna a walt e all\'intervallo di frequenze predefinito.</string>
 
     <string name="gpu_manager_title">Gestione GPU</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Livello <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">Governor della GPU</string>
     <string name="gpu_power">Alimentazione</string>
-    <string name="gpu_force_clk_on">Forza clock attivo</string>
-    <string name="gpu_force_clk_on_summary">Mantieni attivo il clock della GPU a riposo</string>
     <string name="gpu_force_bus_on">Forza bus attivo</string>
     <string name="gpu_force_bus_on_summary">Mantieni attivo il bus di memoria della GPU</string>
-    <string name="gpu_force_rail_on">Forza alimentazione attiva</string>
-    <string name="gpu_force_rail_on_summary">Mantieni accesa la linea di alimentazione della GPU</string>
     <string name="gpu_force_no_nap">Nessuna pausa</string>
     <string name="gpu_force_no_nap_summary">Impedisci alla GPU di riposare tra un fotogramma e l\'altro</string>
     <string name="gpu_bus_split">Separazione del bus</string>

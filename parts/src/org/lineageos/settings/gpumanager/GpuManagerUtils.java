@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class GpuManagerUtils {
 
@@ -34,14 +36,10 @@ public class GpuManagerUtils {
     private static final String GPU_BUSY_PERCENTAGE = "/gpu_busy_percentage";
     private static final String GPU_TEMPERATURE = "/temp";
     private static final String GPU_THERMAL_PWRLEVEL = "/thermal_pwrlevel";
-    private static final String GPU_FORCE_CLK_ON = "/force_clk_on";
     private static final String GPU_FORCE_BUS_ON = "/force_bus_on";
-    private static final String GPU_FORCE_RAIL_ON = "/force_rail_on";
     private static final String GPU_FORCE_NO_NAP = "/force_no_nap";
     private static final String GPU_BUS_SPLIT = "/bus_split";
     private static final String GPU_MAX_GPUCLK = "/max_gpuclk";
-    private static final String GPU_MIN_CLOCK_MHZ = "/min_clock_mhz";
-    private static final String GPU_MAX_CLOCK_MHZ = "/max_clock_mhz";
 
     private static final String PROP_MIN_FREQ = "persist.sys.parts.gpu.min_frequency";
     private static final String PROP_MAX_FREQ = "persist.sys.parts.gpu.max_frequency";
@@ -65,10 +63,13 @@ public class GpuManagerUtils {
         }
     }
 
+    /** Lowest first; kgsl lists them by power level, which starts at the highest clock. */
     public String[] getAvailableFrequencies() {
         try {
-            String frequencies = readFile(GPU_BASE_PATH + GPU_AVAILABLE_FREQUENCIES);
-            return frequencies.trim().split("\\s+");
+            String[] frequencies = readFile(GPU_BASE_PATH + GPU_AVAILABLE_FREQUENCIES)
+                    .trim().split("\\s+");
+            Arrays.sort(frequencies, Comparator.comparingLong(Long::parseLong));
+            return frequencies;
         } catch (Exception e) {
             return null;
         }
@@ -90,20 +91,24 @@ public class GpuManagerUtils {
         }
     }
 
+    /**
+     * The range the user set, not devfreq's: min_freq/max_freq also carry the thermal and boost
+     * limits, and the screen would store them as the user's choice on Apply.
+     */
     public String getCurrentMinFrequency() {
-        try {
-            return readFile(GPU_BASE_PATH + GPU_MIN_FREQ).trim();
-        } catch (Exception e) {
-            return "0";
-        }
+        return storedOrDefault(PROP_MIN_FREQ, true);
     }
 
     public String getCurrentMaxFrequency() {
-        try {
-            return readFile(GPU_BASE_PATH + GPU_MAX_FREQ).trim();
-        } catch (Exception e) {
-            return "0";
-        }
+        return storedOrDefault(PROP_MAX_FREQ, false);
+    }
+
+    private String storedOrDefault(String prop, boolean lowest) {
+        String[] frequencies = getAvailableFrequencies();
+        if (frequencies == null || frequencies.length == 0) return "0";
+        String stored = SystemProperties.get(prop, "");
+        return Arrays.asList(frequencies).contains(stored)
+                ? stored : frequencies[lowest ? 0 : frequencies.length - 1];
     }
 
     public String getGpuBusyPercentage() {
@@ -134,27 +139,9 @@ public class GpuManagerUtils {
         }
     }
 
-    public boolean getForceClkOn() {
-        try {
-            String value = readFile(GPU_BASE_PATH + GPU_FORCE_CLK_ON).trim();
-            return "1".equals(value);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public boolean getForceBusOn() {
         try {
             String value = readFile(GPU_BASE_PATH + GPU_FORCE_BUS_ON).trim();
-            return "1".equals(value);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean getForceRailOn() {
-        try {
-            String value = readFile(GPU_BASE_PATH + GPU_FORCE_RAIL_ON).trim();
             return "1".equals(value);
         } catch (Exception e) {
             return false;
@@ -187,8 +174,30 @@ public class GpuManagerUtils {
         }
     }
 
+    /** Fixes a range stored upside down by the old reset, which pinned the GPU to its lowest clock. */
+    public void fixStoredRange() {
+        String min = SystemProperties.get(PROP_MIN_FREQ, "");
+        String max = SystemProperties.get(PROP_MAX_FREQ, "");
+        try {
+            if (!min.isEmpty() && !max.isEmpty() && Long.parseLong(min) > Long.parseLong(max)) {
+                setFrequencyRange(min, max);
+            }
+        } catch (NumberFormatException e) {
+            // Nothing valid stored
+        }
+    }
+
     /** Applies the range now and stores it; init restores it at boot (init.xiaomi_sm8450.rc). */
     public void setFrequencyRange(String minFreq, String maxFreq) {
+        try {
+            if (Long.parseLong(minFreq) > Long.parseLong(maxFreq)) {
+                String lower = maxFreq;
+                maxFreq = minFreq;
+                minFreq = lower;
+            }
+        } catch (NumberFormatException e) {
+            return;
+        }
         try {
             // The clock props must be set first: the frequency triggers read them.
             int minMhz = Integer.parseInt(minFreq) / 1000000;
@@ -200,25 +209,10 @@ public class GpuManagerUtils {
         } catch (RuntimeException e) {
             // Not stored; the values below still apply until reboot.
         }
+        // The *_clock_mhz nodes belong to root; init writes them from the props above.
         try {
             writeFile(GPU_BASE_PATH + GPU_MIN_FREQ, minFreq);
             writeFile(GPU_BASE_PATH + GPU_MAX_FREQ, maxFreq);
-            try {
-                int minMhz = Integer.parseInt(minFreq) / 1000000;
-                int maxMhz = Integer.parseInt(maxFreq) / 1000000;
-                writeFile(GPU_BASE_PATH + GPU_MIN_CLOCK_MHZ, String.valueOf(minMhz));
-                writeFile(GPU_BASE_PATH + GPU_MAX_CLOCK_MHZ, String.valueOf(maxMhz));
-            } catch (Exception e) {
-                // Ignore
-            }
-        } catch (Exception e) {
-            // Ignore errors
-        }
-    }
-
-    public void setForceClkOn(boolean enabled) {
-        try {
-            writeFile(GPU_BASE_PATH + GPU_FORCE_CLK_ON, enabled ? "1" : "0");
         } catch (Exception e) {
             // Ignore errors
         }
@@ -227,14 +221,6 @@ public class GpuManagerUtils {
     public void setForceBusOn(boolean enabled) {
         try {
             writeFile(GPU_BASE_PATH + GPU_FORCE_BUS_ON, enabled ? "1" : "0");
-        } catch (Exception e) {
-            // Ignore errors
-        }
-    }
-
-    public void setForceRailOn(boolean enabled) {
-        try {
-            writeFile(GPU_BASE_PATH + GPU_FORCE_RAIL_ON, enabled ? "1" : "0");
         } catch (Exception e) {
             // Ignore errors
         }
@@ -266,11 +252,9 @@ public class GpuManagerUtils {
         }
         
         // Reset power settings
-        setForceClkOn(false);
         setForceBusOn(false);
-        setForceRailOn(false);
         setForceNoNap(false);
-        setBusSplit(false);
+        setBusSplit(true);
     }
 
     private String readFile(String path) throws IOException {

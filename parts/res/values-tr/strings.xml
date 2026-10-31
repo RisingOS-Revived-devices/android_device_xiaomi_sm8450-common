@@ -106,7 +106,7 @@
     <string name="min_frequency">En düşük frekans</string>
     <string name="max_frequency">En yüksek frekans</string>
     <string name="frequencies_unavailable">Bu kernelde CPU frekansları okunamıyor.</string>
-    <string name="kernel_manager_note">Değişiklikler Uygula\'ya dokununca geçerli olur ve yeniden başlatmadan sonra geri yüklenir. Sıfırla, walt\'a ve tam frekans aralığına döner.</string>
+    <string name="kernel_manager_note">Değişiklikler Uygula\'ya dokununca geçerli olur ve yeniden başlatmadan sonra geri yüklenir. Sıfırla, walt\'a ve varsayılan frekans aralığına döner.</string>
 
     <string name="gpu_manager_title">GPU yöneticisi</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Seviye <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">GPU yöneticisi</string>
     <string name="gpu_power">Güç</string>
-    <string name="gpu_force_clk_on">Saati açık tut</string>
-    <string name="gpu_force_clk_on_summary">GPU saati boştayken de çalışsın</string>
     <string name="gpu_force_bus_on">Veri yolunu açık tut</string>
     <string name="gpu_force_bus_on_summary">GPU bellek veri yolu etkin kalsın</string>
-    <string name="gpu_force_rail_on">Güç hattını açık tut</string>
-    <string name="gpu_force_rail_on_summary">GPU güç hattı açık kalsın</string>
     <string name="gpu_force_no_nap">Uyuklama yok</string>
     <string name="gpu_force_no_nap_summary">GPU\'nun kareler arasında uyuklamasını engelle</string>
     <string name="gpu_bus_split">Veri yolu ayırma</string>

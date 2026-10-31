@@ -106,7 +106,7 @@
     <string name="min_frequency">Tần số tối thiểu</string>
     <string name="max_frequency">Tần số tối đa</string>
     <string name="frequencies_unavailable">Không thể đọc tần số CPU trên kernel này.</string>
-    <string name="kernel_manager_note">Thay đổi áp dụng khi bạn nhấn Áp dụng và được khôi phục sau khi khởi động lại. Đặt lại sẽ về walt và toàn bộ dải tần số.</string>
+    <string name="kernel_manager_note">Thay đổi áp dụng khi bạn nhấn Áp dụng và được khôi phục sau khi khởi động lại. Đặt lại sẽ về walt và dải tần số mặc định.</string>
 
     <string name="gpu_manager_title">Quản lý GPU</string>
     <string name="gpu_model">GPU</string>
@@ -117,12 +117,8 @@
     <string name="gpu_level_value">Mức <xliff:g id="level">%1$s</xliff:g></string>
     <string name="gpu_governor">Governor GPU</string>
     <string name="gpu_power">Nguồn</string>
-    <string name="gpu_force_clk_on">Buộc bật xung nhịp</string>
-    <string name="gpu_force_clk_on_summary">Giữ xung nhịp GPU chạy khi rảnh</string>
     <string name="gpu_force_bus_on">Buộc bật bus</string>
     <string name="gpu_force_bus_on_summary">Giữ bus bộ nhớ GPU hoạt động</string>
-    <string name="gpu_force_rail_on">Buộc bật nguồn</string>
-    <string name="gpu_force_rail_on_summary">Giữ đường nguồn GPU luôn bật</string>
     <string name="gpu_force_no_nap">Không ngủ ngắn</string>
     <string name="gpu_force_no_nap_summary">Ngăn GPU ngủ ngắn giữa các khung hình</string>
     <string name="gpu_bus_split">Tách bus</string>
