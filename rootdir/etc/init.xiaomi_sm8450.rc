@@ -260,9 +260,6 @@ on charger
     restart vendor.charger
 
 on property:sys.boot_completed=1
-    # Set thermal mode to default
-    write /sys/devices/virtual/thermal/thermal_message/sconfig 0
-
     # Setup dex2oat thread count and cpuset
     setprop dalvik.vm.dex2oat-cpu-set 0,1,2,3,4,5,6
     setprop dalvik.vm.dex2oat-threads 6

@@ -34,7 +34,7 @@ public class Startup extends BroadcastReceiver {
         Log.d(TAG, "onReceive called with action: " + action);
 
         if (Intent.ACTION_BOOT_COMPLETED.equals(action) ||
-            Intent.ACTION_REBOOT.equals(action)) {
+            Intent.ACTION_LOCKED_BOOT_COMPLETED.equals(action)) {
             // SurfaceFlinger needs a moment after boot before it accepts the transaction.
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 Log.d(TAG, "Applying saved saturation setting...");
