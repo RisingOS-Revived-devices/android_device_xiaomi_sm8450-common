@@ -35,7 +35,7 @@ import android.os.RemoteException;
 public class ResolutionService extends Service {
 
     private static final String TAG = "ResolutionService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private String mPreviousApp;
     private ResolutionUtils mResolutionUtils;
     private IActivityTaskManager mActivityTaskManager;
@@ -105,12 +105,6 @@ public class ResolutionService extends Service {
                 }
 
                 String foregroundApp = info.topActivity.getPackageName();
-                int state = mResolutionUtils.getStateForPackage(foregroundApp);
-
-                if (!mResolutionUtils.isAppInList) {
-                    mResolutionUtils.restoreDefaultResolution();
-                }
-
                 if (!foregroundApp.equals(mPreviousApp)) {
                     mResolutionUtils.setResolution(foregroundApp);
                     mPreviousApp = foregroundApp;

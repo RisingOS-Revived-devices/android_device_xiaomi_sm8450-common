@@ -27,6 +27,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -35,7 +36,7 @@ import android.os.RemoteException;
 public class RefreshService extends Service {
 
     private static final String TAG = "RefreshService";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private String mPreviousApp;
     private RefreshUtils mRefreshUtils;
@@ -84,10 +85,13 @@ public class RefreshService extends Service {
             // Do nothing
         }
         unregisterReceiver(mIntentReceiver);
-        if (mRefreshUtils != null) {
-            mRefreshUtils.cleanup();
-        }
         super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mRefreshUtils.onConfigurationChanged();
     }
 
     private void registerReceiver() {
@@ -106,18 +110,9 @@ public class RefreshService extends Service {
                     return;
                 }
                 String foregroundApp = info.topActivity.getPackageName();
-                int state = mRefreshUtils.getStateForPackage(foregroundApp);
-                
-                if (!mRefreshUtils.isAppInList) {
-                    mRefreshUtils.getOldRate();
-                }
-
                 if (!foregroundApp.equals(mPreviousApp)) {
                     mRefreshUtils.setRefreshRate(foregroundApp);
                     mPreviousApp = foregroundApp;
-                }
-                if (state == RefreshUtils.STATE_LAND && mRefreshUtils.isAppInList) {
-                    mRefreshUtils.checkOrientationAndSetRate(foregroundApp);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
