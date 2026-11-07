@@ -1,0 +1,16 @@
+# Copyright (C) 2026 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+
+on post-fs-data && property:ro.lineage.device=zeus
+    write /proc/sys/kernel/printk "7 6 1 7"
+    start zeus_boot_diagnostics
+
+on boot && property:ro.lineage.device=zeus
+    write /proc/sys/kernel/printk "7 6 1 7"
+
+service zeus_boot_diagnostics /system/bin/sh /vendor/bin/zeus-boot-diagnostics.sh
+    user root
+    group root log
+    seclabel u:r:su:s0
+    disabled
+    oneshot
