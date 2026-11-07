@@ -18,5 +18,6 @@
     grep -E '^(gh_|qcom_wdt)' /proc/modules
     echo "Kernel diagnostics end"
 } 2>&1 | while IFS= read -r line; do
-    printf '<3>ZEUS_BOOT %s\n' "$line"
+    # A long module dependency list can exceed the /dev/kmsg record limit.
+    printf '<3>ZEUS_BOOT %.900s\n' "$line"
 done > /dev/kmsg
