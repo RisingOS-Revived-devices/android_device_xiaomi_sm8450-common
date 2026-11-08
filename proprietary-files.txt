@@ -942,6 +942,7 @@ vendor/lib64/libkernelmanager.so|67b2d698b4e7671ea5f733a828c551c37f9772e9
 vendor/lib64/libllvm-glnext.so|ec4e05e2667582374d2acf50acbe302209985e76
 vendor/lib64/libllvm-qcom.so|c5b21de4faa050f27d0bb2d77a575144763d8fa8
 vendor/lib64/libllvm-qgl.so|f193da53721e76dee87de828870cce4342f47b61
+vendor/lib64/vendor.qti.qspmhal@1.0.so|c4483c88346e8aee18eb34ba097d9ec784b4d571
 
 # Graphics (Adreno firmware) - from linux-firmware 20261019
 vendor/firmware/a730_sqe.fw|920d6db39c8852be3a898d782b58378a39629ec6
