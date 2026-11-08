@@ -111,10 +111,16 @@ blob_fixups: blob_fixups_user_type = {
         'vendor/etc/media_taro/video_system_specs.json',
         'vendor/etc/media_ukee/video_system_specs.json',
     ): blob_fixup().regex_replace('.*"libqc2vppfilter.so"\n', ''),
+    # The HIDL qspmhal service would clash with the AIDL one's service name.
+    'vendor/etc/init/vendor.qti.qspmhal@1.0-service.rc': blob_fixup()
+        .regex_replace('service qspmhal ', 'service qspmhal-hidl '),
     'vendor/etc/seccomp_policy/c2audio.vendor.ext-arm64.policy': blob_fixup()
         .add_line_if_missing('getppid: 1')
         .add_line_if_missing('setsockopt: 1')
         .add_line_if_missing('uname: 1'),
+    # Shared by both qspmhal services; the 5.10 HIDL one also needs gettimeofday.
+    'vendor/etc/seccomp_policy/qspm.policy': blob_fixup()
+        .add_line_if_missing('gettimeofday: 1'),
     'vendor/etc/vintf/manifest/c2_manifest_vendor.xml': blob_fixup()
         .regex_replace('.+dolby.+\n', '')
         .regex_replace('format="hidl"', 'format="aidl"')
