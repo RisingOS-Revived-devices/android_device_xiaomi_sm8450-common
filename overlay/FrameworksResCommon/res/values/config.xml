@@ -191,4 +191,30 @@
 
     <!-- Whether to select voice/data/sms preference without user confirmation -->
     <bool name="config_voice_data_sms_auto_fallback">true</bool>
+
+    <!-- The list of components which should be automatically disabled for a specific package. -->
+    <string-array name="config_disabledComponents" translatable="false">
+        <item>com.google.android.gms/com.google.android.gms.nearby.messages.service.NearbyMessagesService</item>
+        <item>com.google.android.gms/com.google.android.gms.nearby.discovery.service.DiscoveryService</item>
+    </string-array>
+
+    <!-- Enables or disables fading edges when marquee is enabled in TextView.
+         Off by default, since the framebuffer readback used to implement the
+         fading edges is prohibitively expensive on most GPUs. -->
+    <bool name="config_ui_enableFadingMarquee">true</bool>
+
+    <!-- The amount to scale fullscreen snapshots for Overview and snapshot starting windows. -->
+    <item name="config_highResTaskSnapshotScale" format="float" type="dimen">0.8</item>
+
+    <!-- Feature flag to store TaskSnapshot in 16 bit pixel format to save memory. -->
+    <bool name="config_use16BitTaskSnapshotPixelFormat">true</bool>
+
+    <!-- Flag indicating whether the surface flinger has limited
+         alpha compositing functionality in hardware.  If set, the window
+         manager will disable alpha trasformation in animations where not
+         strictly needed. -->
+    <bool name="config_sf_limitedAlpha">true</bool>
+
+    <!-- Whether the device supports Smart Pixels -->
+    <bool name="config_supportSmartPixels">true</bool>
 </resources>

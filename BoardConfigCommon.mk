@@ -25,21 +25,38 @@ AB_OTA_PARTITIONS += \
     vendor_boot \
     vendor_dlkm
 
-# Architecture
+TARGET_OTA_ADDITIONAL_OPTIONS := \
+    --enable_lz4diff=true \
+    --enable_vabc_xor=true
+
+# Architecture (64-bit only)
 TARGET_ARCH := arm64
-TARGET_ARCH_VARIANT := armv8-a-branchprot
+TARGET_ARCH_VARIANT := armv9-a
 TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 :=
-TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := kryo300
+TARGET_CPU_VARIANT := cortex-a510
+TARGET_CPU_VARIANT_RUNTIME := cortex-a510
 
 # Audio
 AUDIO_FEATURE_ENABLED_MCS := true
 BOARD_SUPPORTS_OPENSOURCE_STHAL := true
 
+TARGET_USES_QCOM_MM_AUDIO := true
+
+# ART
+WITH_DEXPREOPT := true
+DEX_PREOPT_DEFAULT := generate-vdex-and-image
+WITH_DEXPREOPT_DEBUG_INFO := false
+ART_BUILD_TARGET_NDEBUG := true
+ART_BUILD_TARGET_DEBUG := false
+ART_BUILD_HOST_NDEBUG := true
+ART_BUILD_HOST_DEBUG := false
+
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := taro
 TARGET_NO_BOOTLOADER := true
+
+# Bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(COMMON_PATH)/bluetooth/include
 
 # Filesystem
 TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/configs/config.fs
@@ -59,6 +76,10 @@ BOARD_USES_GENERIC_KERNEL_IMAGE := true
 BOARD_KERNEL_BASE        := 0x00000000
 BOARD_KERNEL_PAGESIZE    := 4096
 BOARD_KERNEL_IMAGE_NAME := Image
+BOARD_KERNEL_CMDLINE += androidboot.init_fatal_reboot_target=recovery
+
+TARGET_KERNEL_CLANG_VERSION := greenforce
+TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-$(TARGET_KERNEL_CLANG_VERSION)
 
 TARGET_KERNEL_PLATFORM_TARGET := sm8450
 TARGET_KERNEL_SOURCE := vendor/xiaomi/sm8450-build
@@ -76,9 +97,15 @@ BOARD_KERNEL_CMDLINE := \
     disable_dma32=on \
     log_buf_len=1M \
     printk.devkmsg=on \
-    scsi_mod.scan=sync
+    scsi_mod.scan=sync \
+    mtdoops.fingerprint=$(LINEAGE_VERSION) \
+    allow_file_spec_access \
+    irqaffinity=0-3 \
+    pelt=8
+
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
+    androidboot.init_fatal_reboot_target=recovery \
     androidboot.load_modules_parallel=performance \
     androidboot.memcg=1 \
     androidboot.serialconsole=0 \
@@ -111,22 +138,17 @@ BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm product system system_dlkm system_ext vendor vendor_dlkm
 BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 9122611200 # 0x21FC00000 # BOARD_SUPER_PARTITION_SIZE - overhead (4MiB)
 
-BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEM_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
+$(foreach p, $(call to-upper, $(BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST)), \
+    $(eval BOARD_$(p)IMAGE_FILE_SYSTEM_TYPE := erofs) \
+    $(eval BOARD_$(p)IMAGE_PARTITION_RESERVED_SIZE := 104857600) \
+    $(eval TARGET_COPY_OUT_$(p) := $(call to-lower, $(p))))
 
-TARGET_COPY_OUT_ODM := odm
-TARGET_COPY_OUT_PRODUCT := product
-TARGET_COPY_OUT_SYSTEM_DLKM := system_dlkm
-TARGET_COPY_OUT_SYSTEM_EXT := system_ext
-TARGET_COPY_OUT_VENDOR := vendor
-TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 
--include vendor/lineage/config/BoardConfigReservedSize.mk
+# Compression
+PRODUCT_FS_COMPRESSION := 1
+BOARD_EROFS_COMPRESSOR := lz4hc,12
+BOARD_EROFS_PCLUSTER_SIZE := 262144
 
 # Platform
 BOARD_USES_QCOM_HARDWARE := true
@@ -140,9 +162,9 @@ TARGET_SYSTEM_EXT_PROP += $(COMMON_PATH)/properties/system_ext.prop
 TARGET_VENDOR_PROP += $(COMMON_PATH)/properties/vendor.prop
 
 # Recovery
+BOARD_INCLUDE_RECOVERY_DTBO := true
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/etc/recovery.fstab
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
-TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
 
@@ -157,15 +179,30 @@ SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/public
 BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
 
 # VINTF
+# Dolby HALs, unless hardware/dolby declares them itself
+ifeq ($(wildcard hardware/dolby/vendor.dolby.hardware.dms@2.0-service.xml),)
+DOLBY_VINTF_MANIFEST_FILES := \
+    $(COMMON_PATH)/vintf/vendor.dolby.media.c2.xml \
+    $(COMMON_PATH)/vintf/vendor.dolby.hardware.dms@2.0-service.xml
+DOLBY_VINTF_MATRIX_FILES := \
+    $(COMMON_PATH)/vintf/device_framework_compatibility_matrix.xml \
+    $(COMMON_PATH)/vintf/dolby_framework_matrix.xml
+endif
+
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 
 DEVICE_MANIFEST_SKUS := taro diwali cape ukee
 $(foreach sku, $(call to-upper, $(DEVICE_MANIFEST_SKUS)), \
     $(eval DEVICE_MANIFEST_$(sku)_FILES := \
+        $(DOLBY_VINTF_MANIFEST_FILES) \
         $(COMMON_PATH)/vintf/manifest.xml \
         $(COMMON_PATH)/vintf/manifest_xiaomi.xml \
         $(if $(TARGET_NFC_SUPPORTED_SKUS),$(COMMON_PATH)/vintf/manifest_no_nfc.xml,) \
+        $(DEVICE_MANIFEST_FILE) \
     ))
+# hardware/dolby adds its HALs to DEVICE_MANIFEST_FILE, which builds a SKU-less
+# manifest without target-level and fails checkvintf; keep them in the SKUs only.
+DEVICE_MANIFEST_FILE :=
 
 ifneq ($(TARGET_NFC_SUPPORTED_SKUS),)
 ODM_MANIFEST_SKUS += $(TARGET_NFC_SUPPORTED_SKUS)
@@ -175,9 +212,11 @@ endif
 
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
-    hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml
+    $(DOLBY_VINTF_MATRIX_FILES) \
+    hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
+    $(COMMON_PATH)/vintf/device_framework_matrix.xml
 
-DEVICE_FRAMEWORK_MANIFEST_FILE += $(COMMON_PATH)/vintf/framework_manifest.xml
+DEVICE_FRAMEWORK_MANIFEST_FILE := $(COMMON_PATH)/vintf/framework_manifest.xml
 
 # Verified Boot
 BOOT_SECURITY_PATCH := 2026-07-05
@@ -216,3 +255,32 @@ WIFI_DRIVER_STATE_ON := "ON"
 WIFI_FEATURE_HOSTAPD_11AX := true
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
+
+# Thermal
+BOARD_VENDOR_SUPPORTS_THERMAL := true
+
+# HWUI
+HWUI_COMPILE_FOR_PERF := true
+
+# Userdata
+PRODUCT_FS_COMPRESSION := 1
+
+# Erofs compress hints
+BOARD_EROFS_COMPRESS_HINTS := $(COMMON_PATH)/configs/erofs_compress_hints.txt
+BOARD_SYSTEMIMAGE_EROFS_COMPRESS_HINTS := $(COMMON_PATH)/configs/erofs_compress_hints.txt
+BOARD_SYSTEM_EXTIMAGE_EROFS_COMPRESS_HINTS := $(COMMON_PATH)/configs/erofs_compress_hints.txt
+BOARD_VENDORIMAGE_EROFS_COMPRESS_HINTS := $(COMMON_PATH)/configs/erofs_compress_hints.txt
+BOARD_PRODUCTIMAGE_EROFS_COMPRESS_HINTS := $(COMMON_PATH)/configs/erofs_compress_hints.txt
+BOARD_ODMIMAGE_EROFS_COMPRESS_HINTS := $(COMMON_PATH)/configs/erofs_compress_hints.txt
+
+# SurfaceFlinger
+TARGET_USE_AOSP_SURFACEFLINGER := true
+
+# Malloc
+MALLOC_SVELTE := true
+MALLOC_LOW_MEMORY := true
+
+# Graphics: HWC and Gralloc
+TARGET_USES_HWC2 := true
+TARGET_USES_HWC2_4 := true 
+TARGET_USES_GRALLOC4 := true

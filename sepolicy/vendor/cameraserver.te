@@ -1,0 +1,6 @@
+# Torch strength (libcameraservice_extension)
+# /sys/class/leds/led:torch_0 is a sysfs_leds symlink to the pm8350c torch device.
+allow cameraserver sysfs_leds:dir search;
+allow cameraserver sysfs_leds:lnk_file read;
+allow cameraserver sysfs_led_torch:dir search;
+allow cameraserver sysfs_led_torch:file rw_file_perms;

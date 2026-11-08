@@ -1,8 +1,18 @@
+allow vendor_init cgroup:file r_file_perms;
+
 set_prop(vendor_init, vendor_fp_prop)
 set_prop(vendor_init, vendor_fp_info_prop)
 set_prop(vendor_init, vendor_thermal_normal_prop)
 set_prop(vendor_init, vendor_ssr_prop)
 set_prop(vendor_init, vendor_qcc_prop)
+get_prop(vendor_init, aux_camera_control_prop)
+
+# Battery
+allow init vendor_sysfs_usb_supply:file setattr;
+allow init vendor_sysfs_battery_supply:file setattr;
+allow init vendor_sysfs_qcom_battery:file setattr;
+
+r_dir_file(init, sysfs_batteryinfo)
 
 recovery_only(`
 allow init proc:file write;

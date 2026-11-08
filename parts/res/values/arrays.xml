@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2017-2023 The LineageOS Project
+                   2026 acerhizmq
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Per-app modes; the index is the mode stored by the utils classes. -->
+    <string-array name="refresh_mode_entries" translatable="false">
+        <item>@string/refresh_default</item>
+        <item>@string/refresh_standard</item>
+        <item>@string/refresh_extreme</item>
+        <item>@string/refresh_land</item>
+    </string-array>
+
+    <string-array name="resolution_mode_entries" translatable="false">
+        <item>@string/resolution_default</item>
+        <item>@string/resolution_720p</item>
+        <item>@string/resolution_900p</item>
+        <item>@string/resolution_1080p</item>
+    </string-array>
+
+    <string-array name="thermal_mode_entries" translatable="false">
+        <item>@string/thermal_default</item>
+        <item>@string/thermal_benchmark</item>
+        <item>@string/thermal_browser</item>
+        <item>@string/thermal_camera</item>
+        <item>@string/thermal_dialer</item>
+        <item>@string/thermal_gaming</item>
+        <item>@string/thermal_navigation</item>
+        <item>@string/thermal_streaming</item>
+        <item>@string/thermal_video</item>
+    </string-array>
+
+    <!-- Matches ZramSizes in BatteryScreens.kt: 0, 2, 4, 8, -1 (auto). -->
+    <string-array name="power_profile_entries" translatable="false">
+        <item>@string/power_profile_balance</item>
+        <item>@string/power_profile_gaming</item>
+        <item>@string/power_profile_performance</item>
+        <item>@string/power_profile_battery_saver</item>
+    </string-array>
+
+    <string-array name="hypercharge_limit_entries" translatable="false">
+        <item>@string/hypercharge_limit_120w</item>
+        <item>@string/hypercharge_limit_90w</item>
+        <item>@string/hypercharge_limit_67w</item>
+        <item>@string/hypercharge_limit_50w</item>
+        <item>@string/hypercharge_limit_33w</item>
+        <item>@string/hypercharge_limit_30w</item>
+    </string-array>
+
+    <!-- constant_charge_current in uA, same order as hypercharge_limit_entries -->
+    <string-array name="hypercharge_limit_values" translatable="false">
+        <item>22000000</item>
+        <item>16500000</item>
+        <item>12300000</item>
+        <item>9200000</item>
+        <item>6000000</item>
+        <item>5500000</item>
+    </string-array>
+
+    <string-array name="zram_size_entries" translatable="false">
+        <item>@string/zram_disabled</item>
+        <item>@string/zram_size_2gb</item>
+        <item>@string/zram_size_4gb</item>
+        <item>@string/zram_size_8gb</item>
+        <item>@string/zram_size_dynamic</item>
+    </string-array>
+
+    <!-- Useless mode -->
+    <string-array name="useless_warnings">
+        <item>Are you sure you want to enable this completely useless feature?</item>
+        <item>Warning: this action will have absolutely no effect on your device.</item>
+        <item>Caution: proceeding will result in nothing happening whatsoever.</item>
+        <item>Alert: this toggle exists purely for entertainment purposes.</item>
+        <item>Notice: no electrons were harmed in the making of this toggle.</item>
+        <item>Disclaimer: this setting is certified 100% useless by experts.</item>
+        <item>Warning: may cause sudden urges to toggle more useless settings.</item>
+        <item>Alert: may cause random vibrations and screen flickering.</item>
+        <item>Caution: side effects include pointless buzzing and blinking.</item>
+    </string-array>
+
+    <string-array name="useless_messages">
+        <item>Congratulations! You\'ve successfully accomplished absolutely nothing.</item>
+        <item>This toggle is as useful as a chocolate teapot.</item>
+        <item>You just wasted 0.003 seconds of your life. Was it worth it?</item>
+        <item>Fun fact: this button has been pressed 42 times by confused users.</item>
+        <item>Warning: excessive use of this toggle may cause mild confusion.</item>
+        <item>This setting is brought to you by the Department of Redundancy Department.</item>
+        <item>You\'ve unlocked the achievement: Master of Pointless Actions.</item>
+        <item>Error 404: functionality not found.</item>
+        <item>This toggle is working exactly as intended, which is not at all.</item>
+        <item>Beep boop! Robot sounds make everything seem more important.</item>
+        <item>Achievement unlocked: Professional Time Waster.</item>
+        <item>This feature has the same effect as shouting at clouds.</item>
+        <item>Congratulations! Your uselessness level has increased by 0%.</item>
+        <item>BZZZT! Your phone is now vibrating for no reason.</item>
+        <item>Screen flicker activated, because why not?</item>
+        <item>Your device is now experiencing a mild existential crisis.</item>
+    </string-array>
+
+    <!-- Processes the gaming power profile prioritizes -->
+</resources>

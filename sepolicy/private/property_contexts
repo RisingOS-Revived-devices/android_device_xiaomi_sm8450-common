@@ -1,0 +1,33 @@
+# Camera
+ro.camera.req.fmq.                  u:object_r:exported_default_prop:s0
+ro.camera.res.fmq.                  u:object_r:exported_default_prop:s0
+
+# Marketing name and device features, read by XiaomiParts
+ro.product.marketname                        u:object_r:build_prop:s0 exact string
+ro.xiaomiparts.hbm                           u:object_r:build_prop:s0 exact bool
+ro.xiaomiparts.hypercharge.max_watts         u:object_r:build_prop:s0 exact int
+
+# SettingsLib
+settingsdebug.instant.packages u:object_r:settingslib_prop:s0
+
+# PowerTools
+persist.sys.parts.perf_mode                      u:object_r:exported_system_prop:s0
+persist.sys.parts.gpu.min_frequency              u:object_r:exported_system_prop:s0
+persist.sys.parts.gpu.max_frequency              u:object_r:exported_system_prop:s0
+persist.sys.parts.gpu.min_clock                  u:object_r:exported_system_prop:s0
+persist.sys.parts.gpu.max_clock                  u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.little.min_frequency       u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.little.max_frequency       u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.little.governor            u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.big.min_frequency          u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.big.max_frequency          u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.big.governor               u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.prime.min_frequency        u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.prime.max_frequency        u:object_r:exported_system_prop:s0
+persist.sys.parts.cpu.prime.governor             u:object_r:exported_system_prop:s0
+
+# XiaomiParts
+persist.sys.aux_camera_control               u:object_r:aux_camera_control_prop:s0
+persist.sys.parts.zram.size                  u:object_r:exported_system_prop:s0
+persist.sys.parts.zram.comp_algorithm        u:object_r:exported_system_prop:s0
+persist.sys.parts.vm.swappiness              u:object_r:exported_system_prop:s0

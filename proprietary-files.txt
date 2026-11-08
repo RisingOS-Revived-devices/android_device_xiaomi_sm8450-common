@@ -7,6 +7,8 @@ vendor/lib64/hw/com.dsi.ant@1.0-impl.so
 vendor/lib64/libcapiv2svacnnvendor.so
 vendor/lib64/libcapiv2svarnnvendor.so
 vendor/lib64/libcapiv2uvvendor.so
+# From zeus HyperOS 3, pinned: TheMuppets dumps don't carry it
+vendor/lib64/soundfx/libmisoundfx.so|9f2f62f50bfcee7edb5b051462034f977aac0ca1
 
 # Bluetooth
 vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti
@@ -1054,3 +1056,6 @@ vendor/lib64/vendor.qti.hardware.camera.postproc@1.0-service-impl.so;DISABLE_CHE
 vendor/lib64/camx.device-impl.so|69596cb9d17b19d702f10f5f221c3c4fc12bd8bf
 vendor/lib64/camx.provider-impl.so|3cbbb02ad6beb46bf43652efdae3801075d8b0f3
 vendor/lib64/libcamximageformatutils.so;DISABLE_CHECKELF|1748a050feb507842325d954be3a64fee28cb0a0|c39823bc128cc0db1c66dee8a568bd530872ed2a
+
+# Camera Extension
+system_ext/framework/camerax-vendor-extensions.jar

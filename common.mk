@@ -21,23 +21,23 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 # Enable virtual AB with vendor ramdisk
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
 
-# Setup dalvik vm configs
-$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
-
 # Inherit from the proprietary version
 $(call inherit-product, vendor/xiaomi/sm8450-common/sm8450-common-vendor.mk)
+
+# Sign
+$(call inherit-product, vendor/lineage-priv/keys/keys.mk)
 
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
     POSTINSTALL_PATH_system=system/bin/otapreopt_script \
-    FILESYSTEM_TYPE_system=ext4 \
+    FILESYSTEM_TYPE_system=erofs \
     POSTINSTALL_OPTIONAL_system=true
 
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_vendor=true \
     POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
-    FILESYSTEM_TYPE_vendor=ext4 \
+    FILESYSTEM_TYPE_vendor=erofs \
     POSTINSTALL_OPTIONAL_vendor=true
 
 PRODUCT_PACKAGES += \
@@ -45,7 +45,7 @@ PRODUCT_PACKAGES += \
     otapreopt_script
 
 # API
-PRODUCT_SHIPPING_API_LEVEL := 32
+PRODUCT_SHIPPING_API_LEVEL := 33
 BOARD_SHIPPING_API_LEVEL := 31
 
 # Audio
@@ -85,6 +85,18 @@ PRODUCT_PACKAGES += \
     libvolumelistener:64
 
 $(call soong_config_set, android_hardware_audio, run_64bit, true)
+$(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
+
+# hardware/dolby comes in two flavours: LunarisDolby (with Dolby Vision, ships
+# the effect libraries audio_effects.xml loads) and the older DAX one.
+ifneq ($(wildcard hardware/dolby/LunarisDolby),)
+TARGET_INCLUDES_DolbyVision := true
+AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects.xml
+MEDIA_CODECS_C2_AUDIO_XML := $(LOCAL_PATH)/media/media_codecs_c2_audio.xml
+else
+AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_dax.xml
+MEDIA_CODECS_C2_AUDIO_XML := hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/common/codec2/media_codecs_c2_audio.xml
+endif
 
 $(foreach sku, taro diwali cape ukee parrot, \
     $(eval PRODUCT_COPY_FILES += \
@@ -96,7 +108,7 @@ $(foreach sku, taro diwali cape ukee parrot, \
     ))
 
 PRODUCT_COPY_FILES += \
-    hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/common/codec2/media_codecs_c2_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2_audio.xml \
+    $(MEDIA_CODECS_C2_AUDIO_XML):$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2_audio.xml \
     hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/taro/card-defs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/card-defs.xml \
     hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/taro/microphone_characteristics.xml:$(TARGET_COPY_OUT_VENDOR)/etc/microphone_characteristics.xml
 
@@ -129,7 +141,44 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml
 
+# Device-specific settings
+PRODUCT_PACKAGES += \
+    DSPVolumeSynchronizer
+
+# Dalvik
+PRODUCT_PRODUCT_PROPERTIES += \
+    dalvik.vm.heapstartsize?=16m \
+    dalvik.vm.heapgrowthlimit?=384m \
+    dalvik.vm.heapsize?=512m \
+    dalvik.vm.heaptargetutilization?=0.75 \
+    dalvik.vm.heapminfree?=8m \
+    dalvik.vm.heapmaxfree?=32m \
+    dalvik.vm.foreground-heap-growth-multiplier?=1.0 \
+    dalvik.vm.enable_time_based_gc_trigger?=true \
+    dalvik.vm.usejit?=true \
+    dalvik.vm.jitmaxsize?=128m \
+    dalvik.vm.jitinitialsize?=16m \
+    dalvik.vm.jitthreshold?=5000 \
+    dalvik.vm.jitwarmupthreshold?=2500 \
+    dalvik.vm.jitpthreadpriority?=8 \
+    dalvik.vm.parallel-image-loading?=true \
+    dalvik.vm.madvise.vdexfile.size?=104857600 \
+    dalvik.vm.madvise.odexfile.size?=104857600 \
+    dalvik.vm.madvise.artfile.size?=0 \
+    dalvik.vm.usap_pool_enabled?=true \
+    dalvik.vm.usap_pool_size_min?=1 \
+    dalvik.vm.usap_pool_size_max?=4 \
+    dalvik.vm.usap_refill_threshold?=1 \
+    dalvik.vm.usap_pool_refill_delay_ms?=3000
+
+# Device-specific settings
+PRODUCT_PACKAGES += \
+    XiaomiParts
+
 # Display
+$(call soong_config_set,surfaceflinger,frame_rate_category_high,120)
+$(call soong_config_set,surfaceflinger,frame_rate_category_min,60)
+
 PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@4.0-impl-qti-display \
     mapper.qti \
@@ -152,6 +201,14 @@ PRODUCT_COPY_FILES += \
     hardware/qcom-caf/sm8450-6.6/display/core/snapalloc/resources/ubwc_alignments.json:$(TARGET_COPY_OUT_VENDOR)/etc/display/ubwc_alignments.json \
     hardware/qcom-caf/sm8450-6.6/display/core/snapalloc/resources/video_alignments.json:$(TARGET_COPY_OUT_VENDOR)/etc/display/video_alignments.json \
     hardware/qcom-caf/sm8450-6.6/display/core/snapalloc/resources/formats.json:$(TARGET_COPY_OUT_VENDOR)/etc/display/formats.json
+
+# Dolby
+$(call inherit-product, hardware/dolby/dolby.mk)
+
+# ViPER4AndroidFX, where the tree has it
+ifneq ($(wildcard packages/apps/ViPER4AndroidFX/config.mk),)
+$(call inherit-product, packages/apps/ViPER4AndroidFX/config.mk)
+endif
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -184,14 +241,14 @@ PRODUCT_COPY_FILES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    android.hardware.gnss@2.1-impl-qti:64 \
-    android.hardware.gnss-aidl-impl-qti:64 \
+    android.hardware.gnss@2.1-impl-qti \
+    android.hardware.gnss-aidl-impl-qti \
     android.hardware.gnss-aidl-service-qti
 
 PRODUCT_PACKAGES += \
-    libbatching:64 \
-    libgeofencing:64 \
-    libgnss:64
+    libbatching \
+    libgeofencing \
+    libgnss
 
 PRODUCT_PACKAGES += \
     apdr.conf \
@@ -207,9 +264,18 @@ PRODUCT_PACKAGES += \
     gnss@2.0-xtra-daemon.policy
 
 $(call soong_config_set, qtilocation, feature_nhz, false)
+$(call soong_config_set, qtilocation, supports_wearables, false)
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml
+
+
+# Graphics
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.composer3-V2-ndk.vendor \
+    android.hardware.graphics.composer3-V4-ndk.vendor \
+    android.hardware.graphics.common-V4-ndk \
+    android.hardware.graphics.common-V7-ndk
 
 # Graphics
 PRODUCT_COPY_FILES += \
@@ -329,10 +395,14 @@ PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
 
 PRODUCT_COPY_FILES += \
-    vendor/qcom/opensource/power/config/taro/powerhint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.xml
+    $(LOCAL_PATH)/configs/powerhint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.xml
 
 # Powershare
 $(call soong_config_set,lineage_powershare,powershare_path,/sys/class/qcom-battery/reverse_chg_mode)
+
+# QMI
+PRODUCT_PACKAGES += \
+    libvndfwk_detect_jni.qti_vendor # Needed by CNE app
 
 # Recovery
 PRODUCT_COPY_FILES += \
@@ -346,7 +416,7 @@ PRODUCT_PACKAGES += \
     android.hardware.sensors-service.xiaomi-multihal
 
 PRODUCT_PACKAGES += \
-    sensors.xiaomi.v2:64
+    sensors.xiaomi.v2
 
 PRODUCT_PACKAGES += \
     sensor-notifier
@@ -448,6 +518,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
     frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml
 
+# Use FUSE passthrough
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.sys.fuse.passthrough.enable=true
+
 # Vendor service manager
 PRODUCT_PACKAGES += \
     vndservicemanager
@@ -488,7 +562,7 @@ PRODUCT_PACKAGES += \
     android.hardware.wifi-service \
     hostapd \
     hostapd_cli \
-    libwifi-hal-qcom:64 \
+    libwifi-hal-qcom \
     wpa_cli \
     wpa_supplicant \
     wpa_supplicant.conf
@@ -514,3 +588,58 @@ PRODUCT_PACKAGES += \
     firmware_qca6490_wlan_mac.bin_symlink \
     firmware_qca6750_WCNSS_qcom_cfg.ini_symlink \
     firmware_qca6750_wlan_mac.bin_symlink
+
+# CameraExtensions
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/permissions/camerax-vendor-extensions.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/camerax-vendor-extensions.xml
+
+# Task Profiles
+PRODUCT_COPY_FILES += \
+    system/core/libprocessgroup/profiles/task_profiles.json:$(TARGET_COPY_OUT_VENDOR)/etc/task_profiles.json \
+    system/core/libprocessgroup/profiles/cgroups.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json
+
+# Enable whole-program R8 Java optimizations for SystemUI and system_server,
+# but also allow explicit overriding for testing and development.
+SYSTEM_OPTIMIZE_JAVA := true
+SYSTEMUI_OPTIMIZE_JAVA := true
+
+# Reduce system server verbosity
+PRODUCT_SYSTEM_SERVER_DEBUG_INFO := false
+PRODUCT_OTHER_JAVA_DEBUG_INFO := false
+PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
+
+# Strip the local variable table and the local variable type table to reduce
+# the size of the system image. This has no bearing on stack traces, but will
+# leave less information available via JDWP.
+PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
+
+# ART - PREOPT
+# Optimize System Server performance using speed-profile filter
+PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
+# Enable DM file pre-opting to reduce first boot time
+PRODUCT_DEX_PREOPT_GENERATE_DM_FILES := true
+PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := verify
+PRODUCT_ALWAYS_PREOPT_EXTRACTED_APK := true
+PRODUCT_USE_PROFILE_FOR_BOOT_IMAGE := true
+PRODUCT_DEX_PREOPT_BOOT_IMAGE_PROFILE_LOCATION := frameworks/base/boot/boot-image-profile.txt
+# Do not generate libartd.
+PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
+USE_DEX2OAT_DEBUG := false
+
+# Preopt critical applications
+PRODUCT_DEXPREOPT_SPEED_APPS += \
+    Settings \
+    SettingsProvider \
+    SystemUI \
+    Launcher3 \
+    PixelLauncher \
+    NexusLauncherRelease \
+    FrameworkResAndroid
+
+# Disable async MTE on a few process
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    persist.arm64.memtag.system_server=off \
+    persist.arm64.memtag.app.com.android.se=off \
+    persist.arm64.memtag.app.com.google.android.bluetooth=off \
+    persist.arm64.memtag.app.com.android.nfc=off \
+    persist.arm64.memtag.process.system_server=off

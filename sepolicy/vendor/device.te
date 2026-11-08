@@ -9,3 +9,6 @@ type vendor_radio_smd_device, dev_type;
 
 # Touchscreen
 type touchfeature_device, dev_type;
+
+# Battery
+type vendor_sysfs_qcom_battery, fs_type, sysfs_type;

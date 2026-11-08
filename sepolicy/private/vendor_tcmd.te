@@ -1,0 +1,2 @@
+allow vendor_tcmd tombstoned_crash_socket:sock_file write;
+allow vendor_tcmd tombstoned:unix_stream_socket connectto;

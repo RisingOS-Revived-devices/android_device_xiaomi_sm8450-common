@@ -98,9 +98,14 @@ on post-fs-data
     # Enable WLAN cold boot calibration
     write /sys/kernel/cnss/fs_ready 1
 
+    # Marble has no MHI/PCIe peripheral device
+    stop qti_rmnet_peripherald
+
 on early-boot
     start vendor.sensors
     verity_update_state
+    # Wait for ADSP FastRPC device before dependent services
+    wait /dev/fastrpc-adsp 2
 
 on boot
     write /dev/cpuset/audio-app/cpus 1-2
@@ -116,6 +121,28 @@ on boot
     chown system /sys/devices/system/cpu/hyp_core_ctl/hcc_min_freq
     #USB controller configuration
     setprop vendor.usb.controller a600000.dwc3
+
+    # Set doze mode permissions
+    chown system system /sys/devices/platform/soc/soc:qcom,dsi-display-primary/doze_mode
+    chmod 0660 /sys/devices/platform/soc/soc:qcom,dsi-display-primary/doze_mode
+
+    # Xiaomi Thermal Profiles permissions
+    chmod 0664 /sys/class/thermal/thermal_message/sconfig
+    chown system system /sys/class/thermal/thermal_message/sconfig
+    chmod 0666 /sys/class/thermal/thermal_message/temp_state
+    chown system system /sys/class/thermal/thermal_message/temp_state
+    chmod 0664 /sys/class/thermal/thermal_message/charger_temp
+    chown system system /sys/class/thermal/thermal_message/charger_temp
+    chmod 0664 /sys/class/thermal/thermal_message/board_sensor_temp_comp
+    chown system system /sys/class/thermal/thermal_message/board_sensor_temp_comp
+    chmod 0664 /sys/class/thermal/thermal_message/cpu_nolimit_temp 
+    chown system system /sys/class/thermal/thermal_message/cpu_nolimit_temp
+    chown system system /sys/class/thermal/power_save/power_level
+    chown system system /sys/class/thermal/power_save/powersave_mode
+    chmod 0664 /sys/class/thermal/thermal_message/balance_mode
+    chown system system /sys/class/thermal/thermal_message/balance_mode
+    chmod 0664 /sys/class/thermal/thermal_message/flash_state
+    chown cameraserver cameraserver /sys/class/thermal/thermal_message/flash_state
 
 on property:vendor.display.lcd_density=560
    setprop dalvik.vm.heapgrowthlimit 256m
@@ -186,3 +213,28 @@ on early-boot && property:persist.vendor.pcie.boot_option=*
 on property:sys.boot_completed=1
     enable vendor.qvirtmgr
     start  vendor.qvirtmgr
+
+# Restrict access on this node
+on property:sys.boot_completed=1
+    # Only owner can acces this node
+    chmod 440 /proc/net/unix
+
+service vendor.qti.hardware.display.composer /vendor/bin/hw/vendor.qti.hardware.display.composer-service
+    override
+    class hal animation
+    user system
+    group graphics drmrpc
+    capabilities SYS_NICE
+    onrestart restart surfaceflinger
+    socket pps stream 0660 system system
+    task_profiles ProcessCapacityHigh HighPerformance
+
+service vendor.qti.hardware.display.allocator /vendor/bin/hw/vendor.qti.hardware.display.allocator-service
+    override
+    class hal animation
+    user system
+    group graphics drmrpc
+    capabilities SYS_NICE
+    onrestart restart surfaceflinger
+    task_profiles ProcessCapacityHigh HighPerformance
+    

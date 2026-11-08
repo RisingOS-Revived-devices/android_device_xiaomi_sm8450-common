@@ -81,8 +81,9 @@ echo 15 15 15 15 15 15 15 15 > /proc/sys/walt/sched_util_busy_hyst_cpu_util
 echo 325 > /proc/sys/walt/walt_low_latency_task_threshold
 
 # cpuset parameters
-echo 0-3 > /dev/cpuset/background/cpus
+echo 0-1 > /dev/cpuset/background/cpus
 echo 0-3 > /dev/cpuset/system-background/cpus
+echo 0-3 > /dev/cpuset/restricted/cpus
 
 # Turn off scheduler boost at the end
 echo 0 > /proc/sys/walt/sched_boost
@@ -103,12 +104,12 @@ echo 614400 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
 echo 1 > /sys/devices/system/cpu/cpufreq/policy0/walt/pl
 
 # configure input boost settings
-if [ $rev == "1.0" ]; then
-	echo 1382800 0 0 0 0 0 0 0 > /proc/sys/walt/input_boost/input_boost_freq
-else
-	echo 1171200 0 0 0 0 0 0 0 > /proc/sys/walt/input_boost/input_boost_freq
-fi
-echo 100 > /proc/sys/walt/input_boost/input_boost_ms
+echo 1324800 0 0 0 1209600 0 0 0 > /proc/sys/walt/input_boost/input_boost_freq
+echo 350 > /proc/sys/walt/input_boost/input_boost_ms
+
+# configure powerkey wakeup boost
+echo 1785600 0 0 0 2169600 0 0 2419200 > /proc/sys/walt/input_boost/powerkey_input_boost_freq
+echo 500 > /proc/sys/walt/input_boost/powerkey_input_boost_ms
 
 # configure governor settings for gold cluster
 echo "walt" > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
@@ -211,7 +212,7 @@ else
 	echo N > /sys/devices/system/cpu/qcom_lpm/parameters/sleep_disabled
 fi
 
-echo s2idle > /sys/power/mem_sleep
+echo deep > /sys/power/mem_sleep
 
 # Let kernel know our image version/variant/crm_version
 if [ -f /sys/devices/soc0/select_image ]; then
