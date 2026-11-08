@@ -92,6 +92,8 @@ $(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_
 # the effect libraries audio_effects_config.xml loads) and the older DAX one.
 ifneq ($(wildcard hardware/dolby/LunarisDolby),)
 TARGET_INCLUDES_DolbyVision := true
+# Let HWC report DOLBY_VISION in the display HDR capabilities
+$(call soong_config_set_bool,dolby_vision,enabled,true)
 AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_config.xml
 MEDIA_CODECS_C2_AUDIO_XML := $(LOCAL_PATH)/media/media_codecs_c2_audio.xml
 else
