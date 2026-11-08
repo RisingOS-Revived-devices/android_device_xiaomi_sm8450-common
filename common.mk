@@ -94,6 +94,11 @@ ifneq ($(wildcard hardware/dolby/LunarisDolby),)
 TARGET_INCLUDES_DolbyVision := true
 # Let HWC report DOLBY_VISION in the display HDR capabilities
 $(call soong_config_set_bool,dolby_vision,enabled,true)
+# Stock HyperOS zeus values
+PRODUCT_VENDOR_PROPERTIES += \
+    debug.config.media.video.dolby_vision_suports=true \
+    ro.vendor.audio.dolby.vision.support=true \
+    ro.vendor.display.dolbyvision.support=true
 AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_config.xml
 MEDIA_CODECS_C2_AUDIO_XML := $(LOCAL_PATH)/media/media_codecs_c2_audio.xml
 else
