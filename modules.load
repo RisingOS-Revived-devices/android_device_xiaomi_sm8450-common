@@ -50,6 +50,7 @@ glink_pkt.ko
 glink_probe.ko
 governor_gpubw_mon.ko
 governor_msm_adreno_tz.ko
+adreno_idler.ko
 gpr_dlkm.ko
 gpucc-waipio.ko
 gsim.ko
