@@ -11,6 +11,7 @@
 
 #include "SensorNotifierExt.h"
 #include "SscCalApi.h"
+#include "notifiers/AodNotifier.h"
 #include "notifiers/LightNotifier.h"
 #include "notifiers/NonUiNotifier.h"
 
@@ -25,6 +26,7 @@ int main() {
             android::base::GetBoolProperty("persist.vendor.debug.ssccalapi", false));
 
     std::vector<std::unique_ptr<SensorNotifier>> notifiers;
+    notifiers.push_back(std::make_unique<AodNotifier>(manager));
     notifiers.push_back(std::make_unique<LightNotifier>(manager));
     notifiers.push_back(std::make_unique<NonUiNotifier>(manager));
     for (const auto& notifier : notifiers) {
