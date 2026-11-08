@@ -918,34 +918,37 @@ vendor/etc/seccomp_policy/vendor.qti.hardware.dsp.policy|cacb134fab84cb55f607fcf
 vendor/etc/vintf/manifest/vendor.qti.hardware.dsp-service.xml|c02c767856a1e8ef25441f3e0243487ac3829367
 vendor/lib64/vendor.qti.hardware.dsp-V1-ndk.so|cdf78fd543aa541925a3a4232221bbe1ae0bcb74
 
-# Graphics (Adreno) - from PDX257 ELBE-1.1.0-REL-260522-1202
-vendor/lib64/egl/eglSubDriverAndroid.so|3b70b92cf828480775101dfc993d08bd018d8412
-vendor/lib64/egl/libEGL_adreno.so;SYMLINK=vendor/lib64/libEGL_adreno.so|a44655e15e899863e86cb780f9be19d578ee5dd7
-vendor/lib64/egl/libGLESv1_CM_adreno.so|b90dccd16cba0ea30386e7320d5a3614a4da01e7
-vendor/lib64/egl/libGLESv2_adreno.so;SYMLINK=vendor/lib64/libGLESv2_adreno.so|b2b5ad05df0d13f9021f26a8563a98ea70d231d1
-vendor/lib64/egl/libVkLayer_ADRENO_qprofiler.so|b3110b3112aab3e19c80d911c582549b8e2bca94
-vendor/lib64/egl/libq3dtools_adreno.so;SYMLINK=vendor/lib64/libq3dtools_adreno.so|30dff441ef818843588260a973793198b656859c
-vendor/lib64/egl/libq3dtools_esx.so|42c29c61550c0a8457a792ac302a0b856ab86fe3
-vendor/lib64/libCB.so|422cfcff3da2aad8ae8489a8e096232e9fe1246d
-vendor/lib64/libOpenCL.so|8dfb387e215706c692884bbcd5e1b14cc83e4b5f
-vendor/lib64/libOpenCL_adreno.so|05d6e9bc0b4b52f20af05752e4bb7a6b64410563
-vendor/lib64/libadreno_app_profiles.so|9765f1262a5d59438861af88b7355d540873530b
-vendor/lib64/libadreno_compiler_cl.so|73c2e5265e20dcdbb6dd133de38929af4d40b680
-vendor/lib64/libadreno_utils.so|ef22929775749f945982dabf374cc143a468de90
-vendor/lib64/libgpudataproducer.so|615212b2bfaf035655a2d97ae6d3358d9353eac8
-vendor/lib64/libgsl.so|90d1ed8d0a461c1458bf5f068d018ff2fe2ca164
-vendor/lib64/libkcl.so|66004abc7e025348d080301694d2d5821028f0ed
-vendor/lib64/libkernelmanager.so|1b084e58741569f2ec7cb76bd58d0248ad4aa225
-vendor/lib64/libllvm-glnext.so|419527802ac78bb058a10a76022c2e9508562b2c
-vendor/lib64/libllvm-qcom.so|76ce4cf0044d782150a6838f39806a734c27b75f
-vendor/lib64/libllvm-qgl.so|a4a57682c1463b2ee1c296b20f9938ebc83360fe
+# Graphics (Adreno) - 863.1 from RayBan Meta, pinned to the blobs in vendor/xiaomi/sm8450-common
+vendor/gpu/kbc/sequence_manifest.bin|17e1f9149826ef478502c750bcf9352274097c80
+vendor/gpu/kbc/unified_kbcs_64.bin|bdfadc6b8e03d7da5b8d31b4f7688e7dba4b07ce
+vendor/gpu/kbc/unified_ksqs.bin|e3470ad9fc644aea9c02dee948bb210149408dda
+vendor/lib64/egl/eglSubDriverAndroid.so|906952a514ae3b5498b9f99df20c41c8a5986897
+vendor/lib64/egl/libEGL_adreno.so;SYMLINK=vendor/lib64/libEGL_adreno.so|05331727b6b7d52c5ae2838a5359b6abe1bd4f50
+vendor/lib64/egl/libGLESv1_CM_adreno.so|88890bf7a1d4834da40a49ee2aff374339be19c8
+vendor/lib64/egl/libGLESv2_adreno.so;SYMLINK=vendor/lib64/libGLESv2_adreno.so|e021c7729193aff30600c4aad7470a3cc26518b5
+vendor/lib64/egl/libVkLayer_ADRENO_qprofiler.so|0bd7849775ea253b0bba70a978fb1f7cf4798495
+vendor/lib64/egl/libq3dtools_adreno.so;SYMLINK=vendor/lib64/libq3dtools_adreno.so|806b150f644fa26ef8106dd494f08dd6683bf25c
+vendor/lib64/egl/libq3dtools_esx.so|04bab2127f5e24f6a1582935a2d277fc820c8e03
+vendor/lib64/libCB.so|8a2a0ea6de7540371c9666a1078c3e7077ca258e
+vendor/lib64/libOpenCL.so|454b8aaada3a5c449ae90e2232eb761e743fda06
+vendor/lib64/libOpenCL_adreno.so|b490b02d75bdcb57165a3c0b6ec63554e71f84b2
+vendor/lib64/libadreno_app_profiles.so|6e90ca778ed0e353532773a224738be2c3e42b55
+vendor/lib64/libadreno_compiler_cl.so|0e739ed8594d47dce7a45d9176f0a5893fff70f5
+vendor/lib64/libadreno_utils.so|3aa0ba954410112a7e8cb82edc560e15666ffa7a
+vendor/lib64/libgpudataproducer.so|bb781de839f333135593a2922855cb6a66554fd3
+vendor/lib64/libgsl.so|1944c79feb008156f766e7da101dd78183a349ac
+vendor/lib64/libkcl.so|14adaa7dc25ff581d2b877c8a30c003dc902ef38
+vendor/lib64/libkernelmanager.so|67b2d698b4e7671ea5f733a828c551c37f9772e9
+vendor/lib64/libllvm-glnext.so|ec4e05e2667582374d2acf50acbe302209985e76
+vendor/lib64/libllvm-qcom.so|c5b21de4faa050f27d0bb2d77a575144763d8fa8
+vendor/lib64/libllvm-qgl.so|f193da53721e76dee87de828870cce4342f47b61
 
 # Graphics (Adreno firmware) - from linux-firmware 20261019
 vendor/firmware/a730_sqe.fw|920d6db39c8852be3a898d782b58378a39629ec6
 vendor/firmware/gmu_gen70000.bin|1ac8d9dd3d405f84c915a4562ff72d244e10bcbd
 
-# Graphics (Vulkan) - from PDX257 ELBE-1.1.0-REL-260522-1202
-vendor/lib64/hw/vulkan.adreno.so|45a1ca85d825f2ca559b4dfdf068f2125459d199|c338b642bec1f3f8cde50246231d155c7a7a51ac
+# Graphics (Vulkan) - 863.1 from RayBan Meta, BV waits patched out by extract-files.py
+vendor/lib64/hw/vulkan.adreno.so|83ae766b143a90f29b33424a020867865e539eac|86f7b3aa2e638a6e43a2e4f090c583f1c2782067
 
 # Media - from PDX257 ELBE-1.1.0-REL-260522-1202
 system_ext/lib64/libmmosal.so|d084d8dd2c1727f3c528949ac8cdc4520b39f437
