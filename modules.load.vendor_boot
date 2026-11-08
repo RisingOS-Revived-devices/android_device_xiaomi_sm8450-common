@@ -24,6 +24,7 @@ icc-bcm-voter.ko
 icc-debug.ko
 icc-rpmh.ko
 iommu-logger.ko
+kryo_arm64_edac.ko
 libarc4.ko
 llcc-qcom.ko
 mac80211.ko
@@ -61,7 +62,6 @@ qcom_dma_heaps.ko
 qcom_hwspinlock.ko
 qcom_ice.ko
 qcom_iommu_util.ko
-qcom_ipc_logging.ko
 qcom_llcc_pmu.ko
 qcom_rpmh.ko
 qcom_tsens.ko
@@ -75,6 +75,7 @@ reboot-mode.ko
 rfkill.ko
 rpmh-regulator.ko
 rtc-pm8xxx.ko
+panel_event_notifier.ko
 sched-walt.ko
 secure_buffer.ko
 smem.ko

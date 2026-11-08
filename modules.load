@@ -2,6 +2,8 @@ adsp_loader_dlkm.ko
 adsp_sleepmon.ko
 altmode-glink.ko
 atmel_mxt_ts.ko
+c1dcvs_scmi.ko
+c1dcvs_vendor.ko
 fts_touch_spi.ko
 audio_pkt_dlkm.ko
 audio_prm_dlkm.ko
@@ -51,6 +53,8 @@ glink_probe.ko
 governor_gpubw_mon.ko
 governor_msm_adreno_tz.ko
 adreno_idler.ko
+gplaf_scmi.ko
+gplaf_vendor.ko
 gpr_dlkm.ko
 gpucc-waipio.ko
 gsim.ko
@@ -61,6 +65,7 @@ heap_mem_ext_v01.ko
 hung_task_enh.ko
 hvc_gunyah.ko
 hwmon.ko
+hyp_core_ctl.ko
 i2c-msm-geni.ko
 i3c-master-msm-geni.ko
 ir-spi.ko
@@ -86,6 +91,7 @@ mdt_loader.ko
 memlat.ko
 mhi.ko
 mhi_dev_uci.ko
+microdump_collector.ko
 msm-eva.ko
 msm-mmrm.ko
 msm_drm.ko
@@ -117,9 +123,13 @@ phy-qcom-emu.ko
 pinctrl-spmi-gpio.ko
 pinctrl-spmi-mpp.ko
 pinctrl_lpi_dlkm.ko
+plh_scmi.ko
+plh_vendor.ko
 pm8941-pwrkey.ko
 aw8697-haptic.ko
 pmic-pon-log.ko
+pmu_scmi.ko
+pmu_vendor.ko
 policy_engine.ko
 pwm-qti-lpg.ko
 q6_dlkm.ko
