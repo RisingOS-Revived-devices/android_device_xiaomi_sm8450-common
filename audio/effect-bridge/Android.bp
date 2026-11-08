@@ -1,0 +1,18 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_library_shared {
+    name: "liblegacyeffectbridge",
+    defaults: ["aidlaudioeffectservice_defaults"],
+    relative_install_path: "soundfx",
+    srcs: ["LegacyEffectBridge.cpp"],
+    shared_libs: [
+        "libaudio_aidl_conversion_effect_ndk",
+    ],
+    header_libs: [
+        "libhardware_headers",
+    ],
+    compile_multilib: "64",
+}

@@ -74,6 +74,7 @@ PRODUCT_PACKAGES += \
     libdownmixaidl:64 \
     libdynamicsprocessingaidl:64 \
     libhfp_pal:64 \
+    liblegacyeffectbridge \
     libloudnessenhanceraidl:64 \
     libpalclient:64 \
     libpalipcservice:64 \
@@ -88,13 +89,13 @@ $(call soong_config_set, android_hardware_audio, run_64bit, true)
 $(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
 
 # hardware/dolby comes in two flavours: LunarisDolby (with Dolby Vision, ships
-# the effect libraries audio_effects.xml loads) and the older DAX one.
+# the effect libraries audio_effects_config.xml loads) and the older DAX one.
 ifneq ($(wildcard hardware/dolby/LunarisDolby),)
 TARGET_INCLUDES_DolbyVision := true
-AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects.xml
+AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_config.xml
 MEDIA_CODECS_C2_AUDIO_XML := $(LOCAL_PATH)/media/media_codecs_c2_audio.xml
 else
-AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_dax.xml
+AUDIO_EFFECTS_XML := $(LOCAL_PATH)/audio/audio_effects_config_dax.xml
 MEDIA_CODECS_C2_AUDIO_XML := hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/common/codec2/media_codecs_c2_audio.xml
 endif
 
@@ -102,8 +103,8 @@ $(foreach sku, taro diwali cape ukee parrot, \
     $(eval PRODUCT_COPY_FILES += \
         $(LOCAL_PATH)/audio/microphone_characteristics.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/microphone_characteristics.xml \
         $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_policy_configuration.xml \
-        hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/parrot/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_effects_config.xml \
-        hardware/qcom-caf/sm8450-6.6/audio/primary-hal/configs/parrot/audio_module_config_primary.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_module_config_primary.xml \
+        $(AUDIO_EFFECTS_XML):$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_effects_config.xml \
+        $(LOCAL_PATH)/audio/audio_module_config_primary.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/audio_module_config_primary.xml \
         $(LOCAL_PATH)/audio/vendor_audio_interfaces.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_$(sku)/vendor_audio_interfaces.xml \
     ))
 
