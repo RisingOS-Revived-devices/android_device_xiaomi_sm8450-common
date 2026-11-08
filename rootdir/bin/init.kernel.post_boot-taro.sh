@@ -49,18 +49,31 @@ echo 30 > /sys/devices/system/cpu/cpu7/core_ctl/busy_down_thres
 echo 100 > /sys/devices/system/cpu/cpu7/core_ctl/offline_delay_ms
 echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/task_thres
 
-# Controls how many more tasks should be eligible to run on gold CPUs
-# w.r.t number of gold CPUs available to trigger assist (max number of
-# tasks eligible to run on previous cluster minus number of CPUs in
-# the previous cluster).
-#
-# Setting to 1 by default which means there should be at least
-# 4 tasks eligible to run on gold cluster (tasks running on gold cores
-# plus misfit tasks on silver cores) to trigger assitance from gold+.
-echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/nr_prev_assist_thresh
+# Core control CPU masks. The 6.6 WALT core_ctl stays inactive until
+# all four masks are written for every cluster. These values replicate
+# the 5.10 behaviour: each cluster counts the tasks on its own and all
+# bigger clusters plus misfits of the cluster below; gold+ also unpauses
+# to assist gold (gold tasks plus silver misfits beyond the active gold
+# CPUs); gold never assists silver (5.10 default threshold UINT_MAX).
+echo 0xff > /sys/devices/system/cpu/cpu0/core_ctl/nrrun_cpu_mask
+echo 0x00 > /sys/devices/system/cpu/cpu0/core_ctl/nrrun_cpu_misfit_mask
+echo 0x00 > /sys/devices/system/cpu/cpu0/core_ctl/assist_cpu_mask
+echo 0x00 > /sys/devices/system/cpu/cpu0/core_ctl/assist_cpu_misfit_mask
+echo 0xf0 > /sys/devices/system/cpu/cpu4/core_ctl/nrrun_cpu_mask
+echo 0x0f > /sys/devices/system/cpu/cpu4/core_ctl/nrrun_cpu_misfit_mask
+echo 0x00 > /sys/devices/system/cpu/cpu4/core_ctl/assist_cpu_mask
+echo 0x00 > /sys/devices/system/cpu/cpu4/core_ctl/assist_cpu_misfit_mask
+echo 0x80 > /sys/devices/system/cpu/cpu7/core_ctl/nrrun_cpu_mask
+echo 0x70 > /sys/devices/system/cpu/cpu7/core_ctl/nrrun_cpu_misfit_mask
+echo 0x70 > /sys/devices/system/cpu/cpu7/core_ctl/assist_cpu_mask
+echo 0x0f > /sys/devices/system/cpu/cpu7/core_ctl/assist_cpu_misfit_mask
 
 # Disable Core control on silver
 echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+
+# Enable Core control on gold and gold+ (6.6 WALT defaults to off, 5.10 to on)
+echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
 # Setting b.L scheduler parameters
 echo 95 95 > /proc/sys/walt/sched_upmigrate
