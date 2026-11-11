@@ -86,7 +86,6 @@ PRODUCT_PACKAGES += \
     libvolumelistener:64
 
 $(call soong_config_set, android_hardware_audio, run_64bit, true)
-$(call soong_config_set_bool,android_hardware_audio,skip_speaker_layout_channel_mask_field,true)
 
 # hardware/dolby comes in two flavours: LunarisDolby (with Dolby Vision, ships
 # the effect libraries audio_effects_config.xml loads) and the older DAX one.
@@ -272,18 +271,9 @@ PRODUCT_PACKAGES += \
     gnss@2.0-xtra-daemon.policy
 
 $(call soong_config_set, qtilocation, feature_nhz, false)
-$(call soong_config_set, qtilocation, supports_wearables, false)
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml
-
-
-# Graphics
-PRODUCT_PACKAGES += \
-    android.hardware.graphics.composer3-V2-ndk.vendor \
-    android.hardware.graphics.composer3-V4-ndk.vendor \
-    android.hardware.graphics.common-V4-ndk \
-    android.hardware.graphics.common-V7-ndk
 
 # Graphics
 PRODUCT_COPY_FILES += \
@@ -597,11 +587,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/permissions/camerax-vendor-extensions.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/camerax-vendor-extensions.xml
 
-# Task Profiles
-PRODUCT_COPY_FILES += \
-    system/core/libprocessgroup/profiles/task_profiles.json:$(TARGET_COPY_OUT_VENDOR)/etc/task_profiles.json \
-    system/core/libprocessgroup/profiles/cgroups.json:$(TARGET_COPY_OUT_VENDOR)/etc/cgroups.json
-
 # Enable whole-program R8 Java optimizations for SystemUI and system_server,
 # but also allow explicit overriding for testing and development.
 SYSTEM_OPTIMIZE_JAVA := true
@@ -610,7 +595,6 @@ SYSTEMUI_OPTIMIZE_JAVA := true
 # Reduce system server verbosity
 PRODUCT_SYSTEM_SERVER_DEBUG_INFO := false
 PRODUCT_OTHER_JAVA_DEBUG_INFO := false
-PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
 
 # Strip the local variable table and the local variable type table to reduce
 # the size of the system image. This has no bearing on stack traces, but will
