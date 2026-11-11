@@ -98,12 +98,12 @@ void LightNotifier::notify() {
             continue;
         }
 
-        std::vector<int>& sensorsToNotify = mLightSensorsPrimary;
+        const std::vector<int>* sensorsToNotify = &mLightSensorsPrimary;
         switch (response->base.disp_id) {
             case MI_DISP_PRIMARY:
                 break;
             case MI_DISP_SECONDARY:
-                sensorsToNotify = mLightSensorsSecondary;
+                sensorsToNotify = &mLightSensorsSecondary;
                 break;
             default:
                 LOG(ERROR) << "got notified for unknown display: " << response->base.disp_id;
@@ -136,7 +136,7 @@ void LightNotifier::notify() {
                 continue;
         };
 
-        for (const auto sensorId : sensorsToNotify) {
+        for (const auto sensorId : *sensorsToNotify) {
             msg.sensorType = sensorId;
             msg.notifyType = notifyType;
             msg.notifyTypeFloat = notifyType;
