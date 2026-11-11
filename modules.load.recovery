@@ -166,6 +166,7 @@ qcom_glink_spss.ko
 qcom_hwspinlock.ko
 qcom_ice.ko
 qcom_iommu_util.ko
+qcom_ipc_logging.ko
 qcom_llcc_pmu.ko
 qcom_logbuf_vendor_hooks.ko
 qcom_lpm.ko
