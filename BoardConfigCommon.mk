@@ -76,7 +76,6 @@ BOARD_USES_GENERIC_KERNEL_IMAGE := true
 BOARD_KERNEL_BASE        := 0x00000000
 BOARD_KERNEL_PAGESIZE    := 4096
 BOARD_KERNEL_IMAGE_NAME := Image
-BOARD_KERNEL_CMDLINE += androidboot.init_fatal_reboot_target=recovery
 
 TARGET_KERNEL_CLANG_VERSION := greenforce
 TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-$(TARGET_KERNEL_CLANG_VERSION)
@@ -99,9 +98,7 @@ BOARD_KERNEL_CMDLINE := \
     printk.devkmsg=on \
     scsi_mod.scan=sync \
     mtdoops.fingerprint=$(LINEAGE_VERSION) \
-    allow_file_spec_access \
-    irqaffinity=0-3 \
-    pelt=8
+    irqaffinity=0-3
 
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
