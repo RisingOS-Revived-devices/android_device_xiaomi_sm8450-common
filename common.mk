@@ -496,12 +496,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
 
 # Ueventd
-ifneq (,$(filter eng userdebug,$(TARGET_BUILD_VARIANT)))
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/init.zeus-bringup.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.zeus-bringup.rc \
-    $(LOCAL_PATH)/rootdir/bin/zeus-boot-diagnostics.sh:$(TARGET_COPY_OUT_VENDOR)/bin/zeus-boot-diagnostics.sh
-endif
-
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/ueventd.qcom.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc \
     $(LOCAL_PATH)/rootdir/etc/ueventd-odm.rc:$(TARGET_COPY_OUT_ODM)/etc/ueventd.rc
