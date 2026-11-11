@@ -290,18 +290,19 @@ service vendor.nv_mac /vendor/bin/nv_mac
     group system inet net_admin wifi net_raw
     oneshot
 
-service vendor.audio-hal /vendor/bin/hw/android.hardware.audio.service
+service vendor.audio-hal-aidl /vendor/bin/hw/audiohalservice.qti
     override
     class hal
     user audioserver
-    # media gid needed for /dev/fm (radio) and for /data/misc/media (tee)
-    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2901 wakelock context_hub system
+    # camera + system as on 5.10/stock; system lets the in-process PAL Cirrus init read persist/audio/crus_calr.bin
+    group audio camera media mediadrm drmrpc inet net_bt net_bt_admin net_bw_acct wakelock context_hub oem_2901 oem_2912 system
     capabilities BLOCK_SUSPEND SYS_NICE
     # setting RLIMIT_RTPRIO allows binder RT priority inheritance
     rlimit rtprio 10 10
     ioprio rt 4
     task_profiles ProcessCapacityHigh HighPerformance
     onrestart restart audioserver
+    # sensors.ultrasoundproximity.so asks the HAL for the ultrasound stream here
     socket audio_us_socket_0 seqpacket 0666 system system
 
 service vendor.sensors-hal-multihal /vendor/bin/hw/android.hardware.sensors-service.xiaomi-multihal
