@@ -45,9 +45,6 @@ public final class HbmUtils {
     private static final String DISP_PARAM = "/sys/class/mi_display/disp-DSI-0/disp_param";
     private static final String DISP_FEATURE_HBM = "1";
     private static final String PROP_HBM = "ro.xiaomiparts.hbm";
-    public static final String BACKLIGHT = "/sys/class/backlight/panel0-backlight/brightness";
-    private static final String MAX_BACKLIGHT = "/sys/class/backlight/panel0-backlight/max_brightness";
-    private static final int MAX_BACKLIGHT_FALLBACK = 8191;
 
     // disp_param cannot be read back per feature, so remember what was last written.
     private static volatile boolean sHbmActive = false;
@@ -63,16 +60,6 @@ public final class HbmUtils {
 
     public static boolean isHbmActive() {
         return sHbmActive;
-    }
-
-    /** Highest value accepted by the backlight node. */
-    public static int getMaxBacklight() {
-        String raw = FileUtils.readOneLine(MAX_BACKLIGHT);
-        try {
-            return raw != null ? Integer.parseInt(raw.trim()) : MAX_BACKLIGHT_FALLBACK;
-        } catch (NumberFormatException e) {
-            return MAX_BACKLIGHT_FALLBACK;
-        }
     }
 
     private static SharedPreferences prefs(Context context) {
@@ -106,8 +93,8 @@ public final class HbmUtils {
                     .putInt(KEY_LAST_BRIGHTNESS, currentBrightness)
                     .putInt(KEY_LAST_BRIGHTNESS_MODE, holdManualBrightness(context))
                     .commit();
+            // mi_disp sends the framework level in HBM mode; the node's top half is HBM itself
             writeHbm(true);
-            FileUtils.writeLine(BACKLIGHT, String.valueOf(getMaxBacklight()));
             Settings.System.putInt(context.getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS, 255);
         } else {

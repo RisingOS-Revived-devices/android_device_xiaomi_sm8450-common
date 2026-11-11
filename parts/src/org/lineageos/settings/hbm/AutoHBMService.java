@@ -20,8 +20,6 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import org.lineageos.settings.utils.FileUtils;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -31,14 +29,11 @@ import java.util.concurrent.TimeUnit;
 public class AutoHBMService extends Service {
     private static final String TAG = "AutoHBMService";
 
-    private static final String BACKLIGHT = HbmUtils.BACKLIGHT;
-
     // SharedPreferences corrupt olsa bile uygulanacak güvenli varsayılanlar.
     private static final float DEFAULT_LUX_THRESHOLD = 20000f;
     private static final long DEFAULT_ENABLE_TIME_SEC = 2L;
     private static final long DEFAULT_DISABLE_TIME_SEC = 5L;
     private static final int DEFAULT_BRIGHTNESS = 255;
-    private static final int BACKLIGHT_MAX = HbmUtils.getMaxBacklight();
 
     // Histerezis: kapatma eşiği açma eşiğinin bu oranı kadar düşük olmalı.
     private static final float HBM_OFF_THRESHOLD_RATIO = 0.65f;
@@ -121,37 +116,6 @@ public class AutoHBMService extends Service {
         }
     }
 
-    private int readBacklightLevel() {
-        final String raw = FileUtils.readOneLine(BACKLIGHT);
-        if (raw == null) {
-            return settingsToBacklight(getCurrentBrightness());
-        }
-        try {
-            return Integer.parseInt(raw.trim());
-        } catch (NumberFormatException e) {
-            return settingsToBacklight(getCurrentBrightness());
-        }
-    }
-
-    private static int settingsToBacklight(int settingsBrightness) {
-        return (settingsBrightness * BACKLIGHT_MAX) / DEFAULT_BRIGHTNESS;
-    }
-
-    private void rampBacklight(int from, int to) throws InterruptedException {
-        if (from == to) {
-            FileUtils.writeLine(BACKLIGHT, String.valueOf(to));
-            return;
-        }
-        for (int step = 1; step <= BRIGHTNESS_RAMP_STEPS; step++) {
-            if (Thread.currentThread().isInterrupted()) {
-                return;
-            }
-            final int value = from + (to - from) * step / BRIGHTNESS_RAMP_STEPS;
-            FileUtils.writeLine(BACKLIGHT, String.valueOf(value));
-            Thread.sleep(BRIGHTNESS_RAMP_STEP_MS);
-        }
-    }
-
     private void rampSettingsBrightness(int from, int to) throws InterruptedException {
         if (from == to) {
             try {
@@ -201,12 +165,8 @@ public class AutoHBMService extends Service {
 
     private void transitionToHbmEnabled() throws InterruptedException {
         storeBrightness();
-        final int startSettings = mStoredBrightness;
-        final int startBacklight = readBacklightLevel();
-
         HbmUtils.writeHbm(true);
-        rampBacklight(startBacklight, BACKLIGHT_MAX);
-        rampSettingsBrightness(startSettings, DEFAULT_BRIGHTNESS);
+        rampSettingsBrightness(mStoredBrightness, DEFAULT_BRIGHTNESS);
     }
 
     /** Manual HBM wins: it keeps the panel in HBM and takes over the brightness to go back to. */
@@ -230,10 +190,6 @@ public class AutoHBMService extends Service {
             return;
         }
         final int targetSettings = mStoredBrightness;
-        final int targetBacklight = settingsToBacklight(targetSettings);
-        final int startBacklight = readBacklightLevel();
-
-        rampBacklight(startBacklight, targetBacklight);
         HbmUtils.writeHbm(false);
         try {
             HbmUtils.releaseManualBrightness(this, mStoredBrightnessMode, targetSettings);
@@ -248,7 +204,6 @@ public class AutoHBMService extends Service {
             if (enable) {
                 storeBrightness();
                 HbmUtils.writeHbm(true);
-                FileUtils.writeLine(BACKLIGHT, String.valueOf(BACKLIGHT_MAX));
                 Settings.System.putInt(getContentResolver(),
                         Settings.System.SCREEN_BRIGHTNESS, DEFAULT_BRIGHTNESS);
             } else if (!handOverToManualHbm()) {
