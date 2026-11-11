@@ -216,6 +216,8 @@ debug.c2.use_dmabufheaps=1
 debug.stagefright.c2inputsurface=-1
 media.c2.hal.selection=aidl
 debug.sdm.support_writeback=0
+# 5.10 init.qti.media.sh value for taro; the 6.6 blob script sets it only up to Android 13
+vendor.netflix.bsp_rev=Q8450-34634-1
 
 # Perf
 ro.vendor.extension_library=libqti-perfd-client.so
