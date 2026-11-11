@@ -28,6 +28,7 @@
 
 #include <aidl/android/hardware/audio/effect/DefaultExtension.h>
 #include <android-base/logging.h>
+#include <audio_utils/channels.h>
 #include <audio_utils/primitives.h>
 #include <hardware/audio_effect.h>
 #include <media/AidlConversionCppNdk.h>
@@ -331,7 +332,11 @@ class LegacyEffectBridge final : public EffectImpl {
         const size_t frames = mInChannels ? samples / mInChannels : 0;
         const size_t outSamples = frames * mOutChannels;
         if (!mHandle || !mEnabled || !frames) {
-            if (out != in) memcpy(out, in, std::min<size_t>(samples, outSamples) * sizeof(float));
+            // in == out under process(); keep the front channels when in/out counts differ
+            if (frames) {
+                adjust_channels(in, mInChannels, out, mOutChannels, sizeof(float),
+                                frames * mInChannels * sizeof(float));
+            }
             return {STATUS_OK, samples, static_cast<int32_t>(outSamples)};
         }
 
@@ -359,6 +364,38 @@ class LegacyEffectBridge final : public EffectImpl {
             memcpy_to_float_from_i16(out, mOut16.data(), outSamples);
         }
         return {STATUS_OK, samples, static_cast<int32_t>(outSamples)};
+    }
+
+    // EffectImpl::process() caps the read at the output FMQ space, so with more input than
+    // output channels (spatializer) input is left behind and EffectHalAidl rejects the buffer.
+    // Scale the output space like the AOSP downmix effect does.
+    void process() override {
+        uint32_t efState = 0;
+        if (!mEventFlag ||
+            mEventFlag->wait(mDataMqNotEmptyEf, &efState, 0 /* no timeout */, true /* retry */) !=
+                    ::android::OK ||
+            !(efState & mDataMqNotEmptyEf)) {
+            return;
+        }
+        std::lock_guard lg(mImplMutex);
+        if ((mState != State::PROCESSING && mState != State::DRAINING) || !mImplContext) return;
+        auto statusMQ = mImplContext->getStatusFmq();
+        auto inputMQ = mImplContext->getInputDataFmq();
+        auto outputMQ = mImplContext->getOutputDataFmq();
+        if (!inputMQ || !outputMQ) return;
+        auto buffer = mImplContext->getWorkBuffer();
+        const size_t samples = std::min<size_t>(
+                inputMQ->availableToRead(),
+                outputMQ->availableToWrite() * mImplContext->getInputFrameSize() /
+                        mImplContext->getOutputFrameSize());
+        if (!samples) {
+            drainingComplete_l();
+            return;
+        }
+        inputMQ->read(buffer, samples);
+        IEffect::Status status = effectProcessImpl(buffer, buffer, samples);
+        outputMQ->write(buffer, status.fmqProduced);
+        statusMQ->writeBlocking(&status, 1);
     }
 
   protected:
