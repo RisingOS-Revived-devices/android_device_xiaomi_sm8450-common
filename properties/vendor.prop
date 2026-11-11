@@ -271,7 +271,6 @@ debug.renderengine.blur_algorithm=kawase2
 log.tag.ANDR-PERF-UTIL=S
 log.tag.ANDR-PERF-RESOURCEQS=S
 log.tag.SatelliteController=S
-log.tag.vendor.qti.hardware.iop@2.0-service=S
 log.tag.ContextImpl=S
 log.tag.libbinder.ServiceManagerCppClient=S
 log.tag.libbinder.BackendUnifiedServiceManager=S
