@@ -10,7 +10,6 @@ get_prop(vendor_init, aux_camera_control_prop)
 # Battery
 allow init vendor_sysfs_usb_supply:file setattr;
 allow init vendor_sysfs_battery_supply:file setattr;
-allow init vendor_sysfs_qcom_battery:file setattr;
 
 r_dir_file(init, sysfs_batteryinfo)
 
