@@ -28,6 +28,7 @@
 
 #include <aidl/android/hardware/audio/effect/DefaultExtension.h>
 #include <android-base/logging.h>
+#include <android-base/scopeguard.h>
 #include <audio_utils/channels.h>
 #include <audio_utils/primitives.h>
 #include <hardware/audio_effect.h>
@@ -286,7 +287,26 @@ class LegacyEffectBridge final : public EffectImpl {
             REQUIRES(mImplMutex) override {
         std::vector<uint8_t> bytes;
         RETURN_IF(!idExtensionBytes(id, &bytes), EX_ILLEGAL_ARGUMENT, "notVendorExtension");
-        RETURN_IF(!mHandle, EX_ILLEGAL_STATE, "noLegacyEffect");
+
+        // The framework reads capabilities before open() (the spatializer engine config), so
+        // answer those from a short-lived legacy instance instead of failing.
+        effect_handle_t handle = mHandle;
+        effect_handle_t probe = nullptr;
+        if (!handle) {
+            effect_uuid_t legacy;
+            RETURN_IF(!legacyUuid(mUuid, &legacy) ||
+                              mLibrary->create_effect(&legacy, AUDIO_SESSION_OUTPUT_STAGE,
+                                                      AUDIO_IO_HANDLE_NONE, &probe) != 0 ||
+                              !probe,
+                      EX_ILLEGAL_STATE, "noLegacyEffect");
+            int32_t initReply = 0;
+            uint32_t initReplySize = sizeof(initReply);
+            (*probe)->command(probe, EFFECT_CMD_INIT, 0, nullptr, &initReplySize, &initReply);
+            handle = probe;
+        }
+        auto releaseProbe = ::android::base::make_scope_guard([&] {
+            if (probe) mLibrary->release_effect(probe);
+        });
 
         // Either a whole effect_param_t (vendor types) or the bare parameter (spatializer).
         std::vector<uint8_t> cmd;
@@ -307,7 +327,7 @@ class LegacyEffectBridge final : public EffectImpl {
 
         std::vector<uint8_t> reply(cmd.size() + valueSize);
         uint32_t replySize = reply.size();
-        int ret = (*mHandle)->command(mHandle, EFFECT_CMD_GET_PARAM, cmd.size(), cmd.data(),
+        int ret = (*handle)->command(handle, EFFECT_CMD_GET_PARAM, cmd.size(), cmd.data(),
                                       &replySize, reply.data());
         RETURN_IF(ret != 0 || replySize < sizeof(effect_param_t), EX_ILLEGAL_ARGUMENT,
                   "getParamFailed");
