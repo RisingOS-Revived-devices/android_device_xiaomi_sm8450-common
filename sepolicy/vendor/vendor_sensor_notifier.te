@@ -22,3 +22,9 @@ allowxperm vendor_sensor_notifier self:{ socket qipcrtr_socket} ioctl msm_sock_i
 get_prop(vendor_sensor_notifier, hwservicemanager_prop)
 get_prop(vendor_sensor_notifier, vendor_sensors_prop)
 userdebug_or_eng(`get_prop(vendor_sensor_notifier, vendor_sensors_dbg_prop)');
+
+# libssccalapi@2.0 reads the lux channel calibration and sensor list from
+# /mnt/vendor/persist/sensors and keeps its collision-detection data there
+allow vendor_sensor_notifier mnt_vendor_file:dir search;
+allow vendor_sensor_notifier vendor_persist_sensors_file:dir rw_dir_perms;
+allow vendor_sensor_notifier vendor_persist_sensors_file:file create_file_perms;
