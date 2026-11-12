@@ -122,8 +122,8 @@ void AodNotifier::notify() {
                 FALLTHROUGH_INTENDED;
             case MI_DISP_POWER_LP2:
                 activeDisplays.insert(response->base.disp_id);
-                res = mQueue->enableSensor(mSensorHandle, 20000 /* sample period */,
-                                           0 /* latency */);
+                res = checkQueueCall(mQueue->enableSensor(mSensorHandle, 20000 /* sample period */,
+                                                          0 /* latency */));
                 if (res != Result::OK) {
                     LOG(ERROR) << "failed to enable sensor";
                 }
@@ -134,7 +134,7 @@ void AodNotifier::notify() {
             default:
                 activeDisplays.erase(response->base.disp_id);
                 if (activeDisplays.empty()) {
-                    res = mQueue->disableSensor(mSensorHandle);
+                    res = checkQueueCall(mQueue->disableSensor(mSensorHandle));
                     if (res != Result::OK) {
                         LOG(DEBUG) << "failed to disable sensor";
                     }

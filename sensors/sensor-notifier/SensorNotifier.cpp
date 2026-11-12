@@ -81,6 +81,14 @@ void SensorNotifier::deactivate() {
         mThread.join();
     }
     if (mQueue != nullptr) {
-        mQueue->disableSensor(mSensorHandle);
+        checkQueueCall(mQueue->disableSensor(mSensorHandle));
     }
+}
+
+Result SensorNotifier::checkQueueCall(const android::hardware::Return<Result>& ret) {
+    if (!ret.isOk()) {
+        LOG(ERROR) << "sensor service connection lost: " << ret.description() << ", exiting";
+        exit(EXIT_FAILURE);
+    }
+    return ret;
 }

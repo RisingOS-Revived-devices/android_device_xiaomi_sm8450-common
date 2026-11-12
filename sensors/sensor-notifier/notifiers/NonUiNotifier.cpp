@@ -99,12 +99,12 @@ void NonUiNotifier::notify() {
             enabled |= readBool(pollfds[i].fd);
         }
         if (enabled) {
-            res = mQueue->enableSensor(mSensorHandle, 20000 /* sample period */, 0 /* latency */);
+            res = checkQueueCall(mQueue->enableSensor(mSensorHandle, 20000 /* sample period */, 0 /* latency */));
             if (res != Result::OK) {
                 LOG(ERROR) << "failed to enable sensor";
             }
         } else {
-            res = mQueue->disableSensor(mSensorHandle);
+            res = checkQueueCall(mQueue->disableSensor(mSensorHandle));
             if (res != Result::OK) {
                 LOG(DEBUG) << "failed to disable sensor";
             }
