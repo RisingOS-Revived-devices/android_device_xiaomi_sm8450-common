@@ -34,3 +34,8 @@ get_prop(hal_fingerprint_default, vendor_adsprpc_prop)
 get_prop(hal_fingerprint_default, vendor_panel_info_prop)
 set_prop(hal_fingerprint_default, vendor_fp_prop)
 set_prop(hal_fingerprint_default, vendor_fp_info_prop)
+
+# The fingerprint HAL probes the CDSP before falling back to the CPU path.
+# It works without them, so keep the denials quiet.
+dontaudit hal_fingerprint_default { vendor_qdsp_device vendor_xdsp_device }:chr_file read;
+dontaudit hal_fingerprint_default vendor_hal_dspmanager_aidlservice:service_manager find;
