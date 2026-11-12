@@ -8,3 +8,28 @@ dontaudit vendor_hal_gnss_qti vendor_pd_locater_dbg_prop:file r_file_perms;
 # servicemanager binder call denials - handled upstream
 dontaudit servicemanager hal_power_default:binder call;
 dontaudit servicemanager usbd:binder call;
+
+# kdevtmpfs mirrors new device nodes into /dev; ueventd creates them with the right labels
+dontaudit kernel device:dir write;
+
+# Unset, unlabeled properties: Goodix gf.debug.* dump switches and sys.panel.*,
+# sensors persist.sensor.{sar,ois_manager}disable
+dontaudit { hal_fingerprint_default hal_sensors_default } default_prop:file read;
+dontaudit hal_fingerprint_default system_prop:file read;
+
+# Debug-only: debugfs is closed on user builds, persist.radio.restart_rild is a manual
+# qcrild restart trigger nothing sets
+dontaudit hal_audio_default debugfs:dir read;
+dontaudit vendor_init radio_prop:file read;
+
+# Location: loc_launcher signals the xtra daemon while init SIGKILLs its process group,
+# and the SoC serial number is withheld from the xtra daemon by Qualcomm policy too
+dontaudit vendor_location vendor_location_xtra_daemon:process signal;
+dontaudit vendor_location_xtra_daemon vendor_sysfs_soc_sensitive:file read;
+
+# qcc-trd tries to register the QTR SDK (data collection campaign) service, which the
+# sm8750 policy gives to vendor_qccvendor; keep it unregistered
+dontaudit vendor_qcc_trd_2 vendor_qtrsdkservice_service:service_manager add;
+
+# persist.vendor.camera.{logLevel,logInfoMask,sensor} in vendor.prop are read by nothing in this vendor
+dontaudit vendor_init vendor_camera_prop:property_service set;
