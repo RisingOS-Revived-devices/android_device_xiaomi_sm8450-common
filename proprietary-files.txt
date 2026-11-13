@@ -873,7 +873,7 @@ vendor/lib64/libhdr_tm.so|f646ac9a8902bde6607bdeb486d6eb4c681f8793
 vendor/lib64/libmemutils.so|c99fd187b8abae26051174db1038cd5f88cc4c8b
 
 # Display (SDM) - from PDX257 ELBE-1.1.0-REL-260522-1202
-vendor/lib64/libdisplayqos.so|efd8df7eb08e496a474e9cc10e7fe68a3176880d|f343cea67a30e7417e26d6e7048ca5bcf1c0e839
+vendor/lib64/libdisplayqos.so|efd8df7eb08e496a474e9cc10e7fe68a3176880d|c1644affe531d5c2ae4bd67fbb47609fc1dd6d32
 vendor/lib64/libdisplayskuutils.so|c1fa7912f6b45ad24a7cd15a65d96b2f2c9bbe27
 vendor/lib64/libintervmipc.so|d19fa046b1415149c6d030af348716a8a7312b3c
 vendor/lib64/libqseed3.so|6e798559c22fd551a038b0597581fff14ba3bbd3

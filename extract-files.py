@@ -150,6 +150,13 @@ blob_fixups: blob_fixups_user_type = {
         .sig_replace(
             '44 50 55 38 33 30 2e 78 6d 6c',
             '44 50 55 38 5f 5f 2e 78 6d 6c',
+        )
+        # Waipio (SDE 8.1.0) is unknown to this parrot build, so the QoS tables never load and
+        # every layer goes to GPU. Point the unused ravelin (8.6.0) slot at waipio and DPU8__.xml.
+        .sig_replace('c8 00 b0 52', '28 00 b0 52')
+        .sig_replace(
+            '44 50 55 38 36 30 2e 78 6d 6c',
+            '44 50 55 38 5f 5f 2e 78 6d 6c',
         ),
     'vendor/lib64/libqcodec2_core.so': blob_fixup()
         .replace_needed('android.hardware.graphics.common-V5-ndk.so', 'android.hardware.graphics.common-V7-ndk.so'),
