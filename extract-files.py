@@ -160,6 +160,12 @@ blob_fixups: blob_fixups_user_type = {
         ),
     'vendor/lib64/libqcodec2_core.so': blob_fixup()
         .replace_needed('android.hardware.graphics.common-V5-ndk.so', 'android.hardware.graphics.common-V7-ndk.so'),
+    'vendor/lib64/libssc.so': blob_fixup()
+        # NOP four INFO __android_log_print calls in ssc_qmi::send_request/handle_resp_cb (light sensor spam)
+        .sig_replace('04 25 80 52 c2 09 00 94', '04 25 80 52 1f 20 03 d5')
+        .sig_replace('84 2d 80 52 f4 05 00 94', '84 2d 80 52 1f 20 03 d5')
+        .sig_replace('e5 03 17 aa e6 03 16 aa 63 05 00 94', 'e5 03 17 aa e6 03 16 aa 1f 20 03 d5')
+        .sig_replace('64 2f 80 52 51 05 00 94', '64 2f 80 52 1f 20 03 d5'),
     'vendor/lib64/libwfdmmsrc_proprietary.so': blob_fixup()
         .replace_needed('android.media.audio.common.types-V2-ndk.so', 'android.media.audio.common.types-V3-ndk.so'),
     'vendor/lib64/vendor.libdpmframework.so': blob_fixup()
